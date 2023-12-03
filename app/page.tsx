@@ -1,7 +1,11 @@
-import Dashboard from "./Dashboard";
+import Dashboard from "@/components/Dashboard";
 
-export default function Home() {
+const Home = () => {
   return (
-    <Dashboard />
+    <Dashboard>
+      <h1 className="text-4xl font-semibold">Home</h1>
+    </Dashboard>
   );
 }
+
+export default Home;

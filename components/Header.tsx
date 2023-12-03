@@ -7,7 +7,12 @@ const ShopifyHeader = () => {
     <div className="bg-[#1a1a1a] text-white py-3 flex items-center justify-between px-4">
       {/* Logo */}
       <div className="mr-6 flex items-center gap-1">
-        <img src="/shopify-logo.svg" className="w-5" alt="Shopify Logo" />
+        <Image
+          src="/shopify-logo.svg"
+          width={20}
+          height={20}
+          alt="Shopify Logo"
+        />
         <Image
           src="/shopify-logo-text.svg"
           width={60}
