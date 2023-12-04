@@ -23,20 +23,20 @@ interface DashboardProps {
 
 const menuItems: MenuItem[] = [
   { label: "Home", icon: AiFillHome, link: "/" },
-  { label: "Orders", icon: AiOutlineShopping, link:  "/" },
-  { label: "Products", icon: AiOutlineShop, link:  "/" },
+  { label: "Orders", icon: AiOutlineShopping, link: "/" },
+  { label: "Products", icon: AiOutlineShop, link: "/" },
   { label: "Customers", icon: AiOutlineUser, link: "/" },
   { label: "Content", icon: AiOutlineBars, link: "/" },
-  { label: "Analytics", icon: AiOutlineAreaChart, link:  "/" },
-  { label: "Marketing", icon: AiOutlineTag, link:  "/" },
-  { label: "Discounts", icon: AiOutlineTag, link:  "/" },
+  { label: "Analytics", icon: AiOutlineAreaChart, link: "/" },
+  { label: "Marketing", icon: AiOutlineTag, link: "/" },
+  { label: "Discounts", icon: AiOutlineTag, link: "/" },
 ];
 
 const Dashboard: React.FC<DashboardProps> = ({ children }) => {
   return (
     <>
       <ShopifyHeader />
-      <div className="flex h-screen bg-gray-100">
+      <div className="flex min-h-screen bg-gray-100">
         {/* Sidebar */}
         <div className="bg-[#f1f1f1] w-60">
           <nav className="mt-4">
