@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import jwt from 'jsonwebtoken'
+// import jwt from 'jsonwebtoken'
 
 export async function POST(request: NextRequest) {
 
@@ -11,13 +11,13 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ message: 'Invalid Password' })
     }
 
-    const secret = process.env.JWT_SECRET || ""
-    const token = jwt.sign({ email }, secret, { expiresIn: "14d" });
+    // TODO: first fix middleware issue (can't use crypto module)
+    // const token = jwt.sign({ email }, process.env.JWT_SECRET || "", { expiresIn: "14d" });
 
     const response = NextResponse.redirect(new URL('/', request.url))
     response.cookies.set({
         name: 'x-access-token',
-        value: token,
+        value: JSON.stringify({ email, password }),
         path: '/',
         maxAge: 60 * 60 * 24 * 365 * 10,
         secure: true,

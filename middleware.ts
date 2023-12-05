@@ -4,12 +4,10 @@ import { NextRequest, NextResponse } from "next/server";
 export function middleware(request: NextRequest) {
 
   const protectedRoutes = ['/products', '/orders', '/analytics', '/logout']
-  const authRoutes = ['/login']
+  const authRoutes = ['/login', '/api/login']
 
   const isAuthRoute = authRoutes.includes(request.nextUrl.pathname)
   const isProtectedRoute = protectedRoutes.includes(request.nextUrl.pathname) || request.nextUrl.pathname === '/'
-
-  // const errorResponse = NextResponse.json({ message: "user not logged in" }, { status: 401 })
 
   const cookie = request.cookies.get('x-access-token')
 
@@ -19,7 +17,18 @@ export function middleware(request: NextRequest) {
   if ((!cookie || !cookie.value) && isProtectedRoute) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
-  // TODO: verify token
+  if ((!cookie || !cookie.value) && isAuthRoute) {
+    return NextResponse.next()
+  }
+
+  const credentials = JSON.parse(cookie!.value)
+  if (credentials.email !== process.env.ROOT_EMAIL) {
+    return NextResponse.redirect(new URL('/login', request.url))
+  }
+  if (credentials.password !== process.env.ROOT_PASSWORD) {
+    return NextResponse.redirect(new URL('/login', request.url))
+  }
+
 
   return NextResponse.next()
 
