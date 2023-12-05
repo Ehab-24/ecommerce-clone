@@ -1,4 +1,6 @@
+'use client';
 
+import { ZodError, z } from "zod";
 import Card from "@/components/Card";
 import Checkbox from "@/components/Checkbox";
 import Input from "@/components/Input";
@@ -6,7 +8,10 @@ import Select from "@/components/Select";
 import TextArea from "@/components/TextArea";
 import FilledButton from "@/components/buttons/FilledButton";
 import React from "react";
+import { toast } from 'react-hot-toast'
+import { IoIosClose } from "react-icons/io";
 import { FaArrowLeft } from "react-icons/fa";
+import { Product } from "@/types";
 
 const countries = [
   { "label": "Select", "value": "" },
@@ -249,7 +254,69 @@ const countries = [
   { "label": "Zimbabwe", "value": "ZW" }
 ]
 
+
 export default function NewProductPage() {
+
+  const [product, setProduct] = React.useState<Product>({
+    title: "",
+    description: "",
+    price: 0,
+    compareAtPrice: 0,
+    chargeTaxes: false,
+    costPerItem: 0,
+    profit: 0,
+    margin: 0,
+    trackQuantity: false,
+    quantity: 0,
+    continueSellingWhenOutOfStock: false,
+    hasSku: false,
+    isPhysicalProduct: false,
+    weight: 0,
+    weightUnit: "kg",
+    countryOfOrigin: "",
+    status: "active",
+    productCategory: "",
+    productType: "",
+    vendor: "",
+    collections: "",
+    tags: [] as string[],
+  })
+
+  async function handleSave() {
+    const productSchema = z.object({
+      title: z.string().min(1, "Product title is required"),
+      description: z.string().min(1, "Product description is required"),
+      price: z.number().gt(0, "Price must be greater than 0"),
+      compareAtPrice: z.number().gt(0, "Compare at price must be greater than 0"),
+      chargeTaxes: z.boolean(),
+      costPerItem: z.number().gt(0, "Cost per item must be greater than 0"),
+      profit: z.number(),
+      margin: z.number(),
+      trackQuantity: z.boolean(),
+      quantity: z.number().gte(0),
+      continueSellingWhenOutOfStock: z.boolean(),
+      hasSku: z.boolean(),
+      isPhysicalProduct: z.boolean(),
+      weight: z.number().gte(0),
+      weightUnit: z.string(),
+      countryOfOrigin: z.string(),
+      status: z.enum(['active', 'draft']),
+      productCategory: z.string().min(1, "Product category is required"),
+      productType: z.string().min(1, "Product type is required"),
+      vendor: z.string().min(1, "Vendor is required"),
+      collections: z.string(),
+      tags: z.array(z.string().min(1)).min(1, "At least one tag is required"),
+    })
+
+    try {
+      const result = productSchema.parse(product)
+      console.log(result)
+    } catch (error) {
+      console.log(product.description)
+      toast.error((error as ZodError).errors[0].message)
+    }
+  }
+
   return (
     <div className="flex-col flex gap-6 p-8">
       <div className="flex items-center gap-4 mb-8">
@@ -258,55 +325,24 @@ export default function NewProductPage() {
       </div>
 
       <Card className="flex flex-col gap-4 items-stretch">
-        <Input label="Title" placeholder="Title" />
-        <TextArea label="Description" />
+        <Input id="title" onChange={e => setProduct({ ...product, title: e.target.value })} label="Title" placeholder="Title" />
+        <TextArea label="Description" onChange={e => setProduct({ ...product, description: e.target.value })} />
       </Card>
-
 
       <Card className="flex flex-col gap-4 items-stretch">
         <h2 className="text-gray-900 font-bold">Pricing</h2>
-        <div className="flex gap-4 mt-4">
-          <Input label="Price" placeholder="$ 0.00" />
-          <Input label="Compare-at Price" placeholder="$ 0.00" />
-        </div>
-        <Checkbox id="0" label="Charge Taxes on this Product" />
-        <div className="flex gap-4 mt-4">
-          <Input label="Cost per Item" placeholder="$ 0.00" />
-          <Input label="Profit" placeholder="--" />
-          <Input label="Margin" placeholder="--" />
-        </div>
+        <Pricing product={product} setProduct={setProduct} />
       </Card>
-
 
       <Card className=" flex-col flex gap-4">
         <h2 className="text-gray-900 font-bold">Inventory</h2>
-        <Checkbox id="1" label="Track Quantity" />
-
-        <div className=" flex items-center w-full justify-between mb-4">
-          <p className="text-sm text-gray-900">Block 6-C2 Park</p>
-          <Input label="" placeholder="0" />
-        </div>
-        <Checkbox id="2" label="Continue selling when out of stock" />
-        <Checkbox id="3" label="This product has a SKU or barcode" />
+        <Inventory product={product} setProduct={setProduct} />
       </Card>
 
 
       <Card className=" flex-col flex gap-4">
         <h2 className="text-gray-900 font-bold">Shipping</h2>
-        <Checkbox id="4" label="This is a physical product" />
-
-        <div className="h-4" />
-        <div className=" w-full flex items-end justify-between mb-4">
-          <Input label="Weight" placeholder="0.0" />
-          <Select label="Weight Unit" options={[
-            { value: "kg", label: "kg" },
-            { value: "g", label: "g" },
-            { value: "lb", label: "lb" },
-            { value: "oz", label: "oz" },
-          ]} />
-        </div>
-
-        <Select label="Country/Region of origin" options={countries} />
+        <Shipping product={product} setProduct={setProduct} />
       </Card>
 
       <Card className=" flex-col flex gap-4">
@@ -314,23 +350,96 @@ export default function NewProductPage() {
         <Select label="Status" options={[
           { label: "Active", value: "active" },
           { label: "Draft", value: "draft" },
-        ]} />
+        ]} onChange={e => setProduct({ ...product, status: e.target.value })} />
       </Card>
 
       <Card className=" flex-col flex gap-4">
         <h2 className="text-gray-900 font-bold">Product Organization</h2>
-
-        <Input label="Product category" placeholder="Apparel & Accessories" />
-        <Input label="Product Type" placeholder="" />
-        <Input label="Vendor" placeholder="" />
-        <Input label="Collections" placeholder="" />
-        <Input label="Tags" placeholder="" />
+        <ProductOrganization product={product} setProduct={setProduct} />
       </Card>
 
-      <FilledButton>
+      <FilledButton onClick={handleSave}>
         Save
       </FilledButton>
     </div>
   )
 }
 
+function Pricing({ product, setProduct }: { product: Product, setProduct: React.Dispatch<React.SetStateAction<any>> }) {
+  return (
+    <>
+      <div className="flex gap-4 mt-4">
+        <Input id="price" label="Price" placeholder="$ 0.00" type="number" onChange={e => setProduct({ ...product, price: Number(e.target.value) })} />
+        <Input id="compare-at-price" label="Compare-at Price" placeholder="$ 0.00" type="number" onChange={e => setProduct({ ...product, compareAtPrice: Number(e.target.value) })} />
+      </div>
+      <Checkbox id="charge-taxes" label="Charge Taxes on this Product" onChange={e => setProduct({ ...product, chargeTaxes: e.target.checked })} />
+      <div className="flex gap-4 mt-4">
+        <Input id="cost-per-item" label="Cost per Item" placeholder="$ 0.00" type="number" onChange={e => setProduct({ ...product, costPerItem: Number(e.target.value) })} />
+        <Input id="profit" label="Profit" placeholder="--" type="number" onChange={e => setProduct({ ...product, profit: Number(e.target.value) })} />
+        <Input id="margin" label="Margin" placeholder="--" type="number" onChange={e => setProduct({ ...product, margin: Number(e.target.value) })} />
+      </div>
+    </>
+  )
+}
+
+function Inventory({ product, setProduct }: { product: Product, setProduct: React.Dispatch<React.SetStateAction<any>> }) {
+  return (
+    <>
+      <Checkbox id="tarck-quantity" label="Track Quantity" onChange={e => setProduct({ ...product, trackQuantity: e.target.checked })} />
+
+      <div className=" flex items-center w-full justify-between mb-4">
+        <p className="text-sm text-gray-900">Block 6-C2 Park</p>
+        <Input id="quantity" label="" placeholder="0" type="number" onChange={e => setProduct({ ...product, quantity: Number(e.target.value) })} />
+      </div>
+      <Checkbox id="continue-selling-when-out-of-stock" label="Continue selling when out of stock" onChange={e => setProduct({ ...product, continueSellingWhenOutOfStock: e.target.checked })} />
+      <Checkbox id="has-sku" label="This product has a SKU or barcode" onChange={e => setProduct({ ...product, hasSku: e.target.checked })} />
+    </>
+  )
+}
+
+function Shipping({ product, setProduct }: { product: Product, setProduct: React.Dispatch<React.SetStateAction<any>> }) {
+  return (
+    <>
+      <Checkbox id="physical-product" label="This is a physical product" onChange={e => setProduct({ ...product, isPhysicalProduct: e.target.checked })} />
+
+      <div className="h-4" />
+      <div className=" w-full flex items-end justify-between mb-4">
+        <Input id="weight" label="Weight" placeholder="0.0" type="number" onChange={e => setProduct({ ...product, weight: Number(e.target.value) })} />
+        <Select label="Weight Unit" options={[
+          { value: "kg", label: "kg" },
+          { value: "g", label: "g" },
+          { value: "lb", label: "lb" },
+          { value: "oz", label: "oz" },
+        ]} onChange={e => setProduct({ ...product, weightUnit: e.target.value })} />
+      </div>
+
+      <Select label="Country/Region of origin" options={countries} onChange={e => setProduct({ ...product, countryOfOrigin: e.target.value })} />
+    </>
+  )
+}
+
+function ProductOrganization({ product, setProduct }: { product: Product, setProduct: React.Dispatch<React.SetStateAction<any>> }) {
+  return (
+    <>
+      <Input id="product-category" label="Product category" placeholder="Apparel & Accessories" onChange={e => setProduct({ ...product, productCategory: e.target.value })} />
+      <Input id="product-type" label="Product Type" placeholder="" onChange={e => setProduct({ ...product, productType: e.target.value })} />
+      <Input id="vendor" label="Vendor" placeholder="" onChange={e => setProduct({ ...product, vendor: e.target.value })} />
+      <Input id="collections" label="Collections" placeholder="" onChange={e => setProduct({ ...product, collections: e.target.value })} />
+
+      <Input id="tags" label="Tags" placeholder="" onKeyDown={e => {
+        const value = e.currentTarget.value
+        if (e.key === "Enter" && value !== "") {
+          setProduct({ ...product, tags: [...product.tags, value] })
+          e.currentTarget.value = ""
+        }
+      }} />
+      <div className="flex gap-2">
+        {
+          product.tags.map((tag) => (
+            <div key={tag} className="bg-slate-200 text-gray-900 px-2 py-1 rounded-md text-sm flex items-center gap-1">{tag} <button onClick={() => setProduct({ ...product, tags: product.tags.filter(t => t !== tag) })}><IoIosClose size={20} /></button></div>
+          ))
+        }
+      </div>
+    </>
+  )
+}

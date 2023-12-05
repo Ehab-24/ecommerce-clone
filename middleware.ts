@@ -12,7 +12,6 @@ export function middleware(request: NextRequest) {
   // const errorResponse = NextResponse.json({ message: "user not logged in" }, { status: 401 })
 
   const cookie = request.cookies.get('x-access-token')
-  console.log('cookie:', cookie)
 
   if (isAuthRoute && cookie) {
     return NextResponse.redirect(new URL('/', request.url))

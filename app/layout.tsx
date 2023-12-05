@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import { Toaster } from 'react-hot-toast'
 import './globals.css'
 import Dashboard from '@/components/Dashboard'
 
@@ -19,9 +20,12 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         {
-          <Dashboard>
-            {children}
-          </Dashboard>
+          <>
+            <Toaster />
+            <Dashboard>
+              {children}
+            </Dashboard>
+          </>
         }
       </body>
     </html>
