@@ -1,5 +1,4 @@
-
-import Datatable from "@/components/products/Datatable";
+import Datatable from "@/components/products/inventory/Datatable";
 import { Product } from "@/types/product";
 import Link from "next/link";
 import React from "react";

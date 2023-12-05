@@ -2,6 +2,7 @@
 import { z } from "zod"
 
 const ProductSchema = z.object({
+  _id: z.optional(z.string()),
   title: z.string().min(1, "Product title is required"),
   description: z.string().min(1, "Product description is required"),
   price: z.number().gt(0, "Price must be greater than 0"),
@@ -14,6 +15,8 @@ const ProductSchema = z.object({
   quantity: z.number().gte(0),
   continueSellingWhenOutOfStock: z.boolean(),
   hasSku: z.boolean(),
+  sku: z.optional(z.string()),
+  barcode: z.optional(z.string()),
   isPhysicalProduct: z.boolean(),
   weight: z.number().gte(0),
   weightUnit: z.string(),
