@@ -1,4 +1,3 @@
-
 import Datatable from "@/components/products/Datatable";
 import { Product } from "@/types/product";
 import Link from "next/link";
@@ -6,8 +5,12 @@ import React from "react";
 
 export default async function ProductsPage() {
 
-  const res = await fetch(`${process.env.BASE_URI}/api/products`, { cache: "no-cache" })
-  console.log(`${process.env.BASE_URI}/api/products`)
+  const res = await fetch('http://localhost:3000/api/products', {
+    cache: "no-cache", headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    }
+  })
   const products: Product[] = await res.json()
 
   return (
