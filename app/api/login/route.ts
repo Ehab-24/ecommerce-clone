@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 // import jwt from 'jsonwebtoken'
 
 export async function POST(request: NextRequest) {
-
     const { email, password } = await request.json()
     if (email !== process.env.ROOT_EMAIL) {
         return NextResponse.json({ message: 'Email not found' })
