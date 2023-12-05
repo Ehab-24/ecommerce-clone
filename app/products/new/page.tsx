@@ -1,6 +1,7 @@
 'use client';
 
-import { ZodError, z } from "zod";
+import { ZodError } from "zod";
+import { ProductSchema, Product } from "@/types/product";
 import Card from "@/components/Card";
 import Checkbox from "@/components/Checkbox";
 import Input from "@/components/Input";
@@ -11,7 +12,6 @@ import React from "react";
 import { toast } from 'react-hot-toast'
 import { IoIosClose } from "react-icons/io";
 import { FaArrowLeft } from "react-icons/fa";
-import { Product } from "@/types";
 
 const countries = [
   { "label": "Select", "value": "" },
@@ -283,33 +283,8 @@ export default function NewProductPage() {
   })
 
   async function handleSave() {
-    const productSchema = z.object({
-      title: z.string().min(1, "Product title is required"),
-      description: z.string().min(1, "Product description is required"),
-      price: z.number().gt(0, "Price must be greater than 0"),
-      compareAtPrice: z.number().gt(0, "Compare at price must be greater than 0"),
-      chargeTaxes: z.boolean(),
-      costPerItem: z.number().gt(0, "Cost per item must be greater than 0"),
-      profit: z.number(),
-      margin: z.number(),
-      trackQuantity: z.boolean(),
-      quantity: z.number().gte(0),
-      continueSellingWhenOutOfStock: z.boolean(),
-      hasSku: z.boolean(),
-      isPhysicalProduct: z.boolean(),
-      weight: z.number().gte(0),
-      weightUnit: z.string(),
-      countryOfOrigin: z.string(),
-      status: z.enum(['active', 'draft']),
-      productCategory: z.string().min(1, "Product category is required"),
-      productType: z.string().min(1, "Product type is required"),
-      vendor: z.string().min(1, "Vendor is required"),
-      collections: z.string(),
-      tags: z.array(z.string().min(1)).min(1, "At least one tag is required"),
-    })
-
     try {
-      const result = productSchema.parse(product)
+      const result = ProductSchema.parse(product)
       console.log(result)
     } catch (error) {
       console.log(product.description)
@@ -350,7 +325,7 @@ export default function NewProductPage() {
         <Select label="Status" options={[
           { label: "Active", value: "active" },
           { label: "Draft", value: "draft" },
-        ]} onChange={e => setProduct({ ...product, status: e.target.value })} />
+        ]} onChange={e => setProduct({ ...product, status: e.target.value as 'active' | 'draft' })} />
       </Card>
 
       <Card className=" flex-col flex gap-4">
