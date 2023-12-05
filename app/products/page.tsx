@@ -8,7 +8,6 @@ export default async function ProductsPage() {
 
   const res = await fetch(`${process.env.BASE_URI}/api/products`, { cache: "no-cache" })
   console.log(`${process.env.BASE_URI}/api/products`)
-  console.log(await res.text())
   const products: Product[] = await res.json()
 
   return (
