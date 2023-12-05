@@ -15,6 +15,8 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
 
+    console.log('hello 2')
+
     const searchParams = request.nextUrl.searchParams
     const fields: string[] = searchParams.get('fields')?.split(',') || []
     const limit = Number(searchParams.get('limit') || 20)
@@ -27,6 +29,8 @@ export async function GET(request: NextRequest) {
         {},
         { projection: fields?.reduce((acc, field) => ({ ...acc, [field]: 1 }), {}) }
     ).limit(limit).skip(page * limit).toArray()
+
+    console.log('products', products)
 
     return NextResponse.json(products)
 }

@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-// import { verifyToken } from "./lib/auth";
 
 export function middleware(request: NextRequest) {
 
@@ -22,6 +21,9 @@ export function middleware(request: NextRequest) {
   }
 
   const credentials = JSON.parse(cookie!.value)
+
+  console.log(credentials)
+
   if (credentials.email !== process.env.ROOT_EMAIL) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
@@ -29,28 +31,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
+  console.log('hello')
 
   return NextResponse.next()
-
-  // const token: string = cookie?.value || ''
-  // if (!token && isProtectedRoute) {
-  //   console.log('1')
-  //   return NextResponse.redirect(new URL('/login', request.url))
-  // }
-  //
-  // const decodedData = "some"
-  // // TODO:
-  // // const decodedData = verifyToken(token)
-  // // if (!decodedData) {
-  // //   return NextResponse.redirect(new URL('/login', request.url))
-  // // }
-  //
-  // if (isProtectedRoute && !decodedData) {
-  //   console.log('2')
-  //   return NextResponse.redirect(new URL('/login', request.url))
-  // }
-  // if (isAuthRoute && decodedData) {
-  //   console.log('3')
-  //   return NextResponse.redirect(new URL('/', request.url))
-  // }
 }
