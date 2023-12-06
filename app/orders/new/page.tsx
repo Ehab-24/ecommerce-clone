@@ -5,14 +5,18 @@ import SectionTitle from "@/components/SectionTitle";
 import InputSearch from "@/components/InputSearch";
 import React from "react";
 import { FaArrowLeft, FaPencilAlt } from "react-icons/fa";
+import Link from "next/link";
+import Heading from "@/components/Heading";
 
 const OrdersPage = () => {
   return (
     <div className="min-h-screen p-5">
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-2 mb-2">
-          <FaArrowLeft className="text-sm text-neutral-800" />
-          <h1 className="text-xl font-bold text-neutral-800">Create Order</h1>
+          <Link href="/orders">
+            <FaArrowLeft className="text-sm text-neutral-800" />
+          </Link>
+          <Heading>Create Order</Heading>
         </div>
 
         <Section>
