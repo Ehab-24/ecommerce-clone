@@ -1,13 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export function middleware(request: NextRequest) {
-  const protectedRoutes = ["/products", "/orders", "/analytics", "/logout"];
   const authRoutes = ["/login", "/api/login"];
 
   const isAuthRoute = authRoutes.includes(request.nextUrl.pathname);
-  const isProtectedRoute =
-    protectedRoutes.includes(request.nextUrl.pathname) ||
-    request.nextUrl.pathname === "/";
+  const isProtectedRoute = !isAuthRoute
 
   const cookie = request.cookies.get("x-access-token");
 
@@ -23,16 +20,12 @@ export function middleware(request: NextRequest) {
 
   const credentials = cookie && JSON.parse(cookie.value);
 
-  console.log(credentials);
-
   if (credentials && credentials.email !== process.env.ROOT_EMAIL) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
   if (credentials && credentials.password !== process.env.ROOT_PASSWORD) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
-
-  console.log("hello");
 
   return NextResponse.next();
 }
