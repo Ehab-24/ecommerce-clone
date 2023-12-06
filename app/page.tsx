@@ -3,7 +3,7 @@
 const Home = () => {
 
   async function logout() {
-    const resp = await fetch('/api/logout', {
+    const resp = await fetch(`/api/logout`, {
       method: 'POST'
     })
     const { success } = await resp.json()

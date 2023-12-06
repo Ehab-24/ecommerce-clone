@@ -13,19 +13,48 @@ import {
   AiOutlineTag,
 } from "react-icons/ai";
 
+interface subMenu {
+  label: string;
+  link: string;
+}
 interface MenuItem {
   label: string;
   icon: any;
   link: string;
-  subMenu?: MenuItem[]; // Submenu items
+  subMenu?: subMenu[]; // Submenu items
 }
 
+const ordersMenu: subMenu[] = [
+  { label: "Drafts", link: "/orders/drafts" },
+  {
+    label: "Abandoned Checkouts",
+    link: "/orders/abandoned",
+  },
+];
+
+const productsMenu: subMenu[] = [
+  { label: "Collections", link: "products/collections" },
+  { label: "Inventory", link: "/products/inventory" },
+  { label: "Categories", link: "/products/categories" },
+  { label: "Purchase Orders", link: "/products/purchase-orders" },
+  { label: "Transfers", link: "/products/transfers" },
+  { label: "Gift Cards", link: "/products/gift-cards" },
+];
+
 const menuItems: MenuItem[] = [
-  { label: "Home", icon: AiFillHome, link: "/home", subMenu: [
-    {label: "Home Sub", icon: AiFillHome, link: "/home-sub"}
-  ] },
-  { label: "Orders", icon: AiOutlineShopping, link: "/orders" },
-  { label: "Products", icon: AiOutlineShop, link: "/products" },
+  { label: "Home", icon: AiFillHome, link: "/home" },
+  {
+    label: "Orders",
+    icon: AiOutlineShopping,
+    link: "/orders",
+    subMenu: ordersMenu,
+  },
+  {
+    label: "Products",
+    icon: AiOutlineShop,
+    link: "/products",
+    subMenu: productsMenu,
+  },
   { label: "Customers", icon: AiOutlineUser, link: "/customers" },
   { label: "Content", icon: AiOutlineBars, link: "/content" },
   { label: "Analytics", icon: AiOutlineAreaChart, link: "/analytics" },
@@ -87,10 +116,6 @@ const Sidebar: React.FC = () => {
                           : "hover:bg-gray-200 text-gray-600 hover:text-gray-800"
                       } text-sm font-semibold mx-3 py-[5px] px-2 rounded-md cursor-pointer`}
                     >
-                      <span>▶</span>
-                      {React.createElement(subMenuItem.icon, {
-                        className: "mr-2.5 ml-1",
-                      })}
                       {subMenuItem.label}
                     </div>
                   </Link>
