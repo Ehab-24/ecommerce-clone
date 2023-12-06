@@ -13,6 +13,7 @@ import React, { useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { IoIosClose } from "react-icons/io";
 import { FaArrowLeft } from "react-icons/fa";
+import SectionTitle from "@/components/SectionTitle";
 
 const countries = [
   { label: "Select", value: "" },
@@ -343,22 +344,22 @@ export default function NewProductPage() {
         </Card>
 
         <Card className="flex flex-col gap-4 items-stretch">
-          <h2 className="text-gray-900 font-bold">Pricing</h2>
+          <SectionTitle title="Pricing" />
           <Pricing product={product} setProduct={setProduct} />
         </Card>
 
         <Card className=" flex-col flex gap-4">
-          <h2 className="text-gray-900 font-bold">Inventory</h2>
+          <SectionTitle title="Inventory" />
           <Inventory product={product} setProduct={setProduct} />
         </Card>
 
         <Card className=" flex-col flex gap-4">
-          <h2 className="text-gray-900 font-bold">Shipping</h2>
+          <SectionTitle title="Shipping" />
           <Shipping product={product} setProduct={setProduct} />
         </Card>
 
         <Card className=" flex-col flex gap-4">
-          <h2 className="text-gray-900 font-bold">Status</h2>
+          <SectionTitle title="Status" />
           <Select
             label="Status"
             options={[
@@ -375,7 +376,7 @@ export default function NewProductPage() {
         </Card>
 
         <Card className=" flex-col flex gap-4">
-          <h2 className="text-gray-900 font-bold">Product Organization</h2>
+          <SectionTitle title="Product Organization" />
           <ProductOrganization product={product} setProduct={setProduct} />
         </Card>
 

@@ -1,6 +1,7 @@
 'use client';
 
 import Input from "@/components/Input";
+import { toast } from "react-hot-toast";
 import { useState } from "react";
 
 export default function LoginPage() {
@@ -20,6 +21,9 @@ export default function LoginPage() {
 
     if (response.status === 200) {
       window.location.href = '/'
+    } else {
+      const data = await response.json()
+      toast.error(data.message)
     }
   }
 

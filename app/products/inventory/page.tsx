@@ -1,23 +1,16 @@
-"use client"
-import React, { useEffect, useState } from 'react';
+"use client";
+import React, { useEffect, useState } from "react";
 import Datatable from "@/components/products/inventory/Datatable";
+import { apiUrl } from "@/lib/utils";
 import { Product } from "@/types/product";
 import Link from "next/link";
+import React from "react";
 
-function ProductsPage() {
-  const [products, setProducts] = useState<Product[]>([]);
+export const runtime = "edge";
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const res = await fetch(`/api/products`, {
-        cache: "no-store",
-      });
-      const data: Product[] = await res.json();
-      setProducts(data);
-    };
-
-    fetchData();
-  }, []);
+export default async function ProductsPage() {
+  const res = await fetch(apiUrl("/api/products"), { cache: "no-cache" });
+  const products: Product[] = await res.json();
 
   return (
     <div className="bg-gray-100 min-h-screen p-8">

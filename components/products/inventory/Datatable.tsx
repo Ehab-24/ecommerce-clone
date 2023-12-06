@@ -1,6 +1,7 @@
 "use client"
 
 import Checkbox from "@/components/Checkbox"
+import Image from "next/image"
 import { Product } from "@/types/product"
 import { useState } from "react"
 
@@ -52,10 +53,10 @@ export default function Datatable({ products }: { products: Product[] }) {
                 <th scope="row" className="px-6 flex gap-1 items-center xl:min-w-[240px] py-4 font-medium text-gray-900 whitespace-nowrap ">
 
                   <div className=" aspect-square h-8 bg-gray-200 rounded-md overflow-hidden">
-                    <img src="https://loremflickr.com/cache/resized/65535_52286707607_f152963408_n_320_240_nofilter.jpg" alt={p.title} className="w-full h-full object-cover" />
+                    <Image src="https://loremflickr.com/cache/resized/65535_52286707607_f152963408_n_320_240_nofilter.jpg" alt={p.title} className="w-full h-full object-cover" />
                   </div>
                   <div className=" aspect-square h-8 bg-gray-200 rounded-md overflow-hidden">
-                    <img src="https://loremflickr.com/cache/resized/65535_52286707607_f152963408_n_320_240_nofilter.jpg" alt={p.title} className="w-full h-full object-cover" />
+                    <Image src="https://loremflickr.com/cache/resized/65535_52286707607_f152963408_n_320_240_nofilter.jpg" alt={p.title} className="w-full h-full object-cover" />
                   </div>
 
                   <p className="ml-4">{p.title}</p>
