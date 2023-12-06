@@ -89,11 +89,17 @@ const OrdersPage = () => {
           </div>
 
           <Checkbox
+            onChange={() => {
+              console.log("hello");
+            }}
             id="marketingEmail"
             label="Customer agreed to receive marketing emails."
           />
 
           <Checkbox
+            onChange={() => {
+              console.log("hello");
+            }}
             id="marketingSMS"
             label="Customer agreed to receive SMS marketing text messages."
           />
@@ -104,7 +110,7 @@ const OrdersPage = () => {
           </p>
         </Card>
 
-        <Card>
+        <Card className="">
           <div className="flex justify-between align-middle">
             <SectionTitle title="Notes" />
             <FaPencilAlt className="text-sm text-neutral-500" />
@@ -113,7 +119,7 @@ const OrdersPage = () => {
           <div className="text-sm">No notes</div>
         </Card>
 
-        <Card>
+        <Card className="">
           <div className="flex justify-between align-middle">
             <SectionTitle title="Customer" />
           </div>
@@ -121,7 +127,7 @@ const OrdersPage = () => {
           <InputSearch placeholder="Search for a customer" />
         </Card>
 
-        <Card>
+        <Card className="">
           <SectionTitle title="Customer" />
           <p className="text-sm font-semibold text-neutral-700">
             Primary Market
@@ -129,7 +135,7 @@ const OrdersPage = () => {
           <p className="text-xs">Kingdom of Saudi Arabia (SAR riyals)</p>
         </Card>
 
-        <Card>
+        <Card className="">
           <SectionTitle title="Tags" />
           <InputSearch placeholder="" />
         </Card>
