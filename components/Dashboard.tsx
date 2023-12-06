@@ -13,7 +13,9 @@ const Dashboard: React.FC<DashboardProps> = ({ children }) => {
       <ShopifyHeader />
       <div className="flex min-h-screen bg-gray-100">
         {/* Sidebar */}
-        <Sidebar />
+        <div className=" hidden md:block">
+          <Sidebar />
+        </div>
 
         {/* Main Content */}
         <div className="w-full bg-slate-50 md:p-6">

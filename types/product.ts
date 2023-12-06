@@ -27,6 +27,13 @@ const ProductSchema = z.object({
   vendor: z.string().min(1, "Vendor is required"),
   collections: z.string(),
   tags: z.array(z.string().min(1)).min(1, "At least one tag is required"),
+  media: z.array(z.object({
+    url: z.string(),
+    type: z.enum(['image', 'video']),
+    altText: z.string()
+  })),
+  createdAt: z.optional(z.date()),
+  updatedAt: z.optional(z.date()),
 })
 
 type Product = z.infer<typeof ProductSchema>

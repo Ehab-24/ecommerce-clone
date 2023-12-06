@@ -10,13 +10,14 @@ export default function Datatable({ products }: { products: Product[] }) {
   const [selectedProducts, setSelectedProducts] = useState<boolean[]>(new Array(products.length).fill(false))
 
   function StatusText({ status }: { status: string }) {
+    const bgColor = status === "draft" ? "bg-sky-500/40" : status === "active" ? "bg-green-500/40" : "bg-red-500/40"
     return (
-      <p className="py-1 px-2.5 text-gray-900 w-min whitespace-nowrap rounded-full bg-green-500/[0.30] capitalize">{status}</p>
+      <p className={`py-1 px-2.5 text-gray-900 w-min whitespace-nowrap rounded-full capitalize ${bgColor}`}>{status}</p>
     )
   }
 
   return (
-    <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <div className="relative overflow-x-auto overflow-y-scroll shadow-md sm:rounded-lg">
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 ">
         <thead className="text-[10px] text-gray-700 uppercase bg-gray-100 border-t-2 border-b-2 ">
           <tr>
@@ -61,12 +62,13 @@ export default function Datatable({ products }: { products: Product[] }) {
 
                 <th scope="row" className="px-6 flex gap-1 items-center xl:min-w-[240px] py-4 font-medium text-gray-900 whitespace-nowrap ">
 
-                  <div className=" aspect-square h-8 bg-gray-200 rounded-md overflow-hidden">
-                    <Image width="32" height="32" src="https://loremflickr.com/cache/resized/65535_52286707607_f152963408_n_320_240_nofilter.jpg" alt={p.title} className="w-full h-full object-cover" />
-                  </div>
-                  <div className=" aspect-square h-8 bg-gray-200 rounded-md overflow-hidden">
-                    <Image width="32" height="32" src="https://loremflickr.com/cache/resized/65535_52286707607_f152963408_n_320_240_nofilter.jpg" alt={p.title} className="w-full h-full object-cover" />
-                  </div>
+                  {
+                    p.media.length > 0 && (p.media.map((m, i) =>
+                      <div key={i} className=" aspect-square h-8 bg-gray-200 rounded-md overflow-hidden">
+                        <Image width="32" height="32" src={m.url} alt={m.altText} className="w-full h-full object-cover" />
+                      </div>
+                    ))
+                  }
 
                   <p className="ml-4">{p.title}</p>
                 </th>

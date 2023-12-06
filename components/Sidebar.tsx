@@ -83,17 +83,16 @@ const Sidebar: React.FC = () => {
   };
 
   return (
-    <div className="bg-[#f1f1f1] w-60">
-      <nav className="mt-4">
+    <div className="bg-[#f1f1f1] w-60 min-h-full">
+      <nav className="pt-4">
         {menuItems.map((menuItem, index) => (
           <div key={index}>
             <Link href={menuItem.link} passHref>
               <div
-                className={`flex items-center ${
-                  isCurrentPath(menuItem.link)
-                    ? "bg-gray-100 text-gray-800"
-                    : "hover:bg-gray-100 text-gray-600 hover:text-gray-800"
-                } text-sm font-semibold mx-3 py-[5px] px-2 rounded-md cursor-pointer`}
+                className={`flex items-center ${isCurrentPath(menuItem.link)
+                  ? "bg-gray-100 text-gray-800"
+                  : "hover:bg-gray-100 text-gray-600 hover:text-gray-800"
+                  } text-sm font-semibold mx-3 py-[5px] px-2 rounded-md cursor-pointer`}
                 onClick={() => handleBaseLinkClick(menuItem.link)}
               >
                 {React.createElement(menuItem.icon, { className: "mr-2.5" })}
@@ -110,11 +109,10 @@ const Sidebar: React.FC = () => {
                 {menuItem.subMenu.map((subMenuItem, subIndex) => (
                   <Link key={subIndex} href={subMenuItem.link} passHref>
                     <div
-                      className={`flex items-center ${
-                        isCurrentPath(subMenuItem.link)
-                          ? "bg-gray-200 text-gray-800"
-                          : "hover:bg-gray-200 text-gray-600 hover:text-gray-800"
-                      } text-sm font-semibold mx-3 py-[5px] px-2 rounded-md cursor-pointer`}
+                      className={`flex items-center ${isCurrentPath(subMenuItem.link)
+                        ? "bg-gray-200 text-gray-800"
+                        : "hover:bg-gray-200 text-gray-600 hover:text-gray-800"
+                        } text-sm font-semibold mx-3 py-[5px] px-2 rounded-md cursor-pointer`}
                     >
                       {subMenuItem.label}
                     </div>
