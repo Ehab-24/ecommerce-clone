@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
     const { email, password } = await request.json()
+    console.log(email, password)
     if (email !== process.env.ROOT_EMAIL) {
         return NextResponse.json({ message: 'Email not found' }, { status: 401 })
     }
@@ -13,7 +14,7 @@ export async function POST(request: NextRequest) {
     // TODO: first fix middleware issue (can't use crypto module)
     // const token = jwt.sign({ email }, process.env.JWT_SECRET || "", { expiresIn: "14d" });
 
-    const response = NextResponse.next()
+    const response = NextResponse.json({ message: "logged in successfully" }, { status: 200 })
     response.cookies.set({
         name: 'x-access-token',
         value: JSON.stringify({ email, password }),
