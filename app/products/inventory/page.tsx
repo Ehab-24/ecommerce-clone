@@ -1,5 +1,3 @@
-"use client";
-import React, { useEffect, useState } from "react";
 import Datatable from "@/components/products/inventory/Datatable";
 import { apiUrl } from "@/lib/utils";
 import { Product } from "@/types/product";
@@ -33,5 +31,3 @@ export default async function ProductsPage() {
     </div>
   );
 }
-
-export default ProductsPage;
