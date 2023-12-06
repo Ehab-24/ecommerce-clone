@@ -19,6 +19,7 @@ export function middleware(request: NextRequest) {
   }
 
   const credentials = cookie && JSON.parse(cookie.value);
+  console.log(credentials)
 
   if (credentials && credentials.email !== process.env.ROOT_EMAIL) {
     return NextResponse.redirect(new URL("/login", request.url));
@@ -27,5 +28,6 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
+  console.log('hello')
   return NextResponse.next();
 }

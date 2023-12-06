@@ -21,5 +21,5 @@ export async function GET(request: NextRequest) {
         { projection: fields?.reduce((acc, field) => ({ ...acc, [field]: 1 }), {}) }
     ).limit(limit).skip(page * limit).toArray()
 
-    return NextResponse.json(products)
+    return NextResponse.json(products, { status: 200 })
 }

@@ -1,20 +1,40 @@
+'use client'
+
 import Datatable from "@/components/products/Datatable";
 import { apiUrl } from "@/lib/utils";
 import { Product } from "@/types/product";
+import axios from "axios";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
+import { toast } from "react-hot-toast";
 
-export const runtime = "edge";
+// export const runtime = "edge";
 
-export default async function ProductsPage() {
-  const res = await fetch(apiUrl("/api/products"), {
-    cache: "no-cache",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
-  });
-  const products: Product[] = await res.json();
+export default function ProductsPage() {
+  // const res = await fetch(apiUrl("/api/products"), {
+  //   cache: "no-cache",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //     Accept: "application/json",
+  //   },
+  // });
+  //
+  // const products: Product[] = []
+
+  const [products, setProducts] = React.useState<Product[]>([])
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        const { data } = await axios.get("/api/products")
+        console.log(data)
+        setProducts(data)
+      } catch (error) {
+        console.log(error)
+        toast.error('Could not load data!')
+      }
+    }
+    fetchProducts()
+  }, [])
 
   return (
     <div className="bg-gray-100 min-h-screen p-8">
