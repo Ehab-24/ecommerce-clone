@@ -28,7 +28,7 @@ const ordersMenu: subMenu[] = [
   { label: "Drafts", link: "/orders/drafts" },
   {
     label: "Abandoned Checkouts",
-    link: "/orders/abandoned",
+    link: "/orders/abandoned-checkouts",
   },
 ];
 
@@ -89,30 +89,27 @@ const Sidebar: React.FC = () => {
           <div key={index}>
             <Link href={menuItem.link} passHref>
               <div
-                className={`flex items-center ${isCurrentPath(menuItem.link)
-                  ? "bg-gray-100 text-gray-800"
-                  : "hover:bg-gray-100 text-gray-600 hover:text-gray-800"
-                  } text-sm font-semibold mx-3 py-[5px] px-2 rounded-md cursor-pointer`}
+                className={`flex items-center ${
+                  isCurrentPath(menuItem.link)
+                    ? "bg-gray-200 text-gray-800"
+                    : "hover:bg-gray-100 text-gray-600 hover:text-gray-800"
+                } text-sm font-semibold mx-3 py-[5px] px-2 rounded-md cursor-pointer`}
                 onClick={() => handleBaseLinkClick(menuItem.link)}
               >
                 {React.createElement(menuItem.icon, { className: "mr-2.5" })}
                 {menuItem.label}
-                {menuItem.subMenu && (
-                  <span className="ml-auto">
-                    {isSubMenuOpen(menuItem.link) ? "▲" : "▶"}
-                  </span>
-                )}
               </div>
             </Link>
             {menuItem.subMenu && isSubMenuOpen(menuItem.link) && (
-              <div className="ml-6">
+              <div className="mx-3">
                 {menuItem.subMenu.map((subMenuItem, subIndex) => (
                   <Link key={subIndex} href={subMenuItem.link} passHref>
                     <div
-                      className={`flex items-center ${isCurrentPath(subMenuItem.link)
-                        ? "bg-gray-200 text-gray-800"
-                        : "hover:bg-gray-200 text-gray-600 hover:text-gray-800"
-                        } text-sm font-semibold mx-3 py-[5px] px-2 rounded-md cursor-pointer`}
+                      className={`${
+                        isCurrentPath(subMenuItem.link)
+                          ? "bg-gray-200 text-gray-800"
+                          : "hover:bg-gray-200 text-gray-600 hover:text-gray-800"
+                      } text-sm font-semibold py-[5px] pl-8 rounded-md cursor-pointer`}
                     >
                       {subMenuItem.label}
                     </div>

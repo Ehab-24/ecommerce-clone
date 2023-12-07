@@ -279,6 +279,7 @@ export default function NewProductPage() {
     productType: "",
     vendor: "",
     collections: "",
+    media: [] as any,
     tags: [] as string[],
   };
 

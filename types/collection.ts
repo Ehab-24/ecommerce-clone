@@ -14,7 +14,7 @@ export enum Operator {
 export const ConditionSchema = z.object({
   field: z.string(),
   operator: z.nativeEnum(Operator),
-  value: z.string()
+  value: z.union([z.string(), z.number()]),
 })
 
 export const CollectionSchema = z.object({
@@ -25,10 +25,13 @@ export const CollectionSchema = z.object({
   collectionType: z.enum(["automated", "manual"]),
   conditions: z.array(ConditionSchema),
   conditionsMatch: z.enum(["all", "any"]),
+  products: z.optional(z.number()),
   seo: z.object({
     title: z.string(),
     description: z.string(),
-  })
+  }),
+  createdAt: z.optional(z.date()),
+  updatedAt: z.optional(z.date()),
 });
 
 export type Collection = z.infer<typeof CollectionSchema>;
