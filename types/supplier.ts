@@ -2,6 +2,7 @@ import { z } from "zod";
 
 const SupplierSchema = z.object({
     _id: z.optional(z.string()),
+    name: z.string(),
     company: z.string(),
     address: z.string(),
     country: z.string(),
