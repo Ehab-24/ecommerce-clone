@@ -32,6 +32,11 @@ const ordersMenu: subMenu[] = [
   },
 ];
 
+const ContentMenu: subMenu[] = [
+  { label: "Metaobjects", link: "/content/metaobjects" },
+  { label: "Files", link: "/content/files" },
+];
+
 const productsMenu: subMenu[] = [
   { label: "Collections", link: "products/collections" },
   { label: "Inventory", link: "/products/inventory" },
@@ -56,7 +61,7 @@ const menuItems: MenuItem[] = [
     subMenu: productsMenu,
   },
   { label: "Customers", icon: AiOutlineUser, link: "/customers" },
-  { label: "Content", icon: AiOutlineBars, link: "/content" },
+  { label: "Content", icon: AiOutlineBars, link: "/content", subMenu: ContentMenu },
   { label: "Analytics", icon: AiOutlineAreaChart, link: "/analytics" },
   { label: "Marketing", icon: AiOutlineTag, link: "/marketing" },
   { label: "Discounts", icon: AiOutlineTag, link: "/discounts" },
