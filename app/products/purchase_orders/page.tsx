@@ -8,6 +8,7 @@ import Text from "@/components/Text";
 import FilledButton from "@/components/buttons/FilledButton";
 import Datatable from "@/components/products/purchase_orders/Datatable";
 import { PurchaseOrder } from "@/types/purchaseOrder";
+import LinkMini from "@/components/LinkMini";
 
 
 export default function PurchaseOrdersPage() {
@@ -197,14 +198,10 @@ export default function PurchaseOrdersPage() {
   ]
 
   return (
-    <div>
+    <div className="bg-gray-100 min-h-full h-full p-8">
       <div className=" w-full flex justify-between">
         <Heading>Purchase Orders</Heading>
-        <Link href="/products/purchase_orders/new">
-          <p className="select-none rounded-lg bg-gray-900 py-2 px-4 text-center align-middle font-sans text-xs font-bold text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none">
-            Add Purchase Order
-          </p>
-        </Link>
+        <LinkMini href="purchase_orders/new">Add Purchase Order</LinkMini>
       </div>
       <div className="h-8" />
 
@@ -223,9 +220,7 @@ export default function PurchaseOrdersPage() {
             <Text className="text-center pb-4 w-96">
               Track and receive inventory ordered from suppliers.
             </Text>
-            <Link href="purchase_orders/new">
-              <FilledButton>Create Purchase Order</FilledButton>
-            </Link>
+            <LinkMini href="purchase_orders/new">Create Purchase Order</LinkMini>
           </Card>
         )
       }

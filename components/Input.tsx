@@ -34,16 +34,39 @@ export default function Input({
           {label}
         </label>
       )}
-      <input
-        type={type}
-        id={id}
-        value={value}
-        onChange={onChange}
-        onKeyDown={onKeyDown}
-        className={`pl-3 w-full border border-gray-200 rounded-lg py-1 outline outline-1 outline-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent ${className}`}
-        placeholder={placeholder}
-        required
-      />
+      {
+        icon ? (
+          <div className={`flex items-center gap-2 py-1.5 px-2.5 ring-0 rounded-lg ${isFocus ? "border-2 border-gray-500" : "border border-gray-200"}`}>
+            {icon}
+            <input
+              type={type}
+              id={id}
+              value={value}
+              onChange={onChange}
+              onKeyDown={onKeyDown}
+              onFocus={() => setIsFocus(true)}
+              onBlur={() => setIsFocus(false)}
+              placeholder={placeholder}
+              className="h-full w-full outline-none bg-transparent"
+              required
+            />
+          </div>
+
+        ) : (
+          <input
+            type={type}
+            id={id}
+            value={value}
+            onChange={onChange}
+            onKeyDown={onKeyDown}
+            onFocus={() => setIsFocus(true)}
+            onBlur={() => setIsFocus(false)}
+            className={`pl-3 w-full border border-gray-200 rounded-lg py-1 outline outline-1 outline-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent ${className}`}
+            placeholder={placeholder}
+            required
+          />
+        )
+      }
     </div>
   );
 }

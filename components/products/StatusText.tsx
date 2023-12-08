@@ -7,6 +7,8 @@ export default function StatusText({ status }: { status: string }) {
     case "active": bgColor = "bg-green-500/40"; break;
     case "draft": bgColor = "bg-orange-500/40"; break;
     case "ordered": bgColor = "bg-purple-500/40"; break;
+    case "inactive": bgColor = "bg-red-500/40"; break;
+    case "redeemed": bgColor = "bg-sky-500/40"; break;
     default: "bg-red-500/40"; break;
   }
 

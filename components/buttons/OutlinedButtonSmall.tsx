@@ -1,6 +1,6 @@
 import React from "react"
 
-export default function OutlinedButton({ children, onClick }: { children: React.ReactNode, onClick: React.MouseEventHandler<HTMLButtonElement> }) {
+export default function OutlinedButtonSmall({ children, onClick }: { children: React.ReactNode, onClick: React.MouseEventHandler<HTMLButtonElement> }) {
   return (
     <button
       onClick={onClick}
