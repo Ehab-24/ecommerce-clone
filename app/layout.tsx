@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   description: "Shopify NEXT App",
 };
 
+const inter = Inter({ subsets: ["latin"] });
+
 export default function RootLayout({
   children,
 }: {
@@ -17,7 +19,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={cn("min-h-screen bg-background font-sans antialiased")}>
+      <body
+        className={
+          cn("min-h-screen bg-background font-sans antialiased") +
+          " " +
+          inter.className
+        }
+      >
         {
           <>
             <Toaster />

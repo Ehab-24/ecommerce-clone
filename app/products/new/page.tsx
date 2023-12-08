@@ -16,7 +16,6 @@ import { FaArrowLeft } from "react-icons/fa";
 import SectionTitle from "@/components/SectionTitle";
 import countries from "@/data/countries";
 
-
 export default function NewProductPage() {
   const defaultProduct: Product = {
     title: "",

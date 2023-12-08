@@ -28,7 +28,7 @@ const ordersMenu: subMenu[] = [
   { label: "Drafts", link: "/orders/drafts" },
   {
     label: "Abandoned Checkouts",
-    link: "/orders/abandoned-checkouts",
+    link: "/orders/abandoned_checkouts",
   },
 ];
 
@@ -61,7 +61,12 @@ const menuItems: MenuItem[] = [
     subMenu: productsMenu,
   },
   { label: "Customers", icon: AiOutlineUser, link: "/customers" },
-  { label: "Content", icon: AiOutlineBars, link: "/content", subMenu: ContentMenu },
+  {
+    label: "Content",
+    icon: AiOutlineBars,
+    link: "/content",
+    subMenu: ContentMenu,
+  },
   { label: "Analytics", icon: AiOutlineAreaChart, link: "/analytics" },
   { label: "Marketing", icon: AiOutlineTag, link: "/marketing" },
   { label: "Discounts", icon: AiOutlineTag, link: "/discounts" },
@@ -88,16 +93,17 @@ const Sidebar: React.FC = () => {
   };
 
   return (
-    <div className="bg-[#f1f1f1] w-60 min-h-full">
+    <div className="bg-[#ebebeb] w-60 min-h-full">
       <nav className="pt-4">
         {menuItems.map((menuItem, index) => (
           <div key={index}>
             <Link href={menuItem.link} passHref>
               <div
-                className={`flex items-center ${isCurrentPath(menuItem.link)
-                  ? "bg-gray-200 text-gray-800"
-                  : "hover:bg-gray-100 text-gray-600 hover:text-gray-800"
-                  } text-sm font-semibold mx-3 py-[5px] px-2 rounded-md cursor-pointer`}
+                className={`flex items-center ${
+                  isCurrentPath(menuItem.link)
+                    ? "bg-gray-200 text-gray-800"
+                    : "hover:bg-gray-100 text-gray-600 hover:text-gray-800"
+                } text-sm font-semibold mx-3 py-[5px] px-2 rounded-md cursor-pointer`}
                 onClick={() => handleBaseLinkClick(menuItem.link)}
               >
                 {React.createElement(menuItem.icon, { className: "mr-2.5" })}
@@ -109,10 +115,11 @@ const Sidebar: React.FC = () => {
                 {menuItem.subMenu.map((subMenuItem, subIndex) => (
                   <Link key={subIndex} href={subMenuItem.link} passHref>
                     <div
-                      className={`${isCurrentPath(subMenuItem.link)
-                        ? "bg-gray-200 text-gray-800"
-                        : "hover:bg-gray-200 text-gray-600 hover:text-gray-800"
-                        } text-xs ml-1 py-[5px] pl-8 rounded-md cursor-pointer`}
+                      className={`${
+                        isCurrentPath(subMenuItem.link)
+                          ? "bg-gray-200 text-gray-800"
+                          : "hover:bg-gray-200 text-gray-600 hover:text-gray-800"
+                      } text-xs ml-1 py-[5px] pl-8 rounded-md cursor-pointer`}
                     >
                       {subMenuItem.label}
                     </div>

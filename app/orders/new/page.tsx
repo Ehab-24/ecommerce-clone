@@ -8,7 +8,7 @@ import Heading from "@/components/Heading";
 
 import Link from "next/link";
 
-import { CustomItem } from "@/types/CustomItem";
+import { CustomItem } from "@/types/customItem";
 import { Product } from "@/types/product";
 
 import { FaArrowLeft, FaPencilAlt } from "react-icons/fa";

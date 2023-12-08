@@ -1,59 +1,96 @@
 "use client";
 
-import { useState } from "react";
-import SectionTitle from "@/components/SectionTitle";
-import InputSearch from "@/components/InputSearch";
-import React from "react";
-import { FaArrowLeft, FaPencilAlt } from "react-icons/fa";
+import React, { useState } from "react";
+import { FaArrowLeft } from "react-icons/fa";
+import { IoIosClose } from "react-icons/io";
+
 import Link from "next/link";
 import Heading from "@/components/Heading";
 import Card from "@/components/Card";
 import Input from "@/components/Input";
 import Checkbox from "@/components/Checkbox";
+import Select from "@/components/Select";
+import Title from "@/components/Title";
 
-const countries = [
-  { code: "+1", name: "United States" },
-  { code: "+44", name: "United Kingdom" },
-];
+import { Customer } from "@/types/customer";
+
+import countries from "@/data/countries";
+import SectionTitle from "@/components/SectionTitle";
+
+const defaultCustomer: Customer = {
+  _id: "",
+  firstName: "",
+  lastName: "",
+  language: "English",
+  email: "",
+  phone: "",
+
+  marketing: false,
+  smsMarketing: false,
+
+  address: {
+    firstName: "",
+    lastName: "",
+    company: "",
+    address: "",
+    apartment: "",
+    city: "",
+    postalCode: "",
+    phone: "",
+    country: "",
+  },
+
+  taxExempt: false,
+
+  note: "",
+  tags: [],
+};
 
 const OrdersPage = () => {
-  const [selectedCountry, setSelectedCountry] = useState(countries[0].code);
-  const [language, setLanguage] = useState("English");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  const [customer, setCustomer] = useState<Customer>(defaultCustomer);
 
-  const handleLanguageChange = (e: any) => {
-    setLanguage(e.target.value);
+  const handleFieldChange = (field: string, value: string) => {
+    setCustomer((prevCustomer: any) => {
+      if (prevCustomer) {
+        return { ...prevCustomer, [field]: value };
+      }
+      return null;
+    });
   };
 
-  const handleCountryChange = (e: any) => {
-    setSelectedCountry(e.target.value);
+  const addTag = (tag: string) => {
+    setCustomer((prevCustomer: any) => {
+      if (prevCustomer) {
+        return { ...prevCustomer, tags: [...prevCustomer.tags, tag] };
+      }
+      return null;
+    });
   };
 
-  const handleEmailChange = (e: any) => {
-    setEmail(e.target.value);
-  };
-
-  const handlePhoneChange = (e: any) => {
-    setPhone(e.target.value);
-  };
   return (
     <div className="min-h-screen p-5">
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-2 mb-2">
-          <Link href="/orders">
+          <Link href="/customers">
             <FaArrowLeft className="text-sm text-neutral-800" />
           </Link>
-          <Heading>Create Order</Heading>
+          <Heading className="!pb-1">New Customer</Heading>
         </div>
 
+        <Title>Customer Overview</Title>
         <Card className="flex flex-col gap-4">
           <div className="flex gap-4">
             <Input label="First Name" id="firstName" placeholder="" />
             <Input label="Last Name" id="lastName" placeholder="" />
           </div>
 
-          <select value={language} onChange={handleLanguageChange}>
+          <select
+            value={customer?.language}
+            onChange={(e) => {
+              handleFieldChange("language", e.target.value);
+            }}
+            className="px-3 w-full border border-gray-200 rounded-lg py-1 text-sm outline outline-1 outline-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+          >
             <option value="English">English</option>
             {/* Add other language options if needed */}
           </select>
@@ -62,8 +99,10 @@ const OrdersPage = () => {
             label="Email"
             id="email"
             placeholder=""
-            value={email}
-            onChange={handleEmailChange}
+            value={customer?.email}
+            onChange={(e) => {
+              handleFieldChange("email", e.target.value);
+            }}
           />
 
           <div className="flex">
@@ -71,21 +110,25 @@ const OrdersPage = () => {
               label="Phone"
               id="phone"
               placeholder=""
-              value={phone}
-              onChange={handlePhoneChange}
+              value={customer?.phone}
+              onChange={(e) => {
+                handleFieldChange("phone", e.target.value);
+              }}
             />
 
-            <select
+            {/* <select
               className=""
-              value={selectedCountry}
-              onChange={handleCountryChange}
+              value={customer?.country}
+              onChange={(e) => {
+                handleFieldChange("country", e.target.value);
+              }}
             >
               {countries.map((country) => (
                 <option key={country.code} value={country.code}>
                   {country.name} ({country.code})
                 </option>
               ))}
-            </select>
+            </select> */}
           </div>
 
           <Checkbox
@@ -110,34 +153,114 @@ const OrdersPage = () => {
           </p>
         </Card>
 
-        <Card className="">
-          <div className="flex justify-between align-middle">
-            <SectionTitle title="Notes" />
-            <FaPencilAlt className="text-sm text-neutral-500" />
-          </div>
-
-          <div className="text-sm">No notes</div>
-        </Card>
-
-        <Card className="">
-          <div className="flex justify-between align-middle">
-            <SectionTitle title="Customer" />
-          </div>
-
-          <InputSearch placeholder="Search for a customer" />
-        </Card>
-
-        <Card className="">
-          <SectionTitle title="Customer" />
-          <p className="text-sm font-semibold text-neutral-700">
-            Primary Market
+        <div className="py-4">
+          <Title>Address</Title>
+          <p className="text-sm text-neutral-600">
+            The primary address of this customer
           </p>
-          <p className="text-xs">Kingdom of Saudi Arabia (SAR riyals)</p>
+        </div>
+        <Card className="flex flex-col gap-2">
+          <Select
+            label="Country/Region of origin"
+            options={countries}
+            onChange={(e) => {
+              handleFieldChange("country", e.target.value);
+            }}
+          />
+          <div className="flex gap-4">
+            <Input label="First Name" id="firstName" placeholder="" />
+            <Input label="Last Name" id="lastName" placeholder="" />
+          </div>
+          <Input label="Phone" id="phone" placeholder="" />
+          <Input label="Address" id="address" placeholder="" />
+          <Input label="Apartment, suite, etc." id="apartment" placeholder="" />
+
+          <div className="flex gap-4">
+            <Input label="City" id="city" placeholder="" />
+            <Input label="Postal Code" id="postalCode" placeholder="" />
+          </div>
+
+          <Input label="Company" id="company" placeholder="" />
+
+          <p className="text-xs text-neutral-600 pb-2 pt-4">
+            You can add multiple addresses for a customer. For example, you can
+            add a different shipping address for a customer.
+          </p>
         </Card>
 
-        <Card className="">
-          <SectionTitle title="Tags" />
-          <InputSearch placeholder="" />
+        <div className="py-4">
+          <Title>Tax Exemptions</Title>
+        </div>
+        <Card>
+          <Checkbox
+            id="taxExempt"
+            label="Collect Tax"
+            checked={customer?.taxExempt}
+            onChange={(e) => {
+              handleFieldChange("taxExempt", e.target.value);
+            }}
+          />
+        </Card>
+
+        <div className="py-4">
+          <Title>Notes</Title>
+          <p className="text-sm text-neutral-600">
+            Tags can be used to categorize customers into groups.
+          </p>
+        </div>
+        <Card>
+          <Input
+            label="Note"
+            id="note"
+            placeholder=""
+            value={customer?.note}
+            onChange={(e) => {
+              handleFieldChange("note", e.target.value);
+            }}
+          />
+        </Card>
+
+        <div className="py-4">
+          <Title>Tags</Title>
+          <p className="text-sm text-neutral-600">
+            Tags can be used to categorize customers into groups.
+          </p>
+        </div>
+        <Card>
+          <Input
+            id="tags"
+            label="Tags"
+            placeholder=""
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                console.log(e.currentTarget.value);
+                addTag(e.currentTarget.value);
+                console.log(customer);
+                e.currentTarget.value = "";
+              }
+            }}
+          />
+
+          <div className="flex gap-2">
+            {customer?.tags.map((tag) => (
+              <div
+                key={tag}
+                className="bg-slate-200 text-gray-900 px-2 py-1 rounded-md text-sm flex items-center gap-1"
+              >
+                {tag}
+                <button
+                  onClick={() =>
+                    setCustomer({
+                      ...customer,
+                      tags: customer?.tags.filter((t) => t !== tag),
+                    })
+                  }
+                >
+                  <IoIosClose size={20} />
+                </button>
+              </div>
+            ))}
+          </div>
         </Card>
       </div>
     </div>
