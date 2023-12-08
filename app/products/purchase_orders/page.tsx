@@ -120,6 +120,7 @@ export default function PurchaseOrdersPage() {
         contactName: 'ABC Suppliers',
         address: 'Supplier Address',
         phoneNumber: '123-456-7890',
+        name: 'Supplier Name',
       },
       costAdjustments: [
         { name: 'Discount', value: -5.0 },
@@ -192,6 +193,7 @@ export default function PurchaseOrdersPage() {
         contactName: 'XYZ Suppliers',
         address: 'Another Supplier Address',
         phoneNumber: '987-654-3210',
+        name: 'Another Supplier Name',
       },
       costAdjustments: [],
     }
