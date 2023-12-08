@@ -36,10 +36,10 @@ const ItemTile = ({ item, removeItem }: { item: any; removeItem: any }) => {
           type="number"
           value={quantity}
           onChange={(e: any) => setQuantity(e.target.value)}
-          className="border border-neutral-300 rounded-lg text-sm w-20"
+          className="border border-neutral-300 rounded-lg text-sm w-24"
         />
       </td>
-      <td className="pl-2">Rs. {item.price}</td>
+      <td className="pl-2">Rs. {item.price * quantity}</td>
       <td>
         <button
           className="hover:bg-neutral-100 rounded-md"
@@ -74,7 +74,7 @@ const OrdersPage = () => {
   };
 
   return (
-    <div className="min-h-screen p-5">
+    <div className="min-h-screen">
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-2 mb-2">
           <Link href="/orders">
@@ -83,8 +83,8 @@ const OrdersPage = () => {
           <Heading>Create Order</Heading>
         </div>
 
-        <Card className="p-0">
-          <div className="flex justify-between align-midde p-4 pb-0">
+        <Card className="!p-0">
+          <div className="flex px-4 pt-4 justify-between align-middle">
             <SectionTitle title="Order Information" />
 
             <AddCustomItem addItem={addItem} />
