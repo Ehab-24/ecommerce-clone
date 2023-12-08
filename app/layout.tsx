@@ -1,42 +1,30 @@
-import './globals.css'
-import type { Metadata } from 'next'
-import { Inter as FontSans } from 'next/font/google'
-import { Toaster } from 'react-hot-toast'
-import { cn } from "@/lib/utils"
-import Dashboard from '@/components/Dashboard'
-
-export const fontSans = FontSans({
-  subsets: ["latin"],
-  variable: "--font-sans",
-})
+import "./globals.css";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import { Toaster } from "react-hot-toast";
+import { cn } from "@/lib/utils";
+import Dashboard from "@/components/Dashboard";
 
 export const metadata: Metadata = {
-  title: 'Shopify',
-  description: 'Shopify NEXT App',
-}
+  title: "Shopify",
+  description: "Shopify NEXT App",
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="en">
-     <body
-        className={cn(
-          "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable
-        )}
-      >
+      <body className={cn("min-h-screen bg-background font-sans antialiased")}>
         {
           <>
             <Toaster />
-            <Dashboard>
-              {children}
-            </Dashboard>
+            <Dashboard>{children}</Dashboard>
           </>
         }
       </body>
     </html>
-  )
+  );
 }
