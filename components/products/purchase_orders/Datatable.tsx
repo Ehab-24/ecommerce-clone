@@ -1,15 +1,14 @@
+
 "use client"
 
-import { Product } from "@/types/product"
-import Checkbox from "../Checkbox"
-import Image from "next/image"
+import Checkbox from "@/components/Checkbox"
 import { useState } from "react"
-import StatusText from "./StatusText"
+import { PurchaseOrder } from "@/types/purchaseOrder"
+import StatusText from "../StatusText"
 
-export default function Datatable({ products }: { products: Product[] }) {
+export default function Datatable({ purchaseOrders }: { purchaseOrders: PurchaseOrder[] }) {
 
-  const [selectedProducts, setSelectedProducts] = useState<boolean[]>(new Array(products.length).fill(false))
-
+  const [selectedProducts, setSelectedProducts] = useState<boolean[]>(new Array(purchaseOrders.length).fill(false))
 
   return (
     <div className="relative overflow-x-auto overflow-y-scroll shadow-md sm:rounded-lg">
@@ -17,35 +16,35 @@ export default function Datatable({ products }: { products: Product[] }) {
         <thead className="text-[10px] text-gray-700 uppercase bg-gray-100 border-t-2 border-b-2 ">
           <tr>
             <th scope="col" className="p-4">
-              <Checkbox id="select-all-products" label="" checked={selectedProducts.every(e => e)} onChange={e => setSelectedProducts(new Array(products.length).fill(e.target.checked))} />
+              <Checkbox id="select-all-purchaseOrders" label="" checked={selectedProducts.every(e => e)} onChange={e => setSelectedProducts(new Array(purchaseOrders.length).fill(e.target.checked))} />
             </th>
             <th scope="col" className="px-6 py-3">
-              Product
+              Purchase Order
+            </th>
+            <th scope="col" className="px-6 py-3">
+              Supplier
+            </th>
+            <th scope="col" className="px-6 py-3">
+              Destination
             </th>
             <th scope="col" className="px-6 py-3">
               Status
             </th>
             <th scope="col" className="px-6 py-3">
-              Inventory
+              Recieved
             </th>
             <th scope="col" className="px-6 py-3">
-              Sales Channel
+              Total
             </th>
             <th scope="col" className="px-6 py-3">
-              Markets
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Category
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Vendor
+              Expected Arrival
             </th>
           </tr>
         </thead>
 
         <tbody className="text-xs">
           {
-            products.map((p, i) => (
+            purchaseOrders.map((p, i) => (
               <tr key={p._id} className="bg-white border-b hover:bg-gray-50 ">
                 <td className="w-4 p-4">
                   <Checkbox id={"select-" + p._id} checked={selectedProducts[i]} label="" onChange={e => {
@@ -55,35 +54,26 @@ export default function Datatable({ products }: { products: Product[] }) {
                   }} />
                 </td>
 
-                <th scope="row" className="px-6 flex gap-1 items-center xl:min-w-[240px] py-4 font-medium text-gray-900 whitespace-nowrap ">
-
-                  {
-                    p.media.length > 0 && (p.media.map((m, i) =>
-                      <div key={i} className=" aspect-square h-8 bg-gray-200 rounded-md overflow-hidden">
-                        <Image width="32" height="32" src={m.url} alt={m.altText} className="w-full h-full object-cover" />
-                      </div>
-                    ))
-                  }
-
-                  <p className="ml-4">{p.title}</p>
-                </th>
+                <td className="px-6 py-4">
+                  {p.referenceNumber}
+                </td>
+                <td className="px-6 py-4">
+                  {p.supplier.company}
+                </td>
+                <td className="px-6 py-4">
+                  {p.destination}
+                </td>
                 <td className="px-6 py-4">
                   <StatusText status={p.status} />
                 </td>
                 <td className="px-6 py-4">
-                  {p.quantity} in stock
+                  0 of 0
                 </td>
                 <td className="px-6 py-4">
-                  -
+                  {p.total}
                 </td>
                 <td className="px-6 py-4">
-                  -
-                </td>
-                <td className="px-6 py-4">
-                  {p.productCategory}
-                </td>
-                <td className="px-6 py-4">
-                  {p.vendor}
+                  {p.shipping.arrivalDate.toISOString().slice(0, 10)}
                 </td>
               </tr>
             ))
