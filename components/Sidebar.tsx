@@ -38,7 +38,7 @@ const ContentMenu: subMenu[] = [
 ];
 
 const productsMenu: subMenu[] = [
-  { label: "Collections", link: "products/collections" },
+  { label: "Collections", link: "/products/collections" },
   { label: "Inventory", link: "/products/inventory" },
   { label: "Categories", link: "/products/categories" },
   { label: "Purchase Orders", link: "/products/purchase-orders" },
@@ -94,11 +94,10 @@ const Sidebar: React.FC = () => {
           <div key={index}>
             <Link href={menuItem.link} passHref>
               <div
-                className={`flex items-center ${
-                  isCurrentPath(menuItem.link)
+                className={`flex items-center ${isCurrentPath(menuItem.link)
                     ? "bg-gray-200 text-gray-800"
                     : "hover:bg-gray-100 text-gray-600 hover:text-gray-800"
-                } text-sm font-semibold mx-3 py-[5px] px-2 rounded-md cursor-pointer`}
+                  } text-sm font-semibold mx-3 py-[5px] px-2 rounded-md cursor-pointer`}
                 onClick={() => handleBaseLinkClick(menuItem.link)}
               >
                 {React.createElement(menuItem.icon, { className: "mr-2.5" })}
@@ -110,11 +109,10 @@ const Sidebar: React.FC = () => {
                 {menuItem.subMenu.map((subMenuItem, subIndex) => (
                   <Link key={subIndex} href={subMenuItem.link} passHref>
                     <div
-                      className={`${
-                        isCurrentPath(subMenuItem.link)
+                      className={`${isCurrentPath(subMenuItem.link)
                           ? "bg-gray-200 text-gray-800"
                           : "hover:bg-gray-200 text-gray-600 hover:text-gray-800"
-                      } text-sm font-semibold py-[5px] pl-8 rounded-md cursor-pointer`}
+                        } text-sm font-semibold py-[5px] pl-8 rounded-md cursor-pointer`}
                     >
                       {subMenuItem.label}
                     </div>
