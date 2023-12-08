@@ -4,9 +4,10 @@ export default function Input({
   id,
   label,
   value,
-  placeholder,
+  placeholder = "",
   onChange,
   onKeyDown,
+  icon,
   type = "text",
   className = "",
 }: {
@@ -16,9 +17,13 @@ export default function Input({
   placeholder?: string;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
   onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
+  icon?: React.ReactNode;
   type?: React.HTMLInputTypeAttribute;
   className?: string;
 }) {
+
+  const [isFocus, setIsFocus] = React.useState(false)
+
   return (
     <div className="relative flex-1 text-sm">
       {label && (
