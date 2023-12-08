@@ -8,6 +8,15 @@ import { FaArrowLeft, FaPencilAlt } from "react-icons/fa";
 import Link from "next/link";
 import Heading from "@/components/Heading";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
 const OrdersPage = () => {
   return (
     <div className="min-h-screen p-5">
@@ -22,7 +31,20 @@ const OrdersPage = () => {
         <Section>
           <div className="flex justify-between align-middle">
             <SectionTitle title="Order Information" />
-            <span className="text-xs text-blue-600">Add Custom Item</span>
+
+            <Dialog>
+              <DialogTrigger>
+                <span className="text-xs text-blue-600">Add Custom Item</span>
+              </DialogTrigger>
+
+              <DialogTitle>Add Custom Item</DialogTitle>
+              <DialogContent>
+                <DialogDescription>
+                  Add a custom item to this order.
+                </DialogDescription>
+              </DialogContent>
+              
+            </Dialog>
           </div>
 
           <div className="flex justify-between gap-2">
