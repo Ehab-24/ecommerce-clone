@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import React from "react";
 import { AiOutlineBell, AiOutlineSearch } from "react-icons/ai";
@@ -7,7 +7,6 @@ import { IoMdClose, IoMdMenu } from "react-icons/io";
 import Sidebar from "./Sidebar";
 
 const ShopifyHeader = () => {
-
   const [open, setOpen] = React.useState(false);
 
   return (
@@ -28,17 +27,21 @@ const ShopifyHeader = () => {
           className="self-end"
         />
       </div>
-      <button onClick={() => setOpen(v => !v)}>
-        {open ? <IoMdClose className="text-2xl md:hidden" /> : <IoMdMenu className="text-2xl md:hidden" />}
+      <button onClick={() => setOpen((v) => !v)}>
+        {open ? (
+          <IoMdClose className="text-2xl md:hidden" />
+        ) : (
+          <IoMdMenu className="text-2xl md:hidden" />
+        )}
       </button>
 
       {/* Search */}
-      <div className="flex px-2 border text-sm border-neutral-400 hover:border-white items-center w-[500px] gap-2 rounded-lg bg-[#303030]">
+      <div className="flex px-2 border text-sm border-neutral-400 hover:border-white items-center md:w-[500px] w-[75%] gap-2 rounded-lg bg-[#303030]">
         <AiOutlineSearch className="text-neutral-400" />
         <input
           type="text"
           placeholder="Search"
-          className="w-[85%] py-[4px] placeholder-neutral-400 text-white bg-transparent focus:outline-none"
+          className="flex-1 py-[4px] placeholder-neutral-400 text-white bg-transparent focus:outline-none"
         />
         <span className="text-neutral-400">Ctrl K</span>
       </div>
@@ -48,13 +51,11 @@ const ShopifyHeader = () => {
         <AiOutlineBell className="text-2xl" />
       </div>
 
-      {
-        open && (
-          <div className="absolute h-screen w-full bg-black/20 z-50 top-12 left-0">
-            <Sidebar />
-          </div>
-        )
-      }
+      {open && (
+        <div className="absolute h-screen w-full bg-black/20 z-50 top-12 left-0">
+          <Sidebar />
+        </div>
+      )}
     </div>
   );
 };

@@ -1,38 +1,77 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
-import Input from "@/components/Input";
-import Section from "@/components/Section";
 import SectionTitle from "@/components/SectionTitle";
 import InputSearch from "@/components/InputSearch";
 import Heading from "@/components/Heading";
-import Checkbox from "@/components/Checkbox";
 
 import Link from "next/link";
 
-import { FaArrowLeft, FaPencilAlt } from "react-icons/fa";
+import { CustomItem } from "@/types/CustomItem";
+import { Product } from "@/types/product";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogClose,
-} from "@/components/ui/dialog";
+import { FaArrowLeft, FaPencilAlt } from "react-icons/fa";
+import AddCustomItem from "@/components/modals/orders/AddCustomItem";
+
+import { FaTrashCan } from "react-icons/fa6";
+import Input from "@/components/Input";
+import Card from "@/components/Card";
+import AddNotesModal from "@/components/modals/general/AddNotesModal";
+import CustomerPopover from "@/components/popovers/Customer";
+
+const ItemTile = ({ item, removeItem }: { item: any; removeItem: any }) => {
+  const [quantity, setQuantity] = useState(1);
+
+  const handleRemoveItem = () => {
+    removeItem(item);
+  };
+
+  return (
+    <tr className="text-sm text-neutral-700 border-t border-neutral-300">
+      <td className="pl-4 py-4">{item.name}</td>
+      <td>
+        <Input
+          id="quantity"
+          type="number"
+          value={quantity}
+          onChange={(e: any) => setQuantity(e.target.value)}
+          className="border border-neutral-300 rounded-lg text-sm w-20"
+        />
+      </td>
+      <td className="pl-2">Rs. {item.price}</td>
+      <td>
+        <button
+          className="hover:bg-neutral-100 rounded-md"
+          onClick={handleRemoveItem}
+        >
+          <FaTrashCan className="text-sm text-neutral-600" />
+        </button>
+      </td>
+    </tr>
+  );
+};
 
 const OrdersPage = () => {
-  const weightUnits: string[] = ["kg", "g", "lb", "oz"];
+  const [products, setProducts] = useState<Product[]>([]);
+  const [customItems, setCustomItems] = useState<CustomItem[]>([]);
+  const [notes, setNotes] = useState<string[]>([]);
 
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState("");
-  const [quantity, setQuantity] = useState(1);
-  const [taxable, setTaxable] = useState(false);
-  const [physical, setPhysical] = useState(false);
-  const [weight, setWeight] = useState(0);
-  const [weightUnit, setWeightUnit] = useState("kg");
+  const addItem = (item: CustomItem) => {
+    setCustomItems([...customItems, item]);
+  };
+
+  const removeItem = (item: CustomItem) => {
+    setCustomItems(customItems.filter((i) => i !== item));
+  };
+
+  const addNote = (note: string) => {
+    setNotes([...notes, note]);
+  };
+
+  const removeNote = (note: string) => {
+    setNotes(notes.filter((n) => n !== note));
+  };
 
   return (
     <div className="min-h-screen p-5">
@@ -44,148 +83,86 @@ const OrdersPage = () => {
           <Heading>Create Order</Heading>
         </div>
 
-        <Section>
-          <div className="flex justify-between align-middle">
+        <Card className="p-0">
+          <div className="flex justify-between align-midde p-4 pb-0">
             <SectionTitle title="Order Information" />
 
-            <Dialog>
-              <DialogTrigger className="">
-                <span className="text-xs align-top hover:underline hover:text-blue-800 text-blue-600">
-                  Add Custom Item
-                </span>
-              </DialogTrigger>
-
-              <DialogContent className="w-[100%]">
-                <DialogHeader>
-                  <DialogTitle>Add Custom Item</DialogTitle>
-                </DialogHeader>
-
-                <div className="flex flex-col gap-4 p-4">
-                  <div className="flex gap-2">
-                    <Input
-                      id="name"
-                      placeholder=""
-                      label="Name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      className="w-64"
-                    />
-
-                    <Input
-                      id="price"
-                      placeholder="0.00"
-                      label="Price"
-                      value={price}
-                      onChange={(e) => setPrice(e.target.value)}
-                      onKeyDown={(e) => {}}
-                      type="number"
-                    />
-
-                    <Input
-                      id="quantity"
-                      placeholder="1"
-                      label="Quantity"
-                      value={quantity}
-                      type="number"
-                      onChange={(e) => setQuantity(Number(e.target.value))}
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-2">
-                    <Checkbox
-                      id="taxable"
-                      label="Item is taxable"
-                      checked={taxable}
-                      onChange={(e) => setTaxable(e.target.checked)}
-                    />
-                    <Checkbox
-                      id="physical"
-                      label="Item is a physical product"
-                      checked={physical}
-                      onChange={(e) => setPhysical(e.target.checked)}
-                    />
-
-                    {physical && (
-                      <div className="flex gap-2 pt-4">
-                        <Input
-                          id="weight"
-                          placeholder=""
-                          label="Item weight (optional)"
-                          value={weight}
-                          onChange={(e) => setWeight(Number(e.target.value))}
-                          onKeyDown={(e) => {}}
-                          type="number"
-                        />
-                        <select
-                          className="border border-neutral-400 rounded-lg text-sm px-1 h-9 self-end"
-                          value={weightUnit}
-                          onChange={(e) => setWeightUnit(e.target.value)}
-                        >
-                          {weightUnits.map((unit) => (
-                            <option key={unit} value={unit}>
-                              {unit}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    )}
-                    <p className="text-sm text-neutral-600">
-                      Used to calculate shipping rates accurately
-                    </p>
-                  </div>
-                </div>
-
-                <DialogFooter>
-                  <DialogClose asChild>
-                    <button className="text-sm border border-neutral-900 shadow-lg p-1 px-2 rounded-lg">
-                      Cancel
-                    </button>
-                  </DialogClose>
-                  <button className="text-sm border border-neutral-900 bg-neutral-800 text-white shadow-lg p-1 px-2 rounded-lg">
-                    Add Item
-                  </button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
+            <AddCustomItem addItem={addItem} />
           </div>
 
-          <div className="flex justify-between gap-2">
+          <div className="flex justify-between gap-2 px-4 pb-4">
             <InputSearch placeholder="Search for a product" />
             <button className="hover:bg-neutral-100 text-sm shadow-sm border border-neutral-100 p-1 px-2 rounded-lg">
               Browse
             </button>
           </div>
-        </Section>
 
-        <Section>
+          {customItems && customItems.length > 0 && (
+            <table className="w-full">
+              <thead>
+                <tr className="text-sm text-neutral-500">
+                  <th className="text-left w-[60%] pl-4 pb-2">Product</th>
+                  <th className="text-left w-[25%]">Quantity</th>
+                  <th className="text-center w-[10%]">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {customItems.map((item, index) => (
+                  <ItemTile key={index} item={item} removeItem={removeItem} />
+                ))}
+              </tbody>
+            </table>
+          )}
+        </Card>
+
+        <Card>
           <div className="flex justify-between align-middle">
             <SectionTitle title="Notes" />
-            <FaPencilAlt className="text-sm text-neutral-500" />
+            <AddNotesModal addItem={addNote} />
           </div>
 
-          <div className="text-sm">No notes</div>
-        </Section>
+          {notes && notes.length > 0 ? (
+            <div className="flex flex-col gap-2 p-4">
+              {notes.map((note, index) => (
+                <div
+                  key={index}
+                  className="flex justify-between items-center gap-2"
+                >
+                  <p className="text-sm">{note}</p>
+                  <button
+                    className="hover:bg-neutral-100 rounded-md"
+                    onClick={() => removeNote(note)}
+                  >
+                    <FaTrashCan className="text-sm text-neutral-600" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-sm">No notes</div>
+          )}
+        </Card>
 
-        <Section>
+        <Card>
           <div className="flex justify-between align-middle">
             <SectionTitle title="Customer" />
           </div>
 
-          <InputSearch placeholder="Search for a customer" />
-        </Section>
+          <CustomerPopover />
+        </Card>
 
-        <Section>
+        <Card>
           <SectionTitle title="Customer" />
           <p className="text-sm font-semibold text-neutral-700">
             Primary Market
           </p>
           <p className="text-xs">Kingdom of Saudi Arabia (SAR riyals)</p>
-        </Section>
+        </Card>
 
-        <Section>
+        <Card>
           <SectionTitle title="Tags" />
-          <InputSearch placeholder="" />
-        </Section>
+          <Input id="tags" placeholder="" />
+        </Card>
       </div>
     </div>
   );
