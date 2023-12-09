@@ -17,25 +17,15 @@ import { Supplier } from "@/types/supplier";
 
 export default function SupplierDialog({
   text,
+  heading,
+  supplier,
   onSave,
 }: {
   text: string;
+  heading: string;
+  supplier: Supplier;
   onSave: (supplier: Supplier) => void;
 }) {
-  const [supplier, setSupplier] = React.useState<Supplier>({
-    _id: "",
-    name: "",
-    company: "",
-    address: "",
-    apartment: "",
-    city: "",
-    country: "",
-    contactName: "",
-    email: "",
-    phoneNumber: "",
-    postalCode: "",
-  });
-
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -43,10 +33,10 @@ export default function SupplierDialog({
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create Supplier</DialogTitle>
+          <DialogTitle>{heading}</DialogTitle>
         </DialogHeader>
 
-        <div className=" flex flex-col gap-6 mb-4">
+        <div className=" flex flex-col px-4 gap-6 my-4">
           <Input
             id="supplier-company"
             label="Company"

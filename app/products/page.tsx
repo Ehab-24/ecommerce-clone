@@ -64,8 +64,12 @@ export default function ProductsPage() {
       productCategory: "Appliances",
       productType: "Coffee Maker",
       vendor: "Vendor C",
-      collections: "Kitchen Essentials",
+      collection: "Kitchen Essentials",
       tags: ["Kitchen", "Coffee", "Appliances"],
+      seo: {
+        title: "Coffee Maker",
+        description: "Modern coffee maker with multiple brewing options",
+      },
       media: [
         {
           url: 'https://loremflickr.com/cache/resized/65535_52933847621_1b59865752_320_280_nofilter.jpg',
@@ -81,6 +85,7 @@ export default function ProductsPage() {
       createdAt: new Date(),
       updatedAt: new Date()
     },
+
     {
       title: "Yoga Mat",
       description: "Eco-friendly yoga mat for comfortable workouts",
@@ -104,8 +109,12 @@ export default function ProductsPage() {
       productCategory: "Fitness",
       productType: "Yoga Mat",
       vendor: "Vendor D",
-      collections: "Fitness Gear",
+      collection: "Fitness Gear",
       tags: ["Yoga", "Fitness", "Health"],
+      seo: {
+        title: "Yoga Mat",
+        description: "Eco-friendly yoga mat for comfortable workouts",
+      },
       media: [
         {
           url: 'https://loremflickr.com/cache/resized/65535_52933847621_1b59865752_320_280_nofilter.jpg',
@@ -121,6 +130,7 @@ export default function ProductsPage() {
       createdAt: new Date(),
       updatedAt: new Date()
     },
+
     {
       title: "Desk Lamp",
       description: "Adjustable LED desk lamp for study or work",
@@ -144,8 +154,12 @@ export default function ProductsPage() {
       productCategory: "Home & Office",
       productType: "Desk Lamp",
       vendor: "Vendor E",
-      collections: "Home Essentials",
+      collection: "Home Essentials",
       tags: ["Home", "Office", "Lighting"],
+      seo: {
+        title: "Desk Lamp",
+        description: "Adjustable LED desk lamp for study or work",
+      },
       media: [
         {
           url: 'https://loremflickr.com/cache/resized/65535_52552903348_288981b690_320_280_nofilter.jpg',
@@ -156,6 +170,7 @@ export default function ProductsPage() {
       createdAt: new Date(),
       updatedAt: new Date()
     },
+
     {
       title: "T-shirt",
       description: "A comfortable cotton t-shirt",
@@ -179,8 +194,12 @@ export default function ProductsPage() {
       productCategory: "Clothing",
       productType: "T-shirt",
       vendor: "Vendor X",
-      collections: "Summer Collection",
+      collection: "Summer Collection",
       tags: ["Men", "Cotton", "Casual"],
+      seo: {
+        title: "T-shirt",
+        description: "A comfortable cotton t-shirt",
+      },
       media: [
         {
           url: 'https://loremflickr.com/cache/resized/65535_52933847621_1b59865752_320_280_nofilter.jpg',
@@ -196,6 +215,7 @@ export default function ProductsPage() {
       createdAt: new Date(),
       updatedAt: new Date()
     },
+
     {
       title: "Running Shoes",
       description: "High-performance running shoes for athletes",
@@ -219,8 +239,12 @@ export default function ProductsPage() {
       productCategory: "Footwear",
       productType: "Running Shoes",
       vendor: "Vendor Z",
-      collections: "Athletic Gear",
+      collection: "Athletic Gear",
       tags: ["Sports", "Running", "Athletic"],
+      seo: {
+        title: "Running Shoes",
+        description: "High-performance running shoes for athletes",
+      },
       media: [
         {
           url: 'https://loremflickr.com/cache/resized/65535_52933847621_1b59865752_320_280_nofilter.jpg',
@@ -236,6 +260,7 @@ export default function ProductsPage() {
       createdAt: new Date(),
       updatedAt: new Date()
     },
+
     {
       title: "Leather Wallet",
       description: "Handcrafted genuine leather wallet",
@@ -259,8 +284,12 @@ export default function ProductsPage() {
       productCategory: "Accessories",
       productType: "Wallet",
       vendor: "Vendor A",
-      collections: "Leather Goods",
+      collection: "Leather Goods",
       tags: ["Fashion", "Leather", "Accessories"],
+      seo: {
+        title: "Leather Wallet",
+        description: "Handcrafted genuine leather wallet",
+      },
       media: [
         {
           url: 'https://loremflickr.com/cache/resized/65535_52933847621_1b59865752_320_280_nofilter.jpg',
@@ -276,6 +305,7 @@ export default function ProductsPage() {
       createdAt: new Date(),
       updatedAt: new Date()
     },
+
     {
       title: "Gaming Laptop",
       description: "High-performance laptop for gaming enthusiasts",
@@ -299,8 +329,12 @@ export default function ProductsPage() {
       productCategory: "Electronics",
       productType: "Laptop",
       vendor: "Vendor B",
-      collections: "Gaming Essentials",
+      collection: "Gaming Essentials",
       tags: ["Gaming", "Laptop", "Tech"],
+      seo: {
+        title: "Gaming Laptop",
+        description: "High-performance laptop for gaming enthusiasts",
+      },
       media: [
         {
           url: 'https://loremflickr.com/cache/resized/65535_53113720087_74e1377b87_320_280_nofilter.jpg',
@@ -321,6 +355,7 @@ export default function ProductsPage() {
       createdAt: new Date(),
       updatedAt: new Date()
     },
+
     {
       title: "Smartphone",
       description: "A powerful smartphone with great features",
@@ -344,8 +379,12 @@ export default function ProductsPage() {
       productCategory: "Electronics",
       productType: "Smartphone",
       vendor: "Vendor Y",
-      collections: "Tech Gadgets",
+      collection: "Tech Gadgets",
       tags: ["Tech", "Mobile", "Android"],
+      seo: {
+        title: "Smartphone",
+        description: "A powerful smartphone with great features",
+      },
       media: [
         {
           url: 'https://loremflickr.com/cache/resized/65535_52552903348_288981b690_320_280_nofilter.jpg',
@@ -355,7 +394,8 @@ export default function ProductsPage() {
       ],
       createdAt: new Date(),
       updatedAt: new Date()
-    }]
+    }
+  ]
 
   return (
     <div className="bg-gray-100 min-h-screen p-8">

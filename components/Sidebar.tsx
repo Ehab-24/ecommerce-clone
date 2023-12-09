@@ -40,7 +40,6 @@ const ContentMenu: subMenu[] = [
 const productsMenu: subMenu[] = [
   { label: "Collections", link: "/products/collections" },
   { label: "Inventory", link: "/products/inventory" },
-  { label: "Categories", link: "/products/categories" },
   { label: "Purchase Orders", link: "/products/purchase_orders" },
   { label: "Transfers", link: "/products/transfers" },
   { label: "Gift Cards", link: "/products/gift_cards" },

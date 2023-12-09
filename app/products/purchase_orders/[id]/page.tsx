@@ -1,5 +1,12 @@
 'use client'
 
+import { Button } from "@/components/ui/button"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+
 import Card from "@/components/Card";
 import React from "react";
 import Input from "@/components/Input";
@@ -12,20 +19,21 @@ import DatePicker from "@/components/DatePicker";
 import OutlinedButton from "@/components/buttons/OutlinedButtonSmall";
 import AdjustmentsDialog from "@/components/products/purchase_orders/AdjustmentsDialog";
 import TitleMini from "@/components/TitleMini";
-import { Adjustment } from "@/types/adjustment";
-import SupplierDialog from "@/components/products/purchase_orders/SupplierDialog";
-import { PurchaseOrder } from "@/types/purchaseOrder";
+import SupplierDialog from "@/components/products/purchase_orders/SupplierDialog"
 import { Supplier } from "@/types/supplier";
-
-
+import { AdjustmentName, PurchaseOrder } from "@/types/purchaseOrder";
+import StatusText from "@/components/products/StatusText";
+import Text from "@/components/Text";
+import Datatable from "@/components/products/Datatable";
+import OutlinedButtonSmall from "@/components/buttons/OutlinedButtonSmall";
+import FilledButtonSmall from "@/components/buttons/FilledButtonSmall";
 
 export default function CreatePurchaseOrderPage() {
 
-  const suppliers: Supplier[] = []
-
   const [purchaseOrder, setPurchaseOrder] = React.useState<PurchaseOrder>({
     _id: '2',
-    destination: 'Another Destination',
+    currency: 'USD',
+    destination: 'destination2',
     status: 'received',
     shipping: {
       arrivalDate: new Date('2023-12-20'),
@@ -39,11 +47,13 @@ export default function CreatePurchaseOrderPage() {
         price: 29.99,
         compareAtPrice: 39.99,
         chargeTaxes: true,
+        tax: 7.00,
+        taxRate: 10,
         costPerItem: 15.0,
         profit: 14.99,
         margin: 50,
         trackQuantity: true,
-        quantity: 60,
+        quantity: 6,
         continueSellingWhenOutOfStock: false,
         hasSku: true,
         sku: "YM001",
@@ -95,16 +105,38 @@ export default function CreatePurchaseOrderPage() {
       phoneNumber: '987-654-3210',
     },
     costAdjustments: [],
+    paymentTerms: "NET30",
   })
+
+  function getTotalTax() {
+    return purchaseOrder.products.reduce((acc, product) => acc + product.tax, 0);
+  }
 
   return (
     <div className=" w-full bg-gray-100 items-center flex flex-col">
       <div className="flex-col max-w-4xl w-full flex gap-6 p-8 ">
-        <div className="flex gap-3 items-center ">
-          <Link href="/products/purchase_orders" className="p-2 rounded-md hover:bg-black/10 transition-all">
-            <FaArrowLeft className="text-sm text-[#1a1a1a]" />
-          </Link>
-          <h1 className="text-xl font-bold text-[#1a1a1a]">Create Purchase Order</h1>
+        <div className="flex justify-between items-center ">
+          <div className="flex gap-4 items-center">
+            <Link href="/products/purchase_orders" className="p-2 rounded-md hover:bg-black/10 transition-all">
+              <FaArrowLeft className="text-sm text-[#1a1a1a]" />
+            </Link>
+            <h1 className="text-xl font-bold text-neutral-800 flex gap-2 items-center">
+              #{purchaseOrder.referenceNumber}
+              <StatusText status={purchaseOrder.status} />
+            </h1>
+          </div>
+
+          <div className="flex gap-4">
+            <OutlinedButtonSmall onClick={() => { }}>
+              Delete
+            </OutlinedButtonSmall>
+            <OutlinedButtonSmall onClick={() => { }}>
+              Duplicate
+            </OutlinedButtonSmall>
+            <FilledButtonSmall onClick={() => { }}>
+              Mark as Ordered
+            </FilledButtonSmall>
+          </div>
         </div>
 
         <Card className="flex flex-col items-center justify-center p-4">
@@ -112,12 +144,14 @@ export default function CreatePurchaseOrderPage() {
             <div className="w-full h-full flex flex-col items-start gap-4">
               <SectionTitle title="Supplier" />
               {
-                suppliers.length > 0 ?
-                  <Select label="Select Supplier" onChange={() => { }} options={[
-                    { label: "Supplier 1", value: "supplier1" },
-                    { label: "Supplier 2", value: "supplier2" },
-                    { label: "Supplier 3", value: "supplier3" },
-                  ]} />
+                purchaseOrder.supplier ?
+                  <div className="flex flex-col w-full items-start gap-2">
+                    <h3 className="text-xl text-gray-900 font-bold">{purchaseOrder.supplier.company}</h3>
+                    <div className="w-full flex justify-between">
+                      <Text>{purchaseOrder.supplier.address}, {purchaseOrder.supplier.city}</Text>
+                      <SupplierPopover supplier={purchaseOrder.supplier} />
+                    </div>
+                  </div>
                   :
                   <SupplierDialog text="Create Supplier" heading="Create Supplier" supplier={purchaseOrder.supplier} onSave={s => setPurchaseOrder({ ...purchaseOrder, supplier: s })} />
               }
@@ -125,7 +159,7 @@ export default function CreatePurchaseOrderPage() {
 
             <div className="w-full h-full flex flex-col gap-4">
               <SectionTitle title="Destination" />
-              <Select label="Select Destination" onChange={() => { }} options={[
+              <Select label="Select Destination" value={purchaseOrder.destination} onChange={() => { }} options={[
                 { label: "Destination 1", value: "destination1" },
                 { label: "Destination 2", value: "destination2" },
                 { label: "Destination 3", value: "destination3" },
@@ -134,7 +168,7 @@ export default function CreatePurchaseOrderPage() {
           </div>
 
           <div className="w-full flex justify-between gap-4 mt-8">
-            <Select label="Payment Terms (optional)" onChange={() => { }} options={[
+            <Select label="Payment Terms (optional)" value={purchaseOrder.paymentTerms} onChange={() => { }} options={[
               { "label": "None", "value": "" },
               { "label": "Cash on delivery", "value": "COD" },
               { "label": "Payment on receipt", "value": "ON_RECEIPT" },
@@ -147,7 +181,7 @@ export default function CreatePurchaseOrderPage() {
             ]} />
 
 
-            <Select label="Supplier Currency" onChange={() => { }} options={currencies} />
+            <Select label="Supplier Currency" value={purchaseOrder.currency} onChange={() => { }} options={currencies} />
           </div>
 
         </Card>
@@ -156,25 +190,27 @@ export default function CreatePurchaseOrderPage() {
           <SectionTitle title="Shipping Details" />
           <div className="mt-4 items-end flex gap-4">
             <DatePicker />
-            <Input id="" label="Shipping carrier" placeholder="" />
-            <Input id="" label="Tracking number" placeholder="" />
+            <Input id="" value={purchaseOrder.shipping.carrier} label="Shipping carrier" onChange={e => setPurchaseOrder({ ...purchaseOrder, shipping: { ...purchaseOrder.shipping, carrier: e.target.value } })} />
+            <Input id="" value={purchaseOrder.shipping.trackingNumber} onChange={e => setPurchaseOrder({ ...purchaseOrder, shipping: { ...purchaseOrder.shipping, trackingNumber: e.target.value } })} label="Tracking number" placeholder="" />
           </div>
         </Card>
 
         <Card className="p-4">
           <SectionTitle title="Add Products" />
-          <div className=" w-full flex gap-4">
+          <div className=" w-full flex gap-4 mb-8">
             <Input icon={<IoIosSearch />} id="add-products" label="" placeholder="Search products" />
             <OutlinedButton onClick={() => { }}>
               Browse
             </OutlinedButton>
           </div>
+
+          <Datatable products={purchaseOrder.products} />
         </Card>
 
         <div className=" flex w-full gap-6">
           <Card className="p-4 w-1/2 max-w-[50%] flex gap-4 flex-col">
             <SectionTitle title="Additional details" />
-            <AdditionalDetails />
+            <AdditionalDetails purchaseOrder={purchaseOrder} setPurchaseOrder={setPurchaseOrder} />
           </Card>
 
           <Card className="p-4 w-1/2 h-max">
@@ -185,26 +221,21 @@ export default function CreatePurchaseOrderPage() {
 
             <div className="flex items-center justify-between w-full">
               <p className="text-xs mb-2 text-neutral-800">Taxes (included)</p>
-              <p className="text-xs text-neutral-800" >$ 0.00</p>
+              <p className="text-xs text-neutral-800" >$ {getTotalTax()}</p>
             </div>
 
             <div className="flex items-center justify-between w-full">
               <TitleMini text="Subtotal" />
               <p className="text-xs whitespace-nowrap text-neutral-800" >$ 0.00</p>
             </div>
-            <p className="text-xs text-neutral-800" >0 items</p>
+            <Text className="text-neutral-500 mb-4">{purchaseOrder.products.reduce((acc, p) => acc + p.quantity, 0)} items</Text>
 
             <TitleMini text="Cost adjustments" />
-            <CostAdjustments adjustments={[
-              { name: "Shipping", value: 0 },
-              { name: "Discount", value: 0 },
-              { name: "Credit", value: 0 },
-              { name: "Other", value: 0 },
-            ]} />
+            <CostAdjustments adjustments={purchaseOrder.costAdjustments} />
 
             <div className="flex justify-between items-center w-full mt-4">
               <h3 className="text-xs font-bold mb-2 text-neutral-800">Total</h3>
-              <p className="text-xs text-neutral-800" >$ 0.00</p>
+              <p className="text-xs text-neutral-800" >$ {purchaseOrder.products.reduce((acc, p) => acc + p.price + p.tax, 0).toFixed(2)}</p>
             </div>
           </Card>
         </div>
@@ -214,7 +245,10 @@ export default function CreatePurchaseOrderPage() {
 }
 
 
-function CostAdjustments({ adjustments }: { adjustments: Adjustment[] }) {
+function CostAdjustments({ adjustments }: { adjustments: { name: AdjustmentName, value: number }[] }) {
+  if (adjustments.length === 0) {
+    return <Text>None</Text>
+  }
   return (
     <>
       {adjustments.map(a => (
@@ -227,29 +261,26 @@ function CostAdjustments({ adjustments }: { adjustments: Adjustment[] }) {
   )
 }
 
-function AdditionalDetails() {
-
-  const [tags, setTags] = React.useState<string[]>([])
+function AdditionalDetails({ purchaseOrder, setPurchaseOrder }: { purchaseOrder: PurchaseOrder, setPurchaseOrder: React.Dispatch<React.SetStateAction<PurchaseOrder>> }) {
 
   return (
     <>
+      <Input id="reference-number" value={purchaseOrder.referenceNumber} label="Reference number" onChange={e => setPurchaseOrder({ ...purchaseOrder, referenceNumber: e.target.value })} />
+      <Input id="note-to-supplier" value={purchaseOrder.noteToSupplier} label="Note to supplier" onChange={e => setPurchaseOrder({ ...purchaseOrder, noteToSupplier: e.target.value })} />
 
-      <Input id="reference-number" label="Reference number" placeholder="" />
-      <Input id="note-to-supplier" label="Note to supplier" placeholder="" />
       <Input
         id="tags"
         label="Tags"
-        placeholder=""
         onKeyDown={(e) => {
           const value = e.currentTarget.value;
           if (e.key === "Enter" && value !== "") {
-            setTags([...tags, value]);
+            setPurchaseOrder({ ...purchaseOrder, tags: [...purchaseOrder.tags, value] })
             e.currentTarget.value = "";
           }
         }}
       />
       <div className="flex gap-2">
-        {tags.map((tag) => (
+        {purchaseOrder.tags.map((tag) => (
           <div
             key={tag}
             className="bg-slate-200 w-min whitespace-nowrap text-gray-900 px-2 py-1 rounded-md text-sm flex items-center gap-1"
@@ -257,7 +288,7 @@ function AdditionalDetails() {
             {tag}{" "}
             <button
               onClick={() =>
-                setTags(tags.filter((t) => t !== tag))
+                setPurchaseOrder({ ...purchaseOrder, tags: purchaseOrder.tags.filter((t) => t !== tag) })
               }
             >
               <IoIosClose size={20} />
@@ -269,6 +300,35 @@ function AdditionalDetails() {
     </>
   )
 }
+
+function SupplierPopover({ supplier }: { supplier: Supplier }) {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button size="sm" variant="link" className="text-xs text-blue-700">
+          View Supplier
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-80 flex flex-col gap-1 items-start">
+
+        <Text className="font-bold text-gray-900">Address</Text>
+        <Text className="text-gray-900 mt-1">{supplier.address}</Text>
+        <Text className="text-gray-900">{supplier.apartment}</Text>
+        <Text className="text-gray-900">{supplier.city} {supplier.postalCode}</Text>
+        <Text className="text-gray-900">{supplier.country}</Text>
+
+        <Text className="font-bold text-gray-900 mt-3">Contact</Text>
+        <Text className="text-gray-900 mt-1">{supplier.contactName}</Text>
+        <Text className="text-gray-900">{supplier.email}</Text>
+        <Text className="text-gray-900 mb-3">{supplier.phoneNumber}</Text>
+
+        <SupplierDialog text="Edit Supplier" heading="Edit Supplier" supplier={supplier} onSave={s => { }} />
+
+      </PopoverContent>
+    </Popover >
+  )
+}
+
 
 const currencies = [
   { "label": "Select", "value": "", "disabled": true },

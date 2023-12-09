@@ -1,11 +1,9 @@
 import React from "react";
 import Card from "@/components/Card";
 import Heading from "@/components/Heading";
-import Link from "next/link";
 import Image from "next/image";
 import Title from "@/components/Title";
 import Text from "@/components/Text";
-import FilledButton from "@/components/buttons/FilledButton";
 import Datatable from "@/components/products/purchase_orders/Datatable";
 import { PurchaseOrder } from "@/types/purchaseOrder";
 import LinkMini from "@/components/LinkMini";
@@ -16,6 +14,7 @@ export default function PurchaseOrdersPage() {
   const purchaseOrders: PurchaseOrder[] = [
     {
       _id: '1',
+      currency: 'USD',
       destination: 'Some Destination',
       paymentTerms: 'Net 30',
       status: 'ordered',
@@ -31,6 +30,8 @@ export default function PurchaseOrdersPage() {
           price: 79.99,
           compareAtPrice: 99.99,
           chargeTaxes: true,
+          tax: 0.0,
+          taxRate: 0.0,
           costPerItem: 50.0,
           profit: 29.99,
           margin: 37,
@@ -48,8 +49,12 @@ export default function PurchaseOrdersPage() {
           productCategory: "Appliances",
           productType: "Coffee Maker",
           vendor: "Vendor C",
-          collections: "Kitchen Essentials",
+          collection: "Kitchen Essentials",
           tags: ["Kitchen", "Coffee", "Appliances"],
+          seo: {
+            title: 'Coffee Maker',
+            description: 'Modern coffee maker with multiple brewing options',
+          },
           media: [
             {
               url: 'https://loremflickr.com/cache/resized/65535_52933847621_1b59865752_320_280_nofilter.jpg',
@@ -71,6 +76,8 @@ export default function PurchaseOrdersPage() {
           price: 29.99,
           compareAtPrice: 39.99,
           chargeTaxes: true,
+          tax: 0.0,
+          taxRate: 0.0,
           costPerItem: 15.0,
           profit: 14.99,
           margin: 50,
@@ -88,8 +95,12 @@ export default function PurchaseOrdersPage() {
           productCategory: "Fitness",
           productType: "Yoga Mat",
           vendor: "Vendor D",
-          collections: "Fitness Gear",
+          collection: "Fitness Gear",
           tags: ["Yoga", "Fitness", "Health"],
+          seo: {
+            title: 'Yoga Mat',
+            description: 'Eco-friendly yoga mat for comfortable workouts',
+          },
           media: [
             {
               url: 'https://loremflickr.com/cache/resized/65535_52933847621_1b59865752_320_280_nofilter.jpg',
@@ -124,13 +135,14 @@ export default function PurchaseOrdersPage() {
       },
       costAdjustments: [
         { name: 'Discount', value: -5.0 },
-        { name: 'Tax', value: 6.98 },
+        { name: 'Shipping', value: 6.98 },
       ],
     },
     {
       _id: '2',
       destination: 'Another Destination',
       status: 'received',
+      currency: 'USD',
       shipping: {
         arrivalDate: new Date('2023-12-20'),
         carrier: 'Another Carrier',
@@ -143,6 +155,8 @@ export default function PurchaseOrdersPage() {
           price: 29.99,
           compareAtPrice: 39.99,
           chargeTaxes: true,
+          tax: 3.0,
+          taxRate: 10,
           costPerItem: 15.0,
           profit: 14.99,
           margin: 50,
@@ -160,8 +174,12 @@ export default function PurchaseOrdersPage() {
           productCategory: "Fitness",
           productType: "Yoga Mat",
           vendor: "Vendor D",
-          collections: "Fitness Gear",
+          collection: "Fitness Gear",
           tags: ["Yoga", "Fitness", "Health"],
+          seo: {
+            title: 'Yoga Mat',
+            description: 'Eco-friendly yoga mat for comfortable workouts',
+          },
           media: [
             {
               url: 'https://loremflickr.com/cache/resized/65535_52933847621_1b59865752_320_280_nofilter.jpg',

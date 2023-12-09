@@ -6,9 +6,11 @@ import Checkbox from "@/components/Checkbox"
 import { useState } from "react"
 import StatusText from "../StatusText"
 import { GiftCard } from "@/types/giftCard"
+import { useRouter } from "next/navigation"
 
 export default function Datatable({ giftCards }: { giftCards: GiftCard[] }) {
 
+  const router = useRouter()
   const [selectedProducts, setSelectedProducts] = useState<boolean[]>(new Array(giftCards.length).fill(false))
 
   return (
@@ -45,36 +47,37 @@ export default function Datatable({ giftCards }: { giftCards: GiftCard[] }) {
 
         <tbody className="text-xs">
           {
-            giftCards.map((p, i) => (
-              <tr key={p._id} className="bg-white border-b hover:bg-gray-50 ">
+            giftCards.map((gc, i) => (
+              <tr key={gc._id} className="bg-white border-b hover:bg-gray-50 ">
                 <td className="w-4 p-4">
-                  <Checkbox id={"select-" + p._id} checked={selectedProducts[i]} label="" onChange={e => {
+                  <Checkbox id={"select-" + gc._id} checked={selectedProducts[i]} label="" onChange={e => {
                     const newSelectProducts = [...selectedProducts]
                     newSelectProducts[i] = e.target.checked
                     setSelectedProducts(newSelectProducts)
                   }} />
                 </td>
 
+                <th scope="row" onClick={() => router.push(`/products/gift_cards/${gc._id}`)} className="px-6 flex gap-1 items-center xl:min-w-[240px] py-4 font-medium text-gray-900 whitespace-nowrap cursor-pointer">
+                  {gc.code.substring(gc.code.length - 4)}
+                </th>
+
                 <td className="px-6 py-4">
-                  {p.code.substring(p.code.length - 4)}
+                  <StatusText status={gc.status} />
                 </td>
                 <td className="px-6 py-4">
-                  <StatusText status={p.status} />
-                </td>
-                <td className="px-6 py-4">
-                  {p.customer}
+                  {gc.customer}
                 </td>
                 <td className="px-6 py-4">
                   No Recipient
                 </td>
                 <td className="px-6 py-4">
-                  {p.createdAt.toISOString().slice(0, 10)}
+                  {gc.createdAt.toISOString().slice(0, 10)}
                 </td>
                 <td className="px-6 py-4">
-                  {p.expiresAt?.toISOString().slice(0, 10) ?? "--"}
+                  {gc.expiresAt?.toISOString().slice(0, 10) ?? "--"}
                 </td>
                 <td className="px-6 py-4">
-                  $ {p.initialValue}
+                  $ {gc.initialValue}
                 </td>
               </tr>
             ))

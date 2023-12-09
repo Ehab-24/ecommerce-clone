@@ -5,9 +5,11 @@ import Checkbox from "@/components/Checkbox"
 import { useState } from "react"
 import { PurchaseOrder } from "@/types/purchaseOrder"
 import StatusText from "../StatusText"
+import { useRouter } from "next/navigation"
 
 export default function Datatable({ purchaseOrders }: { purchaseOrders: PurchaseOrder[] }) {
 
+  const router = useRouter()
   const [selectedProducts, setSelectedProducts] = useState<boolean[]>(new Array(purchaseOrders.length).fill(false))
 
   return (
@@ -45,7 +47,7 @@ export default function Datatable({ purchaseOrders }: { purchaseOrders: Purchase
         <tbody className="text-xs">
           {
             purchaseOrders.map((p, i) => (
-              <tr key={p._id} className="bg-white border-b hover:bg-gray-50 ">
+              <tr key={p._id} onClick={() => router.push(`/products/purchase_orders/${p._id}`)} className="bg-white border-b hover:bg-gray-50 cursor-pointer ">
                 <td className="w-4 p-4">
                   <Checkbox id={"select-" + p._id} checked={selectedProducts[i]} label="" onChange={e => {
                     const newSelectProducts = [...selectedProducts]

@@ -1,8 +1,7 @@
 "use client";
 
-import Heading from "@/components/Heading";
 import { ZodError } from "zod";
-import { ProductSchema, Product } from "@/types/product";
+import { Product } from "@/types/product";
 import Link from "next/link";
 import Card from "@/components/Card";
 import Checkbox from "@/components/Checkbox";
@@ -16,39 +15,49 @@ import { IoIosClose } from "react-icons/io";
 import { FaArrowLeft } from "react-icons/fa";
 import SectionTitle from "@/components/SectionTitle";
 import countries from "@/data/countries";
+import Heading from "@/components/Heading";
+
 
 export default function NewProductPage() {
-  const defaultProduct: Product = {
-    title: "",
-    description: "",
-    price: 0,
-    compareAtPrice: 0,
-    chargeTaxes: false,
-    costPerItem: 0,
-    profit: 0,
-    margin: 0,
-    trackQuantity: false,
-    quantity: 0,
+  const [product, setProduct] = React.useState<Product>({
+    title: "Smartphone",
+    description: "A powerful smartphone with great features",
+    price: 699.99,
+    compareAtPrice: 799.99,
+    chargeTaxes: true,
+    costPerItem: 450,
+    profit: 249.99,
+    margin: 36,
+    trackQuantity: true,
+    quantity: 100,
     continueSellingWhenOutOfStock: false,
-    hasSku: false,
+    hasSku: true,
+    sku: "SP001",
+    barcode: "987654321",
     isPhysicalProduct: true,
-    weight: 0,
+    weight: 0.2,
     weightUnit: "kg",
-    countryOfOrigin: "",
+    countryOfOrigin: "China",
     status: "active",
-    productCategory: "",
-    productType: "",
-    vendor: "",
-    collection: "",
-    media: [] as any,
+    productCategory: "Electronics",
+    productType: "Smartphone",
+    vendor: "Vendor Y",
+    collection: "Tech Gadgets",
+    tags: ["Tech", "Mobile", "Android"],
+    media: [
+      {
+        url: 'https://loremflickr.com/cache/resized/65535_52552903348_288981b690_320_280_nofilter.jpg',
+        altText: 'Coffee Maker',
+        type: 'image'
+      }
+    ],
     seo: {
-      title: "",
-      description: "",
+      title: "Smartphone",
+      description: "A powerful smartphone with great features",
     },
-    tags: [] as string[],
-  };
-
-  const [product, setProduct] = React.useState<Product>(defaultProduct);
+    createdAt: new Date(),
+    updatedAt: new Date()
+  });
 
   useEffect(() => {
     if (product.price !== 0 && product.costPerItem !== 0) {
@@ -64,21 +73,14 @@ export default function NewProductPage() {
   }, [product.price, product.costPerItem]);
 
   async function handleSave() {
-    try {
-      const result = ProductSchema.parse(product);
-      const resp = await fetch(`/api/products`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(result),
-      });
+    try { } catch (error) {
+      console.log(product.description);
+      toast.error((error as ZodError).errors[0].message);
+    }
+  }
 
-      if (resp.status === 201) {
-        toast.success("Product created successfully");
-        setProduct(defaultProduct);
-      }
-    } catch (error) {
+  async function handleDelete() {
+    try { } catch (error) {
       console.log(product.description);
       toast.error((error as ZodError).errors[0].message);
     }
@@ -91,7 +93,7 @@ export default function NewProductPage() {
           <Link href="/products" className="p-2 rounded-md hover:bg-black/10 transition-all">
             <FaArrowLeft className="text-sm text-[#1a1a1a]" />
           </Link>
-          <Heading>Add Product</Heading>
+          <Heading>{product.title}</Heading>
         </div>
 
         <div className="w-full flex flex-col 2xl:flex-row justify-center gap-4">
@@ -99,16 +101,27 @@ export default function NewProductPage() {
             <Card className="flex flex-col gap-4 items-stretch">
               <Input
                 id="title"
+                value={product.title}
                 onChange={(e) => setProduct({ ...product, title: e.target.value })}
                 label="Title"
                 placeholder="Title"
               />
               <TextArea
                 label="Description"
+                value={product.description}
                 onChange={(e) =>
                   setProduct({ ...product, description: e.target.value })
                 }
               />
+            </Card>
+
+            <Card className="flex flex-col gap-4 items-stretch">
+              <SectionTitle title="Media" />
+              {
+                product.media.map((item, i) => (
+                  <img key={i} src={item.url} alt={product.title} width="240" height="240" className="rounded-md" />
+                ))
+              }
             </Card>
 
             <Card className="flex flex-col gap-4 items-stretch">
@@ -126,7 +139,7 @@ export default function NewProductPage() {
               <Shipping product={product} setProduct={setProduct} />
             </Card>
 
-            <Card className="flex flex-col items-stretch">
+            <Card className="flex flex-col mb-4 items-stretch">
               <SectionTitle title="Search Engine Listing" />
               <p className=" text-xs text-gray-900 mb-8">Add a title and description to see how this collection might appear in a search engine listing</p>
               <Input id="seo-title" onChange={e => setProduct({ ...product, seo: { ...product.seo, title: e.target.value } })} label="SEO Title" placeholder="" />
@@ -158,10 +171,12 @@ export default function NewProductPage() {
               <ProductOrganization product={product} setProduct={setProduct} />
             </Card>
           </div>
+
         </div>
       </div>
 
-      <div className="w-full max-w-4xl flex justify-end mb-8">
+      <div className="w-full max-w-4xl flex gap-4 justify-end mb-8">
+        <FilledButton bgClass="bg-red-500" onClick={handleDelete}>Delete Product</FilledButton>
         <FilledButton onClick={handleSave}>Save</FilledButton>
       </div>
     </div>
@@ -180,6 +195,7 @@ function Pricing({
       <div className="flex gap-4 mt-4">
         <Input
           id="price"
+          value={product.price}
           label="Price"
           placeholder="$ 0.00"
           type="number"
@@ -189,6 +205,7 @@ function Pricing({
         />
         <Input
           id="compare-at-price"
+          value={product.compareAtPrice}
           label="Compare-at Price"
           placeholder="$ 0.00"
           type="number"
@@ -197,16 +214,20 @@ function Pricing({
           }
         />
       </div>
+
       <Checkbox
         id="charge-taxes"
+        checked={product.chargeTaxes}
         label="Charge Taxes on this Product"
         onChange={(e) =>
           setProduct({ ...product, chargeTaxes: e.target.checked })
         }
       />
+
       <div className="flex gap-4 mt-4">
         <Input
           id="cost-per-item"
+          value={product.costPerItem}
           label="Cost per Item"
           placeholder="$ 0.00"
           type="number"
@@ -250,6 +271,7 @@ function Inventory({
     <>
       <Checkbox
         id="tarck-quantity"
+        checked={product.trackQuantity}
         label="Track Quantity"
         onChange={(e) =>
           setProduct({ ...product, trackQuantity: e.target.checked })
@@ -262,6 +284,7 @@ function Inventory({
           <div>
             <Input
               id="quantity"
+              value={product.quantity}
               label=""
               placeholder="0"
               type="number"
@@ -296,12 +319,14 @@ function Inventory({
         <div className=" w-full flex gap-4 mt-4">
           <Input
             id="product-sku"
+            value={product.sku}
             placeholder=""
             label="SKU (Stock Keeping Unit)"
             onChange={(e) => setProduct({ ...product, sku: e.target.value })}
           />
           <Input
             id="product-barcode"
+            value={product.barcode}
             placeholder=""
             label="Barcode (ISBN, UPC, GTIN, etc.)"
             onChange={(e) =>
@@ -325,6 +350,7 @@ function Shipping({
     <>
       <Checkbox
         id="physical-product"
+        checked={product.isPhysicalProduct}
         label="This is a physical product"
         onChange={(e) =>
           setProduct({ ...product, isPhysicalProduct: e.target.checked })
@@ -338,6 +364,7 @@ function Shipping({
             <div className="w-full">
               <Input
                 id="weight"
+                value={product.weight}
                 label="Weight"
                 placeholder="0.0"
                 type="number"
@@ -350,6 +377,7 @@ function Shipping({
             <div className="w-full">
               <Select
                 label="Weight Unit"
+                value={product.weightUnit}
                 options={[
                   { value: "kg", label: "kg" },
                   { value: "g", label: "g" },
@@ -365,12 +393,14 @@ function Shipping({
 
           <Select
             label="Country/Region of origin"
+            value={product.countryOfOrigin}
             options={countries}
             onChange={(e) =>
               setProduct({ ...product, countryOfOrigin: e.target.value })
             }
           />
         </>
+
       ) : (
         <p>Customers won’t enter shipping details at checkout.</p>
       )}
@@ -389,6 +419,7 @@ function ProductOrganization({
     <>
       <Input
         id="product-category"
+        value={product.productCategory}
         label="Product category"
         placeholder="Apparel & Accessories"
         onChange={(e) =>
@@ -397,6 +428,7 @@ function ProductOrganization({
       />
       <Input
         id="product-type"
+        value={product.productType}
         label="Product Type"
         placeholder=""
         onChange={(e) =>
@@ -405,12 +437,14 @@ function ProductOrganization({
       />
       <Input
         id="vendor"
+        value={product.vendor}
         label="Vendor"
         placeholder=""
         onChange={(e) => setProduct({ ...product, vendor: e.target.value })}
       />
       <Input
         id="collections"
+        value={product.collection}
         label="Collections"
         placeholder=""
         onChange={(e) =>

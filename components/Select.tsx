@@ -8,12 +8,14 @@ type Option = {
 
 export default function Select({
   label,
+  value,
   options,
   onChange,
 }: {
   options: Option[];
   onChange: React.ChangeEventHandler<HTMLSelectElement>;
   label?: string;
+  value?: string;
 }) {
   return (
     <div className="w-full min-w-[200px]">
@@ -21,6 +23,7 @@ export default function Select({
         {label}
       </label>
       <select
+        value={value}
         onChange={onChange}
         className="pl-3 w-full border border-gray-200 rounded-lg py-1 text-sm outline outline-1 outline-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
       >

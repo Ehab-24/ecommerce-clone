@@ -12,12 +12,12 @@ import {
 } from "@/components/ui/dialog"
 import TextButton from "@/components/buttons/TextButton"
 import TitleMini from "@/components/TitleMini"
-import MyInput from "@/components/Input"
+import Input from "@/components/Input"
 import Select from "@/components/Select";
-import { Adjustment } from "@/types/adjustment";
+import { AdjustmentName, PurchaseOrder } from "@/types/purchaseOrder";
 
 
-export default function AdjustmentsDialog({ text, adjustments, setAdjustments }: { text: string, adjustments: Adjustment[], setAdjustments: React.Dispatch<React.SetStateAction<Adjustment[]>> }) {
+export default function AdjustmentsDialog({ text, purchaseOrder, setPurchaseOrder }: { text: string, purchaseOrder: PurchaseOrder, setPurchaseOrder: React.Dispatch<React.SetStateAction<PurchaseOrder>> }) {
 
   return (
     <Dialog>
@@ -28,7 +28,7 @@ export default function AdjustmentsDialog({ text, adjustments, setAdjustments }:
         <DialogHeader>
           <DialogTitle>Manage cost summary</DialogTitle>
         </DialogHeader>
-        <div className="w-full flex flex-col">
+        <div className="w-full flex mt-4 flex-col px-4">
 
           <div className=" flex w-full mb-4">
             <div className="w-full">
@@ -39,9 +39,9 @@ export default function AdjustmentsDialog({ text, adjustments, setAdjustments }:
 
           <div className=" flex flex-col gap-4 mb-4">
             {
-              adjustments.map(a => (
-                <div key={a.name} className=" flex gap-2 w-full">
-                  <Select onChange={() => { }} options={[
+              purchaseOrder.costAdjustments.map(a => (
+                <div key={a.name} className=" flex items-center gap-2 w-full">
+                  <Select onChange={e => setPurchaseOrder({ ...purchaseOrder, costAdjustments: purchaseOrder.costAdjustments.map(_a => _a.name === a.name ? { ..._a, name: e.target.value as AdjustmentName } : _a) })} options={[
                     { "label": "Select", "value": "", "disabled": true },
                     { "label": "Shipping", "value": "Shipping" },
                     { "label": "Customs duties", "value": "Customs duties" },
@@ -52,10 +52,15 @@ export default function AdjustmentsDialog({ text, adjustments, setAdjustments }:
                     { "label": "Rush fee", "value": "Rush fee" },
                     { "label": "Surcharge", "value": "Surcharge" },
                     { "label": "Other", "value": "otherAdjustment" }
-
                   ]} />
-                  <MyInput id={a.name} value={a.value} onChange={() => { }} label="" placeholder="" />
-                  <button onClick={() => setAdjustments(as => as.filter(_a => _a !== a))}>
+
+                  <div className="w-full">
+                    <Input id={a.name} value={a.value} onChange={e => {
+                      setPurchaseOrder({ ...purchaseOrder, costAdjustments: purchaseOrder.costAdjustments.map(_a => _a.name === a.name ? { ..._a, value: +e.target.value } : _a) })
+                    }} label="" placeholder="" />
+                  </div>
+
+                  <button onClick={() => setPurchaseOrder({ ...purchaseOrder, costAdjustments: purchaseOrder.costAdjustments.filter(_a => _a !== a) })}>
                     <IoIosClose size={24} />
                   </button>
                 </div>
@@ -64,7 +69,7 @@ export default function AdjustmentsDialog({ text, adjustments, setAdjustments }:
 
           </div>
 
-          <TextButton className="self-start" onClick={() => setAdjustments(as => [...as, { name: "", value: 0 }])}>Add adjustment</TextButton>
+          <TextButton className="self-start mb-4" onClick={() => setPurchaseOrder({ ...purchaseOrder, costAdjustments: [...purchaseOrder.costAdjustments, { name: "Shipping", value: 0 }] })}>Add adjustment</TextButton>
         </div>
         <DialogFooter>
           <Button size={"sm"} type="submit">Save changes</Button>

@@ -6,6 +6,7 @@ import { CollectionSchema, Collection, Condition, Operator } from "@/types/colle
 import { ZodError } from "zod"
 import Link from "next/link"
 import { FaArrowLeft } from "react-icons/fa"
+import { IoIosClose } from "react-icons/io";
 import Card from "@/components/Card"
 import Input from "@/components/Input"
 import Select from "@/components/Select"
@@ -14,6 +15,7 @@ import FilledButton from "@/components/buttons/FilledButton"
 import SectionTitle from "@/components/SectionTitle"
 import Radio from "@/components/Radio"
 import OutlinedButtonSmall from "@/components/buttons/OutlinedButtonSmall"
+import Heading from "@/components/Heading"
 
 export default function NewCollectionPage() {
 
@@ -56,71 +58,80 @@ export default function NewCollectionPage() {
     }
 
     return (
-        <div className="flex-col flex gap-6 p-8 ">
-            <div className="flex gap-3 items-center ">
-                <Link href="/products">
-                    <FaArrowLeft className="text-sm text-[#1a1a1a]" />
-                </Link>
-                <h1 className="text-xl font-bold text-[#1a1a1a]">Create Collection</h1>
-            </div>
+        <div className=" w-full bg-gray-100 items-center flex flex-col">
+            <div className="flex-col max-w-4xl w-full flex gap-6 p-8 ">
+                <div className="flex gap-3 items-center ">
+                    <Link href="/products" className="p-2 rounded-md hover:bg-black/10 transition-all">
+                        <FaArrowLeft className="text-sm text-[#1a1a1a]" />
+                    </Link>
+                    <Heading>Create collection</Heading>
+                </div>
 
-            <div className=" flex flex-col w-full max-w-3xl self-center gap-4 mb-8">
-                <Card className="flex flex-col gap-4 items-stretch">
-                    <Input id="title" onChange={e => setCollection({ ...collection, title: e.target.value })} label="Title" placeholder="e.g. Summer collection, Under $100, Staff picks" />
-                    <TextArea label="Description" onChange={e => setCollection({ ...collection, description: e.target.value })} />
-                </Card>
+                <div className=" flex flex-col w-full max-w-3xl self-center gap-4 mb-8">
+                    <Card className="flex flex-col gap-4 items-stretch">
+                        <Input id="title" onChange={e => setCollection({ ...collection, title: e.target.value })} label="Title" placeholder="e.g. Summer collection, Under $100, Staff picks" />
+                        <TextArea label="Description" onChange={e => setCollection({ ...collection, description: e.target.value })} />
+                    </Card>
 
-                <Conditions collection={collection} setCollection={setCollection} />
+                    <Conditions collection={collection} setCollection={setCollection} />
 
 
-                <Card className="flex flex-col items-stretch">
-                    <SectionTitle title="Search Engine Listing" />
-                    <p className=" text-xs text-gray-900 mb-8">Add a title and description to see how this collection might appear in a search engine listing</p>
-                    <Input id="seo-title" onChange={e => setCollection({ ...collection, title: e.target.value })} label="SEO Title" placeholder="" />
-                    <div className="h-4" />
-                    <TextArea label="SEO Description" onChange={e => setCollection({ ...collection, description: e.target.value })} />
-                </Card>
+                    <Card className="flex flex-col items-stretch">
+                        <SectionTitle title="Search Engine Listing" />
+                        <p className=" text-xs text-gray-900 mb-8">Add a title and description to see how this collection might appear in a search engine listing</p>
+                        <Input id="seo-title" onChange={e => setCollection({ ...collection, seo: { ...collection.seo, title: e.target.value } })} label="SEO Title" placeholder="" />
+                        <div className="h-4" />
+                        <TextArea label="SEO Description" onChange={e => setCollection({ ...collection, seo: { ...collection.seo, title: e.target.value } })} />
+                    </Card>
 
-                <FilledButton onClick={handleSave}>
-                    Save
-                </FilledButton>
+                    <div className="w-full max-w-4xl flex justify-end mb-8">
+                        <FilledButton onClick={handleSave}>Save</FilledButton>
+                    </div>
+                </div>
             </div>
         </div>
     )
 }
 
-function UpdateCondition({ condition, updateCondition }: { condition: Condition, updateCondition: (condition: Condition) => void }) {
-
-    // const defaultCondition = { operator: Operator.Equals, value: "", field: "product-type" }
-    // const [condition, setCondition] = useState<Condition>(defaultCondition)
-
+function UpdateCondition({ condition, updateCondition, onRemove }: { condition: Condition, onRemove: () => void, updateCondition: (condition: Condition) => void }) {
     return (
         <div className=" flex gap-2 items-center">
-            <Select label="Product Tag" onChange={e => updateCondition({ ...condition, field: e.target.value })} options={[
-                { label: "Product Title", value: "product-title" },
-                { label: "Product Type", value: "product-type" },
-                { label: "Product Category", value: "product-category" },
-                { label: "Product Vendor", value: "product-vendor" },
-                { label: "Product Tag", value: "product-tag" },
-                { label: "Price", value: "price" },
-                { label: "Compare at price", value: "compare-at-price" },
-                { label: "Weight", value: "weight" },
-                { label: "Inventory Stock", value: "inventory-stock" },
-                { label: "Variant's Title", value: "variant-title" },
-            ]} />
+            <div className="w-full">
 
-            <Select label="is equal to" onChange={e => updateCondition({ ...condition, operator: e.target.value as Operator })} options={[
-                { label: "Is equal to", value: Operator.Equals },
-                { label: "Is not equal to", value: Operator.NotEquals },
-                { label: "Is greater than", value: Operator.GreaterThan },
-                { label: "Is less than", value: Operator.LessThan },
-                { label: "Starts with", value: Operator.StartsWith },
-                { label: "Ends with", value: Operator.EndsWith },
-                { label: "Contains", value: Operator.Contains },
-                { label: "Does not contain", value: Operator.NotContains },
-            ]} />
+                <Select label="" value={condition.field} onChange={e => updateCondition({ ...condition, field: e.target.value })} options={[
+                    { label: "Product Title", value: "product-title" },
+                    { label: "Product Type", value: "product-type" },
+                    { label: "Product Category", value: "product-category" },
+                    { label: "Product Vendor", value: "product-vendor" },
+                    { label: "Product Tag", value: "product-tag" },
+                    { label: "Price", value: "price" },
+                    { label: "Compare at price", value: "compare-at-price" },
+                    { label: "Weight", value: "weight" },
+                    { label: "Inventory Stock", value: "inventory-stock" },
+                    { label: "Variant's Title", value: "variant-title" },
+                ]} />
+            </div>
 
-            <Input id="condition-value" label="" placeholder="" onChange={e => updateCondition({ ...condition, value: e.target.value })} />
+            <div className="w-full">
+                <Select label="" value={condition.operator} onChange={e => updateCondition({ ...condition, operator: e.target.value as Operator })} options={[
+                    { label: "Is equal to", value: Operator.Equals },
+                    { label: "Is not equal to", value: Operator.NotEquals },
+                    { label: "Is greater than", value: Operator.GreaterThan },
+                    { label: "Is less than", value: Operator.LessThan },
+                    { label: "Starts with", value: Operator.StartsWith },
+                    { label: "Ends with", value: Operator.EndsWith },
+                    { label: "Contains", value: Operator.Contains },
+                    { label: "Does not contain", value: Operator.NotContains },
+                ]} />
+            </div>
+
+            <div className="w-full">
+                <Input id="condition-value" value={condition.value} onChange={e => updateCondition({ ...condition, value: e.target.value })} />
+            </div>
+
+            <button onClick={onRemove} className="text-gray-900">
+                <IoIosClose size={24} />
+            </button>
         </div>
     )
 }
@@ -151,11 +162,16 @@ function Conditions({ collection, setCollection }: { collection: Collection, set
             {
                 collection.collectionType === "automated" && (
                     collection.conditions.map((c, i) =>
-                        <UpdateCondition key={i} condition={c} updateCondition={(newCond) => {
+                        <UpdateCondition key={i} condition={c} onRemove={() => {
                             const newConds: Condition[] = [...collection.conditions]
-                            newConds[i] = newCond
+                            newConds.splice(i, 1)
                             setCollection({ ...collection, conditions: newConds })
-                        }} />
+                        }}
+                            updateCondition={(newCond) => {
+                                const newConds: Condition[] = [...collection.conditions]
+                                newConds[i] = newCond
+                                setCollection({ ...collection, conditions: newConds })
+                            }} />
                     )
                 )
             }

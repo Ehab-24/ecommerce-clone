@@ -13,6 +13,6 @@ export default function StatusText({ status }: { status: string }) {
   }
 
   return (
-    <p className={`py-1 px-2.5 text-gray-900 w-min whitespace-nowrap rounded-full capitalize ${bgColor}`}>{status}</p>
+    <p className={`py-1 px-2.5 text-xs text-gray-900 w-min whitespace-nowrap rounded-full capitalize ${bgColor}`}>{status}</p>
   )
 }

@@ -4,7 +4,7 @@ export default function OutlinedButtonSmall({ children, onClick }: { children: R
   return (
     <button
       onClick={onClick}
-      className="select-none rounded-lg border border-gray-900 py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+      className="select-none rounded-lg border border-gray-900 px-2.5 py-1 text-center align-middle font-sans text-xs font-bold  text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
       type="button"
     >
       {children}

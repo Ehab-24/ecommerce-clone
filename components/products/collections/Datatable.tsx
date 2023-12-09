@@ -2,19 +2,13 @@
 
 import { Collection } from "@/types/collection"
 import Checkbox from "../../Checkbox"
-import Image from "next/image"
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 
 export default function Datatable({ collections }: { collections: Collection[] }) {
 
   const [selectedCollections, setSelectedCollections] = useState<boolean[]>(new Array(collections.length).fill(false))
-
-  function StatusText({ status }: { status: string }) {
-    const bgColor = status === "draft" ? "bg-sky-500/40" : status === "active" ? "bg-green-500/40" : "bg-red-500/40"
-    return (
-      <p className={`py-1 px-2.5 text-gray-900 w-min whitespace-nowrap rounded-full capitalize ${bgColor}`}>{status}</p>
-    )
-  }
+  const router = useRouter()
 
   return (
     <div className="relative overflow-x-auto overflow-y-scroll shadow-md sm:rounded-lg">
@@ -48,9 +42,9 @@ export default function Datatable({ collections }: { collections: Collection[] }
                   }} />
                 </td>
 
-                <td className="px-6 py-4">
+                <th scope="row" onClick={() => router.push(`/products/collections/${c._id}`)} className="px-6 flex gap-1 items-center xl:min-w-[240px] py-4 font-medium text-gray-900 whitespace-nowrap cursor-pointer">
                   {c.title}
-                </td>
+                </th>
                 <td className="px-6 py-4">
                   {c.products}
                 </td>

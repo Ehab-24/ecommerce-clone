@@ -7,6 +7,8 @@ const ProductSchema = z.object({
   price: z.number().gt(0, "Price must be greater than 0"),
   compareAtPrice: z.number().gt(0, "Compare at price must be greater than 0"),
   chargeTaxes: z.boolean(),
+  taxRate: z.number(),
+  tax: z.number(),
   costPerItem: z.number().gt(0, "Cost per item must be greater than 0"),
   profit: z.number(),
   margin: z.number(),
@@ -24,13 +26,17 @@ const ProductSchema = z.object({
   productCategory: z.string().min(1, "Product category is required"),
   productType: z.string().min(1, "Product type is required"),
   vendor: z.string().min(1, "Vendor is required"),
-  collections: z.string(),
+  collection: z.string(),
   tags: z.array(z.string().min(1)).min(1, "At least one tag is required"),
   media: z.array(z.object({
     url: z.string(),
     type: z.enum(['image', 'video']),
     altText: z.string()
   })),
+  seo: z.object({
+    title: z.string(),
+    description: z.string(),
+  }),
   createdAt: z.optional(z.date()),
   updatedAt: z.optional(z.date()),
 })
