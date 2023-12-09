@@ -11,4 +11,4 @@ const CustomItemSchema = z.object({
 });
 
 type CustomItem = z.infer<typeof CustomItemSchema>;
-export { CustomItemSchema, type CustomItem };
+export { type CustomItem, CustomItemSchema };
