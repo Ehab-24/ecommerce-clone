@@ -36,7 +36,6 @@ const CollectionSchema = z.object({
 });
 
 const ApiCollectionSchema = z.object({
-  _id: z.optional(z.string()),
   title: z.string(),
   description: z.string(),
   image: z.optional(z.string()),

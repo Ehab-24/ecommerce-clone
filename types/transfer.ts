@@ -20,7 +20,6 @@ const TransferSchema = z.object({
 });
 
 const ApiTransferSchema = z.object({
-  _id: z.string().optional(),
   origin: z.string(),
   destination: z.string(),
   products: z.array(z.string()),

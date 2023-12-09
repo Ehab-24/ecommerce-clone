@@ -40,7 +40,6 @@ const PurchaseOrderSchema = z.object({
 });
 
 const ApiPurchaseOrderSchema = z.object({
-    _id: z.optional(z.string()),
     destination: z.string(),
     paymentTerms: z.optional(z.string()),
     status: z.enum(["draft", "ordered", "received", "cancelled"]),

@@ -18,7 +18,6 @@ const GiftCardSchema = z.object({
 });
 
 const ApiGiftCardSchema = z.object({
-  _id: z.optional(z.string()),
   code: z.string(),
   status: z.enum(["active", "inactive", "redeemed"]),
   initialValue: z.number(),
