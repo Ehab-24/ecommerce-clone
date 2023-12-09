@@ -48,7 +48,7 @@ const ApiPurchaseOrderSchema = z.object({
         carrier: z.string(),
         trackingNumber: z.string(),
     }),
-    products: z.array(ProductSchema),
+    products: z.array(z.string()),
     total: z.number(),
     referenceNumber: z.string(),
     noteToSupplier: z.string(),

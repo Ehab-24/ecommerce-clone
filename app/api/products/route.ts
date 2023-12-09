@@ -1,10 +1,10 @@
 import getDb from "@/lib/db";
-import { ProductSchema } from "@/types/product";
+import { ApiProductSchema } from "@/types/product";
 
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
-    const payload = ProductSchema.parse(await request.json())
+    const payload = ApiProductSchema.parse(await request.json())
 
     const db = await getDb()
     const insertResult = await db.collection("products").insertOne(payload)
