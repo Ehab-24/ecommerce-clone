@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ProductSchema } from "./product";
 
 export enum Operator {
   Equals = "equals",
@@ -11,21 +12,21 @@ export enum Operator {
   EndsWith = "ends-with"
 }
 
-export const ConditionSchema = z.object({
+const ConditionSchema = z.object({
   field: z.string(),
   operator: z.nativeEnum(Operator),
   value: z.union([z.string(), z.number()]),
 })
 
-export const CollectionSchema = z.object({
-  _id: z.optional(z.string()),
+const CollectionSchema = z.object({
+  _id: z.string(),
   title: z.string(),
   description: z.string(),
   image: z.optional(z.string()),
   collectionType: z.enum(["automated", "manual"]),
   conditions: z.array(ConditionSchema),
   conditionsMatch: z.enum(["all", "any"]),
-  products: z.optional(z.number()),
+  products: z.array(ProductSchema),
   seo: z.object({
     title: z.string(),
     description: z.string(),
@@ -34,5 +35,25 @@ export const CollectionSchema = z.object({
   updatedAt: z.optional(z.date()),
 });
 
-export type Collection = z.infer<typeof CollectionSchema>;
-export type Condition = z.infer<typeof ConditionSchema>;
+const ApiCollectionSchema = z.object({
+  _id: z.optional(z.string()),
+  title: z.string(),
+  description: z.string(),
+  image: z.optional(z.string()),
+  collectionType: z.enum(["automated", "manual"]),
+  conditions: z.array(ConditionSchema),
+  conditionsMatch: z.enum(["all", "any"]),
+  products: z.array(z.string()),
+  seo: z.object({
+    title: z.string(),
+    description: z.string(),
+  }),
+  createdAt: z.optional(z.date()),
+  updatedAt: z.optional(z.date()),
+});
+
+type ApiCollection = z.infer<typeof ApiCollectionSchema>;
+type Collection = z.infer<typeof CollectionSchema>;
+type Condition = z.infer<typeof ConditionSchema>;
+
+export { ApiCollectionSchema, CollectionSchema, ConditionSchema, type ApiCollection, type Collection, type Condition }
