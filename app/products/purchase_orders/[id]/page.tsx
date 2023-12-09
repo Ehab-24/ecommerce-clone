@@ -85,7 +85,10 @@ export default function CreatePurchaseOrderPage() {
           }
         ],
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
+        variants: [
+          {name: "Color", values: ["Black"]},
+        ]
       },
     ],
     total: 46.47,
@@ -94,6 +97,7 @@ export default function CreatePurchaseOrderPage() {
     tags: ['clothing'],
     supplier: {
       _id: 's2',
+      name: 'Supplier 2',
       company: 'XYZ Company',
       postalCode: '98765',
       city: 'Another City',

@@ -92,7 +92,7 @@ const Sidebar: React.FC = () => {
   };
 
   return (
-    <div className="bg-[#ebebeb] w-60 min-h-full">
+    <div className="bg-[#ebebeb] w-60 h-[100%]">
       <nav className="pt-4">
         {menuItems.map((menuItem, index) => (
           <div key={index}>
