@@ -4,9 +4,11 @@ import Checkbox from "@/components/Checkbox"
 import Image from "next/image"
 import { Product } from "@/types/product"
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 
 export default function Datatable({ products }: { products: Product[] }) {
 
+  const router = useRouter()
   const [selectedProducts, setSelectedProducts] = useState<boolean[]>(new Array(products.length).fill(false))
 
   return (
@@ -50,7 +52,7 @@ export default function Datatable({ products }: { products: Product[] }) {
                   }} />
                 </td>
 
-                <th scope="row" className="px-6 flex gap-1 items-center xl:min-w-[240px] py-4 font-medium text-gray-900 whitespace-nowrap ">
+                <th scope="row" onClick={() => router.push(`/products/${p._id}`)} className="px-6 flex gap-1 items-center xl:min-w-[240px] py-4 font-medium text-gray-900 whitespace-nowrap cursor-pointer">
 
                   <div className=" aspect-square h-8 bg-gray-200 rounded-md overflow-hidden">
                     <Image width="32" height="32" src="https://loremflickr.com/cache/resized/65535_52286707607_f152963408_n_320_240_nofilter.jpg" alt={p.title} className="w-full h-full object-cover" />

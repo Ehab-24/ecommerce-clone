@@ -47,7 +47,7 @@ export default function Datatable({ products }: { products: Product[] }) {
         <tbody className="text-xs">
           {
             products.map((p, i) => (
-              <tr key={p._id} onClick={() => router.push(`/products/${p._id}`)} className="bg-white border-b hover:bg-gray-50 cursor-pointer ">
+              <tr key={p._id} className="bg-white border-b hover:bg-gray-50 ">
                 <td className="w-4 p-4">
                   <Checkbox id={"select-" + p._id} checked={selectedProducts[i]} label="" onChange={e => {
                     const newSelectProducts = [...selectedProducts]
@@ -56,7 +56,7 @@ export default function Datatable({ products }: { products: Product[] }) {
                   }} />
                 </td>
 
-                <th scope="row" className="px-6 flex gap-1 items-center xl:min-w-[240px] py-4 font-medium text-gray-900 whitespace-nowrap ">
+                <th scope="row" onClick={() => router.push(`/products/${p._id}`)} className="px-6 flex gap-1 items-center xl:min-w-[240px] py-4 font-medium text-gray-900 whitespace-nowrap cursor-pointer">
                   {
                     p.media.length > 0 && (p.media.map((m, i) =>
                       <div key={i} className=" aspect-square h-8 bg-gray-200 rounded-md overflow-hidden">

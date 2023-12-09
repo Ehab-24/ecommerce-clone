@@ -47,7 +47,7 @@ export default function Datatable({ purchaseOrders }: { purchaseOrders: Purchase
         <tbody className="text-xs">
           {
             purchaseOrders.map((p, i) => (
-              <tr key={p._id} onClick={() => router.push(`/products/purchase_orders/${p._id}`)} className="bg-white border-b hover:bg-gray-50 cursor-pointer ">
+              <tr key={p._id} className="bg-white border-b hover:bg-gray-50 ">
                 <td className="w-4 p-4">
                   <Checkbox id={"select-" + p._id} checked={selectedProducts[i]} label="" onChange={e => {
                     const newSelectProducts = [...selectedProducts]
@@ -56,7 +56,7 @@ export default function Datatable({ purchaseOrders }: { purchaseOrders: Purchase
                   }} />
                 </td>
 
-                <td className="px-6 py-4">
+                <td onClick={() => router.push(`/products/purchase_orders/${p._id}`)} className="px-6 py-4 cursor-pointer ">
                   {p.referenceNumber}
                 </td>
                 <td className="px-6 py-4">

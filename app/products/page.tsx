@@ -47,6 +47,9 @@ export default function ProductsPage() {
       price: 79.99,
       compareAtPrice: 99.99,
       chargeTaxes: true,
+      tax: 0,
+      taxRate: 0,
+      variants: [],
       costPerItem: 50.0,
       profit: 29.99,
       margin: 37,
@@ -92,6 +95,9 @@ export default function ProductsPage() {
       price: 29.99,
       compareAtPrice: 39.99,
       chargeTaxes: true,
+      tax: 0,
+      taxRate: 0,
+      variants: [],
       costPerItem: 15.0,
       profit: 14.99,
       margin: 50,
@@ -137,6 +143,9 @@ export default function ProductsPage() {
       price: 39.99,
       compareAtPrice: 49.99,
       chargeTaxes: true,
+      tax: 0,
+      taxRate: 0,
+      variants: [],
       costPerItem: 20.0,
       profit: 19.99,
       margin: 50,
@@ -177,6 +186,9 @@ export default function ProductsPage() {
       price: 19.99,
       compareAtPrice: 24.99,
       chargeTaxes: true,
+      tax: 0,
+      taxRate: 0,
+      variants: [],
       costPerItem: 8.5,
       profit: 11.49,
       margin: 57,
@@ -222,6 +234,9 @@ export default function ProductsPage() {
       price: 89.99,
       compareAtPrice: 109.99,
       chargeTaxes: true,
+      tax: 0,
+      taxRate: 0,
+      variants: [],
       costPerItem: 45.0,
       profit: 44.99,
       margin: 50,
@@ -267,6 +282,9 @@ export default function ProductsPage() {
       price: 49.99,
       compareAtPrice: 69.99,
       chargeTaxes: true,
+      tax: 0,
+      taxRate: 0,
+      variants: [],
       costPerItem: 20.0,
       profit: 29.99,
       margin: 60,
@@ -312,6 +330,9 @@ export default function ProductsPage() {
       price: 1499.99,
       compareAtPrice: 1699.99,
       chargeTaxes: true,
+      tax: 0,
+      taxRate: 0,
+      variants: [],
       costPerItem: 1100.0,
       profit: 399.99,
       margin: 27,
@@ -362,6 +383,9 @@ export default function ProductsPage() {
       price: 699.99,
       compareAtPrice: 799.99,
       chargeTaxes: true,
+      tax: 0,
+      taxRate: 0,
+      variants: [],
       costPerItem: 450,
       profit: 249.99,
       margin: 36,
@@ -404,7 +428,7 @@ export default function ProductsPage() {
 
         <div className=" flex gap-4">
           <ExportImportButtons />
-          <LinkMini href="products/new">Create Product</LinkMini>
+          <LinkMini href="products/new">Add Product</LinkMini>
         </div>
       </div>
 

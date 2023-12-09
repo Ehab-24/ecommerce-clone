@@ -1,5 +1,6 @@
 "use client";
 
+import { RiDeleteBin6Line } from "react-icons/ri";
 import Heading from "@/components/Heading";
 import { ZodError } from "zod";
 import { ProductSchema, Product } from "@/types/product";
@@ -16,6 +17,7 @@ import { IoIosClose } from "react-icons/io";
 import { FaArrowLeft } from "react-icons/fa";
 import SectionTitle from "@/components/SectionTitle";
 import countries from "@/data/countries";
+import OutlinedButtonSmall from "@/components/buttons/OutlinedButtonSmall";
 
 export default function NewProductPage() {
   const defaultProduct: Product = {
@@ -24,6 +26,8 @@ export default function NewProductPage() {
     price: 0,
     compareAtPrice: 0,
     chargeTaxes: false,
+    tax: 0,
+    taxRate: 0,
     costPerItem: 0,
     profit: 0,
     margin: 0,
@@ -40,12 +44,13 @@ export default function NewProductPage() {
     productType: "",
     vendor: "",
     collection: "",
-    media: [] as any,
+    variants: [],
+    media: [],
     seo: {
       title: "",
       description: "",
     },
-    tags: [] as string[],
+    tags: [],
   };
 
   const [product, setProduct] = React.useState<Product>(defaultProduct);
@@ -87,7 +92,7 @@ export default function NewProductPage() {
   return (
     <div className=" w-full bg-gray-100 items-center flex flex-col">
       <div className="flex-col max-w-4xl w-full flex gap-6 p-8 ">
-        <div className="flex gap-3 items-center ">
+        <div className="flex gap-3 items-start ">
           <Link href="/products" className="p-2 rounded-md hover:bg-black/10 transition-all">
             <FaArrowLeft className="text-sm text-[#1a1a1a]" />
           </Link>
@@ -124,6 +129,14 @@ export default function NewProductPage() {
             <Card className=" flex-col flex gap-4">
               <SectionTitle title="Shipping" />
               <Shipping product={product} setProduct={setProduct} />
+            </Card>
+
+            <Card className=" flex-col flex gap-4">
+              <SectionTitle title="Variants" />
+              <Variants product={product} setProduct={setProduct} />
+              <div className="flex ">
+                <OutlinedButtonSmall onClick={() => setProduct({ ...product, variants: [...product.variants, { name: "", values: [] }] })}>Add Variant</OutlinedButtonSmall>
+              </div>
             </Card>
 
             <Card className="flex flex-col items-stretch">
@@ -312,6 +325,74 @@ function Inventory({
       )}
     </>
   );
+}
+
+function Variants({
+  product,
+  setProduct,
+}: {
+  product: Product;
+  setProduct: React.Dispatch<React.SetStateAction<any>>;
+}) {
+  return (
+    <>
+      {product.variants.map((variant, index) => (
+        <div key={index} className="flex flex-col border-b pb-4 border-gray-300">
+          <button onClick={() => setProduct({ ...product, variants: product.variants.filter(v => v !== variant) })} className="p-2 rounded-md hover:bg-black/10 self-end transition-all">
+            <RiDeleteBin6Line className="text-sm text-[#1a1a1a]" />
+          </button>
+
+
+          <Select label="Variant Name" onChange={e => {
+            const newVariants = [...product.variants];
+            newVariants[index].name = e.target.value;
+            setProduct({ ...product, variants: newVariants })
+          }} options={[
+            { value: "color", label: "Color" },
+            { value: "size", label: "Size" },
+            { value: "material", label: "Material" },
+            { value: "style", label: "Style" },
+          ]} />
+
+          <div className="w-full mt-4">
+            <Input
+              id="variant-values"
+              label="Variant Values"
+              placeholder="S, M, L"
+              onKeyDown={e => {
+                const value = e.currentTarget.value;
+                if (e.key === "Enter" && value !== "") {
+                  const newVariants = [...product.variants];
+                  newVariants[index].values = [...newVariants[index].values, value];
+                  setProduct({ ...product, variants: newVariants });
+                  e.currentTarget.value = "";
+                }
+              }}
+            />
+
+            <div className="w-full flex mt-4 gap-1">
+              {
+                variant.values.map((v, i) => (
+                  <div key={i} className="bg-slate-200 text-gray-900 px-2 py-1 rounded-md text-sm flex items-center gap-1">
+                    {v}
+                    <button onClick={() => {
+                      const newVariants = [...product.variants];
+                      newVariants[index].values = newVariants[index].values.filter(val => val !== v);
+                      setProduct({ ...product, variants: newVariants })
+                    }}>
+                      <IoIosClose size={20} />
+                    </button>
+                  </div>
+                ))
+              }
+            </div>
+
+          </div>
+        </div>
+
+      ))}
+    </>
+  )
 }
 
 function Shipping({

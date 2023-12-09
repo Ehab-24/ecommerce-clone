@@ -28,6 +28,10 @@ const ProductSchema = z.object({
   vendor: z.string().min(1, "Vendor is required"),
   collection: z.string(),
   tags: z.array(z.string().min(1)).min(1, "At least one tag is required"),
+  variants: z.array(z.object({
+    name: z.string(),
+    values: z.array(z.string()),
+  })),
   media: z.array(z.object({
     url: z.string(),
     type: z.enum(['image', 'video']),
