@@ -2,12 +2,13 @@ import { NextRequest, NextResponse } from "next/server"
 import getDb from "@/lib/db"
 import { ObjectId } from "mongodb"
 import { ApiGiftCardSchema } from "@/types/giftCard"
-import { errorResponse } from "../../utils"
+import { errorResponse } from "@/app/api/utils"
 
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
     try {
 
         const payload = ApiGiftCardSchema.parse(await request.json())
+        payload.updatedAt = new Date()
 
         const db = await getDb()
         const updateResult = await db.collection("gift_cards").updateOne({ _id: new ObjectId(params.id) }, { $set: payload })

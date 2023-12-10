@@ -1,12 +1,14 @@
 import getDb from "@/lib/db";
 import { ApiTransferSchema } from "@/types/transfer";
 import { NextRequest, NextResponse } from "next/server";
-import { errorResponse } from "../utils";
+import { errorResponse } from "../../utils";
 
 export async function POST(request: NextRequest) {
     try {
 
         const payload = ApiTransferSchema.parse(await request.json())
+        payload.createdAt = new Date()
+        payload.updatedAt = new Date()
 
         const db = await getDb()
         const insertResult = await db.collection("transfers").insertOne(payload)
