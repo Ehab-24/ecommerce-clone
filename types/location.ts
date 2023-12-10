@@ -8,11 +8,15 @@ const LocationSchema = z.object({
   apartment: z.string().optional(),
   city: z.string(),
   postalCode: z.string(),
-  phone: z.string(),
+  phone: z.object({
+    countryCode: z.string(),
+    number: z.string(),
+  }),
   fulfilOrders: z.boolean(),
   status: z.enum(["active", "inactive"]),
-  createdAt: z.date().optional(),
-  updatedAt: z.date().optional(),
+  isDefault: z.boolean(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
 });
 
 const ApiLocationSchema = z.object({
@@ -25,6 +29,7 @@ const ApiLocationSchema = z.object({
   phone: z.string(),
   fulfilOrders: z.boolean(),
   status: z.enum(["active", "inactive"]),
+  isDefault: z.boolean(),
   createdAt: z.date().optional(),
   updatedAt: z.date().optional(),
 });

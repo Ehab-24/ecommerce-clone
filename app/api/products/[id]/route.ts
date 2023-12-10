@@ -2,12 +2,13 @@ import { NextRequest, NextResponse } from "next/server"
 import getDb from "@/lib/db"
 import { ObjectId } from "mongodb"
 import { ApiProductSchema } from "@/types/product"
-import { errorResponse } from "../utils"
+import { errorResponse } from "../../utils"
 
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
     try {
 
         const payload = ApiProductSchema.parse(await request.json())
+        payload.updatedAt = new Date()
 
         const db = await getDb()
         const updateResult = await db.collection("products").updateOne({ _id: new ObjectId(params.id) }, { $set: payload })

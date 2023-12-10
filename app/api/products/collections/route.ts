@@ -1,12 +1,13 @@
 import getDb from "@/lib/db";
 import { ApiCollectionSchema } from "@/types/collection";
 import { NextRequest, NextResponse } from "next/server";
-import { errorResponse } from "../utils";
+import { errorResponse } from "../../utils";
 
 export async function POST(request: NextRequest) {
     try {
-
         const payload = ApiCollectionSchema.parse(await request.json())
+        payload.createdAt = new Date()
+        payload.updatedAt = new Date()
 
         const db = await getDb()
         const insertResult = await db.collection("collections").insertOne(payload)

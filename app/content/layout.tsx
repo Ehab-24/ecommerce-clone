@@ -2,7 +2,7 @@ import React from 'react'
 
 const Contentlayout = ({children}:{children: React.ReactNode}) => {
   return (
-    <div className='m-7'>
+    <div className='p-7'>
       {children}
     </div>
   )

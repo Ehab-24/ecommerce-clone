@@ -15,7 +15,6 @@ import TitleMini from "@/components/TitleMini";
 import SupplierDialog from "@/components/products/purchase_orders/SupplierDialog";
 import { PurchaseOrder } from "@/types/purchaseOrder";
 import { Supplier } from "@/types/supplier";
-import { title } from "process";
 
 export default function CreatePurchaseOrderPage() {
   const suppliers: Supplier[] = [];
@@ -32,6 +31,7 @@ export default function CreatePurchaseOrderPage() {
     currency: "USD",
     products: [
       {
+        _id: '1',
         title: "Yoga Mat",
         description: "Eco-friendly yoga mat for comfortable workouts",
         price: 29.99,
@@ -65,12 +65,10 @@ export default function CreatePurchaseOrderPage() {
         media: [
           {
             url: "https://loremflickr.com/cache/resized/65535_52933847621_1b59865752_320_280_nofilter.jpg",
-            altText: "Coffee Maker",
             type: "image",
           },
           {
             url: "https://loremflickr.com/cache/resized/65535_52552903348_288981b690_320_280_nofilter.jpg",
-            altText: "Coffee Maker",
             type: "image",
           },
         ],
@@ -121,7 +119,7 @@ export default function CreatePurchaseOrderPage() {
               {suppliers.length > 0 ? (
                 <Select
                   label="Select Supplier"
-                  onChange={() => {}}
+                  onChange={() => { }}
                   options={[
                     { label: "Supplier 1", value: "supplier1" },
                     { label: "Supplier 2", value: "supplier2" },
@@ -144,7 +142,7 @@ export default function CreatePurchaseOrderPage() {
               <SectionTitle title="Destination" />
               <Select
                 label="Select Destination"
-                onChange={() => {}}
+                onChange={() => { }}
                 options={[
                   { label: "Destination 1", value: "destination1" },
                   { label: "Destination 2", value: "destination2" },
@@ -157,7 +155,7 @@ export default function CreatePurchaseOrderPage() {
           <div className="w-full flex justify-between gap-4 mt-8">
             <Select
               label="Payment Terms (optional)"
-              onChange={() => {}}
+              onChange={() => { }}
               options={[
                 { label: "None", value: "" },
                 { label: "Cash on delivery", value: "COD" },
@@ -173,7 +171,7 @@ export default function CreatePurchaseOrderPage() {
 
             <Select
               label="Supplier Currency"
-              onChange={() => {}}
+              onChange={() => { }}
               options={currencies}
             />
           </div>
@@ -197,7 +195,7 @@ export default function CreatePurchaseOrderPage() {
               label=""
               placeholder="Search products"
             />
-            <OutlinedButton onClick={() => {}}>Browse</OutlinedButton>
+            <OutlinedButton onClick={() => { }}>Browse</OutlinedButton>
           </div>
         </Card>
 
