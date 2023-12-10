@@ -3,19 +3,191 @@ import React from "react";
 import Link from "next/link";
 import FilledButton from "@/components/buttons/FilledButton";
 import EmptyPage from "@/components/EmptyPage";
-
-import { CustomerSchema } from "@/types/customer";
-
-import { generateMock } from "@anatine/zod-mock";
 import DataTable from "@/components/customers/Datatable";
 import Heading from "@/components/Heading";
 import ExportImportButtons from "@/components/products/ExportImportButtons";
+import { serverURL } from "@/lib/utils";
 
-const mockCustomer = generateMock(CustomerSchema);
-const mockCustomers = Array.from({ length: 10 }, () => mockCustomer);
+// const mockCustomers = [
+//   {
+//     _id: "subito",
+//     firstName: "Mona",
+//     lastName: "Hessel",
+//     language: "amo",
+//     email: "Gerson_Ondricka@example.org",
+//     phone: "tremo",
+//     marketing: false,
+//     smsMarketing: true,
+//     address: {
+//       country: "Netherlands",
+//       firstName: "Loyal",
+//       lastName: "Greenfelder",
+//       company: "minima",
+//       address: "tempora",
+//       apartment: "commodi",
+//       city: "South Marianehaven",
+//       postalCode: "decor",
+//       phone: "deinde",
+//     },
+//     taxExempt: true,
+//     note: "quae",
+//     tags: [undefined, undefined, undefined, undefined, undefined],
+//   },
+//   {
+//     _id: "subito",
+//     firstName: "Mona",
+//     lastName: "Hessel",
+//     language: "amo",
+//     email: "Gerson_Ondricka@example.org",
+//     phone: "tremo",
+//     marketing: false,
+//     smsMarketing: true,
+//     address: {
+//       country: "Netherlands",
+//       firstName: "Loyal",
+//       lastName: "Greenfelder",
+//       company: "minima",
+//       address: "tempora",
+//       apartment: "commodi",
+//       city: "South Marianehaven",
+//       postalCode: "decor",
+//       phone: "deinde",
+//     },
+//     taxExempt: true,
+//     note: "quae",
+//     tags: [undefined, undefined, undefined, undefined, undefined],
+//   },
+//   {
+//     _id: "subito",
+//     firstName: "Mona",
+//     lastName: "Hessel",
+//     language: "amo",
+//     email: "Gerson_Ondricka@example.org",
+//     phone: "tremo",
+//     marketing: false,
+//     smsMarketing: true,
+//     address: {
+//       country: "Netherlands",
+//       firstName: "Loyal",
+//       lastName: "Greenfelder",
+//       company: "minima",
+//       address: "tempora",
+//       apartment: "commodi",
+//       city: "South Marianehaven",
+//       postalCode: "decor",
+//       phone: "deinde",
+//     },
+//     taxExempt: true,
+//     note: "quae",
+//     tags: [undefined, undefined, undefined, undefined, undefined],
+//   },
+//   {
+//     _id: "subito",
+//     firstName: "Mona",
+//     lastName: "Hessel",
+//     language: "amo",
+//     email: "Gerson_Ondricka@example.org",
+//     phone: "tremo",
+//     marketing: false,
+//     smsMarketing: true,
+//     address: {
+//       country: "Netherlands",
+//       firstName: "Loyal",
+//       lastName: "Greenfelder",
+//       company: "minima",
+//       address: "tempora",
+//       apartment: "commodi",
+//       city: "South Marianehaven",
+//       postalCode: "decor",
+//       phone: "deinde",
+//     },
+//     taxExempt: true,
+//     note: "quae",
+//     tags: [undefined, undefined, undefined, undefined, undefined],
+//   },
+//   {
+//     _id: "subito",
+//     firstName: "Mona",
+//     lastName: "Hessel",
+//     language: "amo",
+//     email: "Gerson_Ondricka@example.org",
+//     phone: "tremo",
+//     marketing: false,
+//     smsMarketing: true,
+//     address: {
+//       country: "Netherlands",
+//       firstName: "Loyal",
+//       lastName: "Greenfelder",
+//       company: "minima",
+//       address: "tempora",
+//       apartment: "commodi",
+//       city: "South Marianehaven",
+//       postalCode: "decor",
+//       phone: "deinde",
+//     },
+//     taxExempt: true,
+//     note: "quae",
+//     tags: [undefined, undefined, undefined, undefined, undefined],
+//   },
+//   {
+//     _id: "subito",
+//     firstName: "Mona",
+//     lastName: "Hessel",
+//     language: "amo",
+//     email: "Gerson_Ondricka@example.org",
+//     phone: "tremo",
+//     marketing: false,
+//     smsMarketing: true,
+//     address: {
+//       country: "Netherlands",
+//       firstName: "Loyal",
+//       lastName: "Greenfelder",
+//       company: "minima",
+//       address: "tempora",
+//       apartment: "commodi",
+//       city: "South Marianehaven",
+//       postalCode: "decor",
+//       phone: "deinde",
+//     },
+//     taxExempt: true,
+//     note: "quae",
+//     tags: [undefined, undefined, undefined, undefined, undefined],
+//   },
+//   {
+//     _id: "subito",
+//     firstName: "Mona",
+//     lastName: "Hessel",
+//     language: "amo",
+//     email: "Gerson_Ondricka@example.org",
+//     phone: "tremo",
+//     marketing: false,
+//     smsMarketing: true,
+//     address: {
+//       country: "Netherlands",
+//       firstName: "Loyal",
+//       lastName: "Greenfelder",
+//       company: "minima",
+//       address: "tempora",
+//       apartment: "commodi",
+//       city: "South Marianehaven",
+//       postalCode: "decor",
+//       phone: "deinde",
+//     },
+//     taxExempt: true,
+//     note: "quae",
+//     tags: [undefined, undefined, undefined, undefined, undefined],
+//   },
+// ];
 
-const DraftOrders = () => {
-  if (mockCustomers.length == 0) {
+const DraftOrders = async () => {
+  const response = await fetch(serverURL + "/api/customers", {
+    cache: "no-cache",
+  })
+  const customers = await response.json()
+
+  console.log(customers)
+
+  if (customers.length == 0) {
     return;
     <EmptyPage
       heading="Customers"
@@ -41,7 +213,7 @@ const DraftOrders = () => {
           </Link>
         </div>
       </div>
-      <DataTable customers={mockCustomers} />
+      <DataTable customers={customers} />
     </div>
   );
 };

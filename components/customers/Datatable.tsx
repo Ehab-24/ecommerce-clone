@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Customer } from "@/types/customer";
 import Checkbox from "../Checkbox";
 import InputSearch from "../InputSearch";
+import { serverURL } from "@/lib/utils";
+import FilledButton from "../buttons/FilledButton";
 
 const Pill = ({ text, success }: { text: string; success: boolean }) => (
   <span
@@ -31,6 +33,24 @@ const Datatable = ({ customers }: { customers: Customer[] }) => {
       setSelected([]);
     } else {
       setSelected([...customers]);
+    }
+  };
+
+  const handleDelete = () => {
+    const customer = selected[0];
+
+    if (
+      confirm(
+        `Are you sure you want to delete ${customer.firstName} ${customer.lastName}?`
+      )
+    ) {
+      fetch(serverURL + "/api/customers/" + customer._id, {
+        method: "DELETE",
+        cache: "no-cache",
+      })
+        .then((response) => response.json())
+        .then((data) => console.log(data))
+        .catch((error) => console.log(error));
     }
   };
 
@@ -77,9 +97,15 @@ const Datatable = ({ customers }: { customers: Customer[] }) => {
                 <Pill text="Not subscribed" success={false} />
               )}
             </div>
-            <div className="flex-1">{customer.address.city}</div>
+            <div className="flex-1">{customer.address.address}</div>
             <div className="flex-1">0</div>
             <div className="flex-1">0</div>
+
+            {selected.length > 0 && selected.includes(customer) && (
+              <div className="">
+                <FilledButton onClick={handleDelete}>Delete</FilledButton>
+              </div>
+            )}
           </div>
         ))}
       </div>
