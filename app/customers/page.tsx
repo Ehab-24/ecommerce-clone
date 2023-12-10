@@ -10,7 +10,7 @@ import FilledButton from "@/components/buttons/FilledButton";
 
 const DraftOrders = () => {
   return (
-    <div>
+    <div className="p-5">
       <Heading>Customers</Heading>
       <Card className="flex flex-col items-center justify-center py-16">
         <Image

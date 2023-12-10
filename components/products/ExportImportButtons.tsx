@@ -1,17 +1,17 @@
 'use client'
 
 import React from "react";
-import OutlinedButtonSmall from "@/components/buttons/OutlinedButtonSmall";
+import OutlinedButton from "../buttons/OutlinedButton";
 
 export default function ExportImportButtons() {
   return (
     <>
-      <OutlinedButtonSmall onClick={() => { }}>
+      <OutlinedButton onClick={() => { }}>
         Export
-      </OutlinedButtonSmall>
-      <OutlinedButtonSmall onClick={() => { }}>
+      </OutlinedButton>
+      <OutlinedButton onClick={() => { }}>
         Import
-      </OutlinedButtonSmall>
+      </OutlinedButton>
     </>
   )
 }

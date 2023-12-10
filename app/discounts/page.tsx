@@ -7,16 +7,15 @@ import Image from "next/image";
 import Title from "@/components/Title";
 import Text from "@/components/Text";
 import FilledButton from "@/components/buttons/FilledButton";
+import OutlinedButton from "@/components/buttons/OutlinedButton";
 
 const DiscountsPage = () => {
   return (
-    <div>
+    <div className="p-5">
       <div className="flex justify-between items-center">
         <Heading>Discounts</Heading>
         <div className="flex justify-center items-center gap-5 mb-5">
-          <button className="select-none rounded-lg border border-gray-900 py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none">
-            Import
-          </button>
+          <OutlinedButton>Export</OutlinedButton>
           <FilledButton>Create Discount</FilledButton>
         </div>
       </div>

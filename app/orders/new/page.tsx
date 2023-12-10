@@ -74,13 +74,13 @@ const OrdersPage = () => {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen p-5 md:w-[100%] lg:px-[20%]">
       <div className="flex flex-col gap-4">
-        <div className="flex items-center gap-2 mb-2">
+        <div className="flex items-center gap-2">
           <Link href="/orders">
-            <FaArrowLeft className="text-sm text-neutral-800" />
+            <FaArrowLeft className="text-2xl text-neutral-800 rounded-md p-1 hover:bg-neutral-200" />
           </Link>
-          <Heading>Create Order</Heading>
+          <Heading className="!pb-0.5">Create Order</Heading>
         </div>
 
         <Card className="!p-0">

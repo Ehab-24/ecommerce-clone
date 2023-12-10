@@ -1,4 +1,5 @@
 import LinkMini from "@/components/LinkMini";
+import FilledButton from "@/components/buttons/FilledButton";
 import OutlinedButtonSmall from "@/components/buttons/OutlinedButtonSmall";
 import Datatable from "@/components/products/Datatable";
 import ExportImportButtons from "@/components/products/ExportImportButtons";
@@ -38,7 +39,6 @@ export default function ProductsPage() {
   //   fetchProducts()
   // }, [])
 
-
   // fill with dummy products
   const products: Product[] = [
     {
@@ -75,18 +75,18 @@ export default function ProductsPage() {
       },
       media: [
         {
-          url: 'https://loremflickr.com/cache/resized/65535_52933847621_1b59865752_320_280_nofilter.jpg',
-          altText: 'Coffee Maker',
-          type: 'image'
+          url: "https://loremflickr.com/cache/resized/65535_52933847621_1b59865752_320_280_nofilter.jpg",
+          altText: "Coffee Maker",
+          type: "image",
         },
         {
-          url: 'https://loremflickr.com/cache/resized/65535_52552903348_288981b690_320_280_nofilter.jpg',
-          altText: 'Coffee Maker',
-          type: 'image'
-        }
+          url: "https://loremflickr.com/cache/resized/65535_52552903348_288981b690_320_280_nofilter.jpg",
+          altText: "Coffee Maker",
+          type: "image",
+        },
       ],
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     },
 
     {
@@ -123,18 +123,18 @@ export default function ProductsPage() {
       },
       media: [
         {
-          url: 'https://loremflickr.com/cache/resized/65535_52933847621_1b59865752_320_280_nofilter.jpg',
-          altText: 'Coffee Maker',
-          type: 'image'
+          url: "https://loremflickr.com/cache/resized/65535_52933847621_1b59865752_320_280_nofilter.jpg",
+          altText: "Coffee Maker",
+          type: "image",
         },
         {
-          url: 'https://loremflickr.com/cache/resized/65535_52552903348_288981b690_320_280_nofilter.jpg',
-          altText: 'Coffee Maker',
-          type: 'image'
-        }
+          url: "https://loremflickr.com/cache/resized/65535_52552903348_288981b690_320_280_nofilter.jpg",
+          altText: "Coffee Maker",
+          type: "image",
+        },
       ],
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     },
 
     {
@@ -171,13 +171,13 @@ export default function ProductsPage() {
       },
       media: [
         {
-          url: 'https://loremflickr.com/cache/resized/65535_52552903348_288981b690_320_280_nofilter.jpg',
-          altText: 'Coffee Maker',
-          type: 'image'
-        }
+          url: "https://loremflickr.com/cache/resized/65535_52552903348_288981b690_320_280_nofilter.jpg",
+          altText: "Coffee Maker",
+          type: "image",
+        },
       ],
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     },
 
     {
@@ -214,18 +214,18 @@ export default function ProductsPage() {
       },
       media: [
         {
-          url: 'https://loremflickr.com/cache/resized/65535_52933847621_1b59865752_320_280_nofilter.jpg',
-          altText: 'Coffee Maker',
-          type: 'image'
+          url: "https://loremflickr.com/cache/resized/65535_52933847621_1b59865752_320_280_nofilter.jpg",
+          altText: "Coffee Maker",
+          type: "image",
         },
         {
-          url: 'https://loremflickr.com/cache/resized/65535_52552903348_288981b690_320_280_nofilter.jpg',
-          altText: 'Coffee Maker',
-          type: 'image'
-        }
+          url: "https://loremflickr.com/cache/resized/65535_52552903348_288981b690_320_280_nofilter.jpg",
+          altText: "Coffee Maker",
+          type: "image",
+        },
       ],
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     },
 
     {
@@ -262,18 +262,18 @@ export default function ProductsPage() {
       },
       media: [
         {
-          url: 'https://loremflickr.com/cache/resized/65535_52933847621_1b59865752_320_280_nofilter.jpg',
-          altText: 'Coffee Maker',
-          type: 'image'
+          url: "https://loremflickr.com/cache/resized/65535_52933847621_1b59865752_320_280_nofilter.jpg",
+          altText: "Coffee Maker",
+          type: "image",
         },
         {
-          url: 'https://loremflickr.com/cache/resized/65535_52552903348_288981b690_320_280_nofilter.jpg',
-          altText: 'Coffee Maker',
-          type: 'image'
-        }
+          url: "https://loremflickr.com/cache/resized/65535_52552903348_288981b690_320_280_nofilter.jpg",
+          altText: "Coffee Maker",
+          type: "image",
+        },
       ],
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     },
 
     {
@@ -310,18 +310,18 @@ export default function ProductsPage() {
       },
       media: [
         {
-          url: 'https://loremflickr.com/cache/resized/65535_52933847621_1b59865752_320_280_nofilter.jpg',
-          altText: 'Coffee Maker',
-          type: 'image'
+          url: "https://loremflickr.com/cache/resized/65535_52933847621_1b59865752_320_280_nofilter.jpg",
+          altText: "Coffee Maker",
+          type: "image",
         },
         {
-          url: 'https://loremflickr.com/cache/resized/65535_52552903348_288981b690_320_280_nofilter.jpg',
-          altText: 'Coffee Maker',
-          type: 'image'
-        }
+          url: "https://loremflickr.com/cache/resized/65535_52552903348_288981b690_320_280_nofilter.jpg",
+          altText: "Coffee Maker",
+          type: "image",
+        },
       ],
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     },
 
     {
@@ -358,23 +358,23 @@ export default function ProductsPage() {
       },
       media: [
         {
-          url: 'https://loremflickr.com/cache/resized/65535_53113720087_74e1377b87_320_280_nofilter.jpg',
-          altText: 'Coffee Maker',
-          type: 'image'
+          url: "https://loremflickr.com/cache/resized/65535_53113720087_74e1377b87_320_280_nofilter.jpg",
+          altText: "Coffee Maker",
+          type: "image",
         },
         {
-          url: 'https://loremflickr.com/cache/resized/65535_52933847621_1b59865752_320_280_nofilter.jpg',
-          altText: 'Coffee Maker',
-          type: 'image'
+          url: "https://loremflickr.com/cache/resized/65535_52933847621_1b59865752_320_280_nofilter.jpg",
+          altText: "Coffee Maker",
+          type: "image",
         },
         {
-          url: 'https://loremflickr.com/cache/resized/65535_52552903348_288981b690_320_280_nofilter.jpg',
-          altText: 'Coffee Maker',
-          type: 'image'
-        }
+          url: "https://loremflickr.com/cache/resized/65535_52552903348_288981b690_320_280_nofilter.jpg",
+          altText: "Coffee Maker",
+          type: "image",
+        },
       ],
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     },
 
     {
@@ -411,15 +411,15 @@ export default function ProductsPage() {
       },
       media: [
         {
-          url: 'https://loremflickr.com/cache/resized/65535_52552903348_288981b690_320_280_nofilter.jpg',
-          altText: 'Coffee Maker',
-          type: 'image'
-        }
+          url: "https://loremflickr.com/cache/resized/65535_52552903348_288981b690_320_280_nofilter.jpg",
+          altText: "Coffee Maker",
+          type: "image",
+        },
       ],
       createdAt: new Date(),
-      updatedAt: new Date()
-    }
-  ]
+      updatedAt: new Date(),
+    },
+  ];
 
   return (
     <div className="bg-gray-100 min-h-screen p-8">
@@ -428,7 +428,9 @@ export default function ProductsPage() {
 
         <div className=" flex gap-4">
           <ExportImportButtons />
-          <LinkMini href="products/new">Add Product</LinkMini>
+          <FilledButton>
+            <Link href="/products/new">Create Product</Link>
+          </FilledButton>
         </div>
       </div>
 

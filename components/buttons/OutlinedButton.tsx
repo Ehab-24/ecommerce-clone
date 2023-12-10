@@ -1,15 +1,24 @@
 export default function OutlinedButton({
   children,
   onClick,
+  props,
 }: {
   children: React.ReactNode;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  props?: any;
 }) {
   return (
     <button
       onClick={onClick}
-      className="select-none rounded-lg border border-gray-900 py-3 px-6 text-center align-middle font-sans text-xs font-bold text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+      className="select-none rounded-lg border-2 border-neutral-200 py-1
+      hover:bg-neutral-200 shadow-sm shadow-neutral-500/10
+      hover:shadow-lg hover:shadow-neutral-900/20
+      px-2 text-center align-middle font-sans text-xs font-bold 
+      text-neutral-900 transition-all focus:ring 
+      focus:ring-neutral-300 active:opacity-[0.85] disabled:pointer-events-none 
+      disabled:opacity-50 disabled:shadow-none bg-neutral-50"
       type="button"
+      {...props}
     >
       {children}
     </button>

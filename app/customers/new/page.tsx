@@ -68,7 +68,7 @@ const OrdersPage = () => {
   };
 
   return (
-    <div className="min-h-screen p-5">
+    <div className="min-h-screen p-5 md:w-[100%] lg:px-[20%]">
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-2 mb-2">
           <Link href="/customers">
