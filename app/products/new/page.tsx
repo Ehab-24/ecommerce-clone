@@ -3,7 +3,7 @@
 import { RiDeleteBin6Line } from "react-icons/ri";
 import Heading from "@/components/Heading";
 import { ZodError } from "zod";
-import { ProductSchema, Product } from "@/types/product";
+import { ApiProductSchema, ApiProduct } from "@/types/product";
 import Link from "next/link";
 import Card from "@/components/Card";
 import Checkbox from "@/components/Checkbox";
@@ -18,9 +18,11 @@ import { FaArrowLeft } from "react-icons/fa";
 import SectionTitle from "@/components/SectionTitle";
 import countries from "@/data/countries";
 import OutlinedButtonSmall from "@/components/buttons/OutlinedButtonSmall";
+import ImageUploader from "@/components/ImageUploader";
+import Image from "next/image";
 
 export default function NewProductPage() {
-  const defaultProduct: Product = {
+  const defaultProduct: ApiProduct = {
     title: "",
     description: "",
     price: 0,
@@ -45,7 +47,9 @@ export default function NewProductPage() {
     vendor: "",
     collection: "",
     variants: [],
-    media: [],
+    media: [
+      { type: "image", url: "https://loremflickr.com/320/280" },
+    ],
     seo: {
       title: "",
       description: "",
@@ -53,7 +57,7 @@ export default function NewProductPage() {
     tags: [],
   };
 
-  const [product, setProduct] = React.useState<Product>(defaultProduct);
+  const [product, setProduct] = React.useState<ApiProduct>(defaultProduct);
 
   useEffect(() => {
     if (product.price !== 0 && product.costPerItem !== 0) {
@@ -70,7 +74,7 @@ export default function NewProductPage() {
 
   async function handleSave() {
     try {
-      const result = ProductSchema.parse(product);
+      const result = ApiProductSchema.parse(product);
       const resp = await fetch(`/api/products`, {
         method: "POST",
         headers: {
@@ -114,6 +118,23 @@ export default function NewProductPage() {
                   setProduct({ ...product, description: e.target.value })
                 }
               />
+            </Card>
+
+            <Card className="flex flex-col gap-4 items-stretch">
+              <SectionTitle title="Media" />
+
+              <div className={product.media.length === 0 ? "w-full" : "w-full gap-2 grid grid-cols-2 lg:grid-cols-3"}>
+                {
+                  product.media.map((m, i) => (
+                    <div key={i} className="rounded-md overflow-hidden" >
+                      <Image src={m.url} alt={product.title} width={0} height={0} sizes="100vw" style={{ width: '100%', height: '100%' }} />
+                    </div>
+                  ))
+                }
+
+                <ImageUploader onSave={(url) => setProduct({ ...product, media: [...product.media, { type: "image", url }] })} />
+              </div>
+
             </Card>
 
             <Card className="flex flex-col gap-4 items-stretch">
@@ -185,7 +206,7 @@ function Pricing({
   product,
   setProduct,
 }: {
-  product: Product;
+  product: ApiProduct;
   setProduct: React.Dispatch<React.SetStateAction<any>>;
 }) {
   return (
@@ -256,7 +277,7 @@ function Inventory({
   product,
   setProduct,
 }: {
-  product: Product;
+  product: ApiProduct;
   setProduct: React.Dispatch<React.SetStateAction<any>>;
 }) {
   return (
@@ -331,7 +352,7 @@ function Variants({
   product,
   setProduct,
 }: {
-  product: Product;
+  product: ApiProduct;
   setProduct: React.Dispatch<React.SetStateAction<any>>;
 }) {
   return (
@@ -399,7 +420,7 @@ function Shipping({
   product,
   setProduct,
 }: {
-  product: Product;
+  product: ApiProduct;
   setProduct: React.Dispatch<React.SetStateAction<any>>;
 }) {
   return (
@@ -463,7 +484,7 @@ function ProductOrganization({
   product,
   setProduct,
 }: {
-  product: Product;
+  product: ApiProduct;
   setProduct: React.Dispatch<React.SetStateAction<any>>;
 }) {
   return (

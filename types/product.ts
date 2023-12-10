@@ -35,7 +35,6 @@ const ProductSchema = z.object({
   media: z.array(z.object({
     url: z.string(),
     type: z.enum(['image', 'video']),
-    altText: z.string()
   })),
   seo: z.object({
     title: z.string(),
@@ -79,7 +78,6 @@ const ApiProductSchema = z.object({
   media: z.array(z.object({
     url: z.string(),
     type: z.enum(['image', 'video']),
-    altText: z.string()
   })),
   seo: z.object({
     title: z.string(),
