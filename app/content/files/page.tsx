@@ -10,13 +10,14 @@ import LinkMini from "@/components/LinkMini";
 import OuterText from "@/components/OuterText";
 import { fi } from "date-fns/locale";
 import TransparentButton from "@/components/TransparentButton";
+import OuterLink from "@/components/Link";
 
 const Files = () => {
   return (
     <>
-      <div className="flex justify-between items-center">
-        <Heading>Files</Heading>
-        <div className="my-5">
+      <div className="flex justify-between items-center mb-3">
+        <Heading className="pb-0">Files</Heading>
+        <div>
           <LinkMini href="">Upload File</LinkMini>
         </div>
       </div>
@@ -35,16 +36,36 @@ const Files = () => {
               </button>
             </div>
             <div className="flex items-center gap-3">
-              <button>Search</button>
-              <button>sort</button>
+              <button className="py-1 px-1 border rounded-md flex items-center shadow-sm shadow-neutral-200">
+                <Image
+                  src="/SearchIcon.svg"
+                  width={20}
+                  height={20}
+                  alt="Plus button Image"
+                />
+                <Image
+                  src="/ThreeLines.svg"
+                  width={20}
+                  height={20}
+                  alt="Plus button Image"
+                />
+              </button>
+              <button className="py-1 px-2 border rounded-md shadow-sm shadow-neutral-200">
+              <Image
+                  src="/BothArrows.svg"
+                  alt="Plus button Image"
+                  width={20}
+                  height={20}
+                />
+              </button>
             </div>
           </div>
         </div>
         <div className="flex flex-col items-center justify-center py-16">
           <Image
             src="/Upload_Image.svg"
-            width={210}
-            height={210}
+            width={226}
+            height={226 }
             alt="Metaobjects Image"
           />
           <Title>Upload and manage your files</Title>
@@ -55,7 +76,7 @@ const Files = () => {
         </div>
       </Card>
       <OuterText>
-        Learn more about files
+        Learn more about <OuterLink>files</OuterLink>
       </OuterText>
     </>
   )
