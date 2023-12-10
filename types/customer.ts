@@ -18,7 +18,7 @@ const CustomerSchema = z.object({
 
   note: z.string(),
 
-  tags: array(z.any()),
+  tags: z.array(z.any()),
 });
 
 type Customer = z.infer<typeof CustomerSchema>;

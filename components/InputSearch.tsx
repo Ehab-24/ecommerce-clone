@@ -3,6 +3,7 @@ import { IoSearchOutline } from "react-icons/io5";
 
 interface InputSearchProps {
   placeholder: string;
+  className?: string;
 }
 
 const inputSearch: React.FC<InputSearchProps> = ({ ...props }) => {
@@ -12,9 +13,14 @@ const inputSearch: React.FC<InputSearchProps> = ({ ...props }) => {
         <IoSearchOutline clasName="" />
       </div>
       <input
+        placeholder={props.placeholder}
         type="text"
-        className="pl-10 w-full border border-gray-200 rounded-lg py-1 outline outline-1 outline-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-        {...props}
+        className={`pl-10 w-full border 
+        border-gray-200 rounded-lg py-1 
+        outline outline-1 
+        outline-gray-500 focus:outline-none focus:ring-2 
+        focus:ring-primary-500 
+        focus:border-transparent ${props.className}`}
       />
     </div>
   );
