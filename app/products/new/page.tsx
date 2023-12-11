@@ -17,9 +17,11 @@ import { IoIosClose } from "react-icons/io";
 import { FaArrowLeft } from "react-icons/fa";
 import SectionTitle from "@/components/SectionTitle";
 import countries from "@/data/countries";
-import OutlinedButtonSmall from "@/components/buttons/OutlinedButtonSmall";
 import ImageUploader from "@/components/ImageUploader";
 import Image from "next/image";
+import Spinner from "@/components/Spinner";
+import TextButton from "@/components/buttons/TextButton";
+import axios from "axios";
 
 export default function NewProductPage() {
   const defaultProduct: ApiProduct = {
@@ -47,9 +49,7 @@ export default function NewProductPage() {
     vendor: "",
     collection: "",
     variants: [],
-    media: [
-      { type: "image", url: "https://loremflickr.com/320/280" },
-    ],
+    media: [],
     seo: {
       title: "",
       description: "",
@@ -58,6 +58,7 @@ export default function NewProductPage() {
   };
 
   const [product, setProduct] = React.useState<ApiProduct>(defaultProduct);
+  const [loading, setLoading] = React.useState(false)
 
   useEffect(() => {
     if (product.price !== 0 && product.costPerItem !== 0) {
@@ -72,30 +73,41 @@ export default function NewProductPage() {
     }
   }, [product.price, product.costPerItem]);
 
+  useEffect(() => {
+    console.log(product.variants.map(v => v.name))
+  }, [product.variants])
+
+  function getNextVriant(): string {
+    const variants: string[] = ["color", "size", "material", "style"]
+    for (let i = 0; i < variants.length; i++) {
+      if (!product.variants.map(v => v.name).includes(variants[i])) return variants[i]
+    }
+    return "color"
+  }
+
   async function handleSave() {
+
+    setLoading(true)
+
     try {
       const result = ApiProductSchema.parse(product);
-      const resp = await fetch(`/api/products`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(result),
-      });
+      const { status } = await axios.post(`/api/products`, result)
 
-      if (resp.status === 201) {
+      if (status === 201) {
         toast.success("Product created successfully");
         setProduct(defaultProduct);
       }
+
     } catch (error) {
-      console.log(product.description);
       toast.error((error as ZodError).errors[0].message);
+    } finally {
+      setLoading(false)
     }
   }
 
   return (
     <div className=" w-full bg-gray-100 items-center flex flex-col">
-      <div className="flex-col max-w-4xl w-full flex gap-6 p-8 ">
+      <div className="flex-col max-w-5xl w-full flex gap-6 p-8 ">
         <div className="flex gap-3 items-start ">
           <Link href="/products" className="p-2 rounded-md hover:bg-black/10 transition-all">
             <FaArrowLeft className="text-sm text-[#1a1a1a]" />
@@ -104,23 +116,27 @@ export default function NewProductPage() {
         </div>
 
         <div className="w-full flex flex-col 2xl:flex-row justify-center gap-4">
-          <div className=" flex flex-col w-full max-w-3xl self-center gap-4 mb-8">
-            <Card className="flex flex-col gap-4 items-stretch">
+          <div className=" flex flex-col w-full self-center gap-4 mb-8">
+            <Card className="flex p-4 flex-col gap-4 items-stretch">
               <Input
                 id="title"
-                onChange={(e) => setProduct({ ...product, title: e.target.value })}
+                value={product.title}
+                onChange={e => setProduct({ ...product, title: e.target.value })}
                 label="Title"
                 placeholder="Title"
+                disabled={loading}
               />
               <TextArea
                 label="Description"
+                disabled={loading}
+                value={product.description}
                 onChange={(e) =>
                   setProduct({ ...product, description: e.target.value })
                 }
               />
             </Card>
 
-            <Card className="flex flex-col gap-4 items-stretch">
+            <Card className="flex p-4 flex-col gap-4 items-stretch">
               <SectionTitle title="Media" />
 
               <div className={product.media.length === 0 ? "w-full" : "w-full gap-2 grid grid-cols-2 lg:grid-cols-3"}>
@@ -137,43 +153,54 @@ export default function NewProductPage() {
 
             </Card>
 
-            <Card className="flex flex-col gap-4 items-stretch">
+            <Card className="flex p-4 flex-col gap-4 items-stretch">
               <SectionTitle title="Pricing" />
-              <Pricing product={product} setProduct={setProduct} />
+              <Pricing loading={loading} product={product} setProduct={setProduct} />
             </Card>
 
-            <Card className=" flex-col flex gap-4">
+            <Card className=" flex-col flex p-4 gap-4">
               <SectionTitle title="Inventory" />
-              <Inventory product={product} setProduct={setProduct} />
+              <Inventory loading={loading} product={product} setProduct={setProduct} />
             </Card>
 
-            <Card className=" flex-col flex gap-4">
+            <Card className=" flex-col flex p-4 gap-4">
               <SectionTitle title="Shipping" />
-              <Shipping product={product} setProduct={setProduct} />
+              <Shipping loading={loading} product={product} setProduct={setProduct} />
             </Card>
 
-            <Card className=" flex-col flex gap-4">
+            <Card className=" flex-col flex p-4 gap-4">
               <SectionTitle title="Variants" />
-              <Variants product={product} setProduct={setProduct} />
-              <div className="flex ">
-                <OutlinedButtonSmall onClick={() => setProduct({ ...product, variants: [...product.variants, { name: "", values: [] }] })}>Add Variant</OutlinedButtonSmall>
-              </div>
+              <Variants loading={loading} product={product} setProduct={setProduct} />
+
+              {
+                product.variants.length < 4 && (
+                  <div className="flex">
+                    <TextButton onClick={() => setProduct({ ...product, variants: [...product.variants, { name: getNextVriant(), values: [] }] })}>
+                      {
+                        product.variants.length === 0 ? "+ Add options like color or size" : "+ Add another option"
+                      }
+                    </TextButton>
+                  </div>
+                )
+              }
+
             </Card>
 
-            <Card className="flex flex-col items-stretch">
+            <Card className="flex p-4 flex-col items-stretch">
               <SectionTitle title="Search Engine Listing" />
               <p className=" text-xs text-gray-900 mb-8">Add a title and description to see how this collection might appear in a search engine listing</p>
-              <Input id="seo-title" onChange={e => setProduct({ ...product, seo: { ...product.seo, title: e.target.value } })} label="SEO Title" placeholder="" />
+              <Input id="seo-title" disabled={loading} onChange={e => setProduct({ ...product, seo: { ...product.seo, title: e.target.value } })} label="SEO Title" placeholder="" />
               <div className="h-4" />
-              <TextArea label="SEO Description" onChange={e => setProduct({ ...product, seo: { ...product.seo, description: e.target.value } })} />
+              <TextArea label="SEO Description" disabled={loading} onChange={e => setProduct({ ...product, seo: { ...product.seo, description: e.target.value } })} />
             </Card>
           </div>
 
-          <div className="flex flex-col gap-4">
-            <Card className=" flex-col flex gap-4">
+          <div className="flex flex-col 2xl:max-w-xs w-full gap-4">
+            <Card className=" flex-col flex p-4 gap-4">
               <SectionTitle title="Status" />
               <Select
                 label="Status"
+                disabled={loading}
                 options={[
                   { label: "Active", value: "active" },
                   { label: "Draft", value: "draft" },
@@ -187,25 +214,33 @@ export default function NewProductPage() {
               />
             </Card>
 
-            <Card className=" flex-col flex gap-4">
+            <Card className=" flex-col flex p-4 gap-4">
               <SectionTitle title="Product Organization" />
-              <ProductOrganization product={product} setProduct={setProduct} />
+              <ProductOrganization loading={loading} product={product} setProduct={setProduct} />
             </Card>
           </div>
         </div>
       </div>
 
       <div className="w-full max-w-4xl flex justify-end mb-8">
-        <FilledButton onClick={handleSave}>Save</FilledButton>
+        {
+          loading ? (
+            <Spinner />
+          ) : (
+            <FilledButton onClick={handleSave}>Save</FilledButton>
+          )
+        }
       </div>
     </div>
   );
 }
 
 function Pricing({
+  loading,
   product,
   setProduct,
 }: {
+  loading: boolean;
   product: ApiProduct;
   setProduct: React.Dispatch<React.SetStateAction<any>>;
 }) {
@@ -214,6 +249,7 @@ function Pricing({
       <div className="flex gap-4 mt-4">
         <Input
           id="price"
+          disabled={loading}
           label="Price"
           placeholder="$ 0.00"
           type="number"
@@ -223,6 +259,7 @@ function Pricing({
         />
         <Input
           id="compare-at-price"
+          disabled={loading}
           label="Compare-at Price"
           placeholder="$ 0.00"
           type="number"
@@ -233,6 +270,7 @@ function Pricing({
       </div>
       <Checkbox
         id="charge-taxes"
+        disabled={loading}
         label="Charge Taxes on this Product"
         onChange={(e) =>
           setProduct({ ...product, chargeTaxes: e.target.checked })
@@ -240,6 +278,7 @@ function Pricing({
       />
       <div className="flex gap-4 mt-4">
         <Input
+          disabled={loading}
           id="cost-per-item"
           label="Cost per Item"
           placeholder="$ 0.00"
@@ -250,6 +289,7 @@ function Pricing({
         />
         <Input
           id="profit"
+          disabled={loading}
           value={product.profit}
           label="Profit"
           placeholder="--"
@@ -260,6 +300,7 @@ function Pricing({
         />
         <Input
           id="margin"
+          disabled={loading}
           label="Margin %"
           value={product.margin}
           placeholder="--"
@@ -274,9 +315,11 @@ function Pricing({
 }
 
 function Inventory({
+  loading,
   product,
   setProduct,
 }: {
+  loading: boolean;
   product: ApiProduct;
   setProduct: React.Dispatch<React.SetStateAction<any>>;
 }) {
@@ -284,6 +327,7 @@ function Inventory({
     <>
       <Checkbox
         id="tarck-quantity"
+        disabled={loading}
         label="Track Quantity"
         onChange={(e) =>
           setProduct({ ...product, trackQuantity: e.target.checked })
@@ -296,7 +340,7 @@ function Inventory({
           <div>
             <Input
               id="quantity"
-              label=""
+              disabled={loading}
               placeholder="0"
               type="number"
               onChange={(e) =>
@@ -311,6 +355,7 @@ function Inventory({
       {product.trackQuantity && (
         <Checkbox
           id="continue-selling-when-out-of-stock"
+          disabled={loading}
           label="Continue selling when out of stock"
           onChange={(e) =>
             setProduct({
@@ -322,6 +367,7 @@ function Inventory({
       )}
       <Checkbox
         id="has-sku"
+        disabled={loading}
         label="This product has a SKU or barcode"
         onChange={(e) => setProduct({ ...product, hasSku: e.target.checked })}
       />
@@ -330,7 +376,7 @@ function Inventory({
         <div className=" w-full flex gap-4 mt-4">
           <Input
             id="product-sku"
-            placeholder=""
+            disabled={loading}
             label="SKU (Stock Keeping Unit)"
             onChange={(e) => setProduct({ ...product, sku: e.target.value })}
           />
@@ -349,37 +395,59 @@ function Inventory({
 }
 
 function Variants({
+  loading,
   product,
   setProduct,
 }: {
+  loading: boolean;
   product: ApiProduct;
   setProduct: React.Dispatch<React.SetStateAction<any>>;
 }) {
+
+  function variantsInclude(name: string): boolean {
+    return product.variants.map(v => v.name).includes(name)
+  }
+
+  function getPlaceholder(name: string): string {
+    switch (name) {
+      case "color":
+        return "Red, Blue, Green"
+      case "size":
+        return "Small, Medium, Large"
+      case "material":
+        return "Cotton, Polyester"
+      case "style":
+        return "Slim fit, Regular fit"
+      default:
+        return ""
+    }
+  }
+
   return (
     <>
       {product.variants.map((variant, index) => (
         <div key={index} className="flex flex-col border-b pb-4 border-gray-300">
-          <button onClick={() => setProduct({ ...product, variants: product.variants.filter(v => v !== variant) })} className="p-2 rounded-md hover:bg-black/10 self-end transition-all">
+          <button disabled={loading} onClick={() => setProduct({ ...product, variants: product.variants.filter(v => v !== variant) })} className="p-2 rounded-md hover:bg-black/10 self-end transition-all">
             <RiDeleteBin6Line className="text-sm text-[#1a1a1a]" />
           </button>
 
-
-          <Select label="Variant Name" onChange={e => {
+          <Select disabled={loading} value={variant.name} label="Variant Name" onChange={e => {
             const newVariants = [...product.variants];
-            newVariants[index].name = e.target.value;
+            newVariants[index].name = e.target.value as string;
             setProduct({ ...product, variants: newVariants })
           }} options={[
-            { value: "color", label: "Color" },
-            { value: "size", label: "Size" },
-            { value: "material", label: "Material" },
-            { value: "style", label: "Style" },
+            { value: "color", label: "Color", disabled: variantsInclude("color") },
+            { value: "size", label: "Size", disabled: variantsInclude("size") },
+            { value: "material", label: "Material", disabled: variantsInclude("material") },
+            { value: "style", label: "Style", disabled: variantsInclude("style") },
           ]} />
 
           <div className="w-full mt-4">
             <Input
               id="variant-values"
+              disabled={loading}
               label="Variant Values"
-              placeholder="S, M, L"
+              placeholder={getPlaceholder(variant.name)}
               onKeyDown={e => {
                 const value = e.currentTarget.value;
                 if (e.key === "Enter" && value !== "") {
@@ -396,7 +464,7 @@ function Variants({
                 variant.values.map((v, i) => (
                   <div key={i} className="bg-slate-200 text-gray-900 px-2 py-1 rounded-md text-sm flex items-center gap-1">
                     {v}
-                    <button onClick={() => {
+                    <button disabled={loading} onClick={() => {
                       const newVariants = [...product.variants];
                       newVariants[index].values = newVariants[index].values.filter(val => val !== v);
                       setProduct({ ...product, variants: newVariants })
@@ -417,9 +485,11 @@ function Variants({
 }
 
 function Shipping({
+  loading,
   product,
   setProduct,
 }: {
+  loading: boolean;
   product: ApiProduct;
   setProduct: React.Dispatch<React.SetStateAction<any>>;
 }) {
@@ -427,7 +497,9 @@ function Shipping({
     <>
       <Checkbox
         id="physical-product"
+        disabled={loading}
         label="This is a physical product"
+        checked={product.isPhysicalProduct}
         onChange={(e) =>
           setProduct({ ...product, isPhysicalProduct: e.target.checked })
         }
@@ -439,6 +511,7 @@ function Shipping({
           <div className=" w-full flex gap-4 items-end justify-between mb-4">
             <div className="w-full">
               <Input
+                disabled={loading}
                 id="weight"
                 label="Weight"
                 placeholder="0.0"
@@ -452,6 +525,7 @@ function Shipping({
             <div className="w-full">
               <Select
                 label="Weight Unit"
+                disabled={loading}
                 options={[
                   { value: "kg", label: "kg" },
                   { value: "g", label: "g" },
@@ -467,6 +541,7 @@ function Shipping({
 
           <Select
             label="Country/Region of origin"
+            disabled={loading}
             options={countries}
             onChange={(e) =>
               setProduct({ ...product, countryOfOrigin: e.target.value })
@@ -481,9 +556,11 @@ function Shipping({
 }
 
 function ProductOrganization({
+  loading,
   product,
   setProduct,
 }: {
+  loading: boolean;
   product: ApiProduct;
   setProduct: React.Dispatch<React.SetStateAction<any>>;
 }) {
@@ -491,6 +568,7 @@ function ProductOrganization({
     <>
       <Input
         id="product-category"
+        disabled={loading}
         label="Product category"
         placeholder="Apparel & Accessories"
         onChange={(e) =>
@@ -499,8 +577,8 @@ function ProductOrganization({
       />
       <Input
         id="product-type"
+        disabled={loading}
         label="Product Type"
-        placeholder=""
         onChange={(e) =>
           setProduct({ ...product, productType: e.target.value })
         }
@@ -508,13 +586,13 @@ function ProductOrganization({
       <Input
         id="vendor"
         label="Vendor"
-        placeholder=""
+        disabled={loading}
         onChange={(e) => setProduct({ ...product, vendor: e.target.value })}
       />
       <Input
         id="collections"
         label="Collections"
-        placeholder=""
+        disabled={loading}
         onChange={(e) =>
           setProduct({ ...product, collections: e.target.value })
         }
@@ -523,7 +601,7 @@ function ProductOrganization({
       <Input
         id="tags"
         label="Tags"
-        placeholder=""
+        disabled={loading}
         onKeyDown={(e) => {
           const value = e.currentTarget.value;
           if (e.key === "Enter" && value !== "") {
@@ -540,6 +618,7 @@ function ProductOrganization({
           >
             {tag}{" "}
             <button
+              disabled={loading}
               onClick={() =>
                 setProduct({
                   ...product,

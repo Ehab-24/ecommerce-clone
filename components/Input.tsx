@@ -9,6 +9,7 @@ export default function Input({
   onKeyDown,
   icon,
   type = "text",
+  disabled = false,
   className = "",
 }: {
   id: string;
@@ -19,6 +20,7 @@ export default function Input({
   onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
   icon?: React.ReactNode;
   type?: React.HTMLInputTypeAttribute;
+  disabled?: boolean;
   className?: string;
 }) {
 
@@ -39,6 +41,7 @@ export default function Input({
           <div className={`flex items-center gap-2 w-full py-1.5 px-2.5 ring-0 rounded-lg ${isFocus ? "border-2 border-gray-500" : "border border-gray-200"}`}>
             {icon}
             <input
+              disabled={disabled}
               type={type}
               id={id}
               value={value}
@@ -54,6 +57,7 @@ export default function Input({
 
         ) : (
           <input
+            disabled={disabled}
             type={type}
             id={id}
             value={value}

@@ -14,6 +14,7 @@ import { fi } from "date-fns/locale";
 import TransparentButton from "@/components/TransparentButton";
 import OuterLink from "@/components/Link";
 import { AddModal } from "@/components/modals/ContainerBarModals/AddModal";
+import { SortPopover } from "@/components/popovers/ContainerbarPopover";
 
 const Files = () => {
   return (
@@ -29,7 +30,7 @@ const Files = () => {
           <div className="flex justify-between items-center px-5">
             <div className="flex items-center gap-2">
               <button className="w-10 h-7 py-1 px-3 bg-gray-200 rounded-md text-xs font-semibold text-gray-900 hover:bg-gray-100 transition">All</button>
-              <AddModal/>
+              <AddModal />
             </div>
             <div className="flex items-center gap-3">
               <button className="py-1 px-1 border rounded-md flex items-center shadow-sm shadow-neutral-200">
@@ -46,14 +47,8 @@ const Files = () => {
                   alt="Plus button Image"
                 />
               </button>
-              <button className="py-1 px-2 border rounded-md shadow-sm shadow-neutral-200">
-              <Image
-                  src="/BothArrows.svg"
-                  alt="Plus button Image"
-                  width={20}
-                  height={20}
-                />
-              </button>
+
+              <SortPopover />
             </div>
           </div>
         </div>
@@ -61,7 +56,7 @@ const Files = () => {
           <Image
             src="/Upload_Image.svg"
             width={226}
-            height={226 }
+            height={226}
             alt="Metaobjects Image"
           />
           <Title>Upload and manage your files</Title>
