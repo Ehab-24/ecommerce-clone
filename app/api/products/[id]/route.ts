@@ -4,10 +4,26 @@ import { ObjectId } from "mongodb"
 import { ApiProductSchema } from "@/types/product"
 import { errorResponse } from "../../utils"
 
+export async function GET(_: NextRequest, { params }: { params: { id: string } }) {
+    try {
+
+        const db = await getDb()
+        const product = await db.collection("products").findOne({ _id: new ObjectId(params.id) })
+        return NextResponse.json(product, { status: 200 })
+    }
+    catch (error) {
+        return errorResponse(error)
+    }
+}
+
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
     try {
 
-        const payload = ApiProductSchema.parse(await request.json())
+        const data = await request.json()
+
+        console.log(data)
+
+        const payload = ApiProductSchema.parse(data)
         payload.updatedAt = new Date()
 
         const db = await getDb()
