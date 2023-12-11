@@ -1,5 +1,5 @@
 import getDb from "@/lib/db";
-import { errorResponse } from "./utils";
+import { errorResponse } from "../utils";
 import { CustomerSchema } from "@/types/customer";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -31,21 +31,6 @@ export async function PUT(request: NextRequest) {
       .collection("customers")
       .updateOne({ _id: payload._id }, { $set: payload });
     return NextResponse.json(updateResult);
-  } catch (error) {
-    console.log(error);
-    return errorResponse(error);
-  }
-}
-
-export async function DELETE(request: NextRequest) {
-  try {
-    const body = await request.json();
-    const payload = CustomerSchema.parse(body);
-    const db = await getDb();
-    const deleteResult = await db
-      .collection("customers")
-      .deleteOne({ _id: payload._id });
-    return NextResponse.json(deleteResult);
   } catch (error) {
     console.log(error);
     return errorResponse(error);
