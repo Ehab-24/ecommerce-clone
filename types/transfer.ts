@@ -1,23 +1,5 @@
 import { z } from "zod";
-import { LocationSchema } from "./location";
-import { ProductSchema } from "./product";
-
-const TransferSchema = z.object({
-  _id: z.string(),
-  origin: LocationSchema,
-  destination: LocationSchema,
-  products: z.array(ProductSchema),
-  shipping: z.object({
-    arrivalDate: z.date(),
-    carrier: z.string(),
-    trackingNumber: z.string(),
-  }),
-  referenceNumber: z.string(),
-  tags: z.array(z.string()),
-  status: z.enum(["pending", "draft", "received"]),
-  createdAt: z.date().optional(),
-  updatedAt: z.date().optional(),
-});
+import { Product } from "./product";
 
 const ApiTransferSchema = z.object({
   origin: z.string(),
@@ -35,7 +17,10 @@ const ApiTransferSchema = z.object({
   updatedAt: z.date().optional(),
 });
 
-type Transfer = z.infer<typeof TransferSchema>;
 type ApiTransfer = z.infer<typeof ApiTransferSchema>;
 
-export { TransferSchema, type Transfer, ApiTransferSchema, type ApiTransfer };
+type Transfer = Omit<Omit<Omit<ApiTransfer, "createdAt">, "updatedAt">, "products"> & {
+  _id: string; products: Product[]; createdAt: Date; updatedAt: Date;
+};
+
+export { type Transfer, ApiTransferSchema, type ApiTransfer };
