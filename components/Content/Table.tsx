@@ -12,29 +12,29 @@ const MetaTable = () => {
             <table className="w-full text-left rtl:text-right">
                 <thead className="text-xs font-light text-table-header bg-gray-50 border-b-2">
                     <tr >
-                        <th className="pl-6 flex flex-row">
+                        <th scope='col' className="pl-6 flex flex-row">
                             <Checkbox id={''} label={''} onChange={function (event: React.ChangeEvent<HTMLInputElement>): void {
                                 throw new Error('Function not implemented.')
                             }} />
-                            <th  className="py-3">
+                            <th scope='col'  className="py-3">
                                 Display Name
                             </th>
                         </th>
-                        <th className="px-3 py-3"></th>
-                        <th className="px-3 py-3"></th>
-                        <th className="px-6 py-3">
+                        <th scope='col' className="px-3 py-3"></th>
+                        <th scope='col' className="px-3 py-3"></th>
+                        <th scope='col' className="px-6 py-3">
                             Defination
                         </th>
-                        <th className="px-6 py-3">
+                        <th scope='col' className="px-6 py-3">
                             Storefront access
                         </th>
-                        <th className="px-6 py-3">
+                        <th scope='col' className="px-6 py-3">
                             Status
                         </th>
-                        <th className="px-6 py-3">
+                        <th scope='col' className="px-6 py-3">
                             Last updated
                         </th>
-                        <th className="px-6 py-3">
+                        <th scope='col' className="px-6 py-3">
                             References
                         </th>
 
