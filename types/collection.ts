@@ -29,8 +29,8 @@ const ApiCollectionSchema = z.object({
     title: z.string(),
     description: z.string(),
   }),
-  createdAt: z.optional(z.date()),
-  updatedAt: z.optional(z.date()),
+  createdAt: z.optional(z.string()),
+  updatedAt: z.optional(z.string()),
 });
 
 type ApiCollection = z.infer<typeof ApiCollectionSchema>;
@@ -41,8 +41,8 @@ type Collection = Omit<
   "products"
 > & {
   _id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   products: string[];
 };
 

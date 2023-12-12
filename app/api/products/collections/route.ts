@@ -6,8 +6,8 @@ import { errorResponse } from "../../utils";
 export async function POST(request: NextRequest) {
     try {
         const payload = ApiCollectionSchema.parse(await request.json())
-        payload.createdAt = new Date()
-        payload.updatedAt = new Date()
+        payload.createdAt = (new Date()).toString()
+        payload.updatedAt = (new Date()).toString()
 
         const db = await getDb()
         const insertResult = await db.collection("collections").insertOne(payload)
@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
         const limit = Number(searchParams.get('limit') || 20)
         const page = Number(searchParams.get('page') || 0)
 
-        const pipeline = [
+        const pipeline: any = [
             {
                 $lookup: {
                     from: 'products',
@@ -35,12 +35,15 @@ export async function GET(request: NextRequest) {
                     as: 'products'
                 }
             },
-            {
+        ]
+
+        if (fields.length > 0) {
+            pipeline.push({
                 $project: {
                     ...fields?.reduce((acc, field) => ({ ...acc, [field]: 1 }), {}),
                 }
-            }
-        ]
+            })
+        }
 
         const db = await getDb()
         const collections = await db.collection("collections").aggregate(pipeline).limit(limit).skip(page * limit).toArray()

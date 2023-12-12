@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from "next/server"
 import getDb from "@/lib/db"
 import { ObjectId } from "mongodb"
-import { ApiCollectionSchema } from "@/types/collection"
-import { errorResponse } from "@/app/api/utils"
+import { errorResponse } from "../../utils"
+import { ApiSupplierSchema } from "@/types/supplier"
 
 export async function GET(_: NextRequest, { params }: { params: { id: string } }) {
     try {
 
         const db = await getDb()
-        const collections = await db.collection("collections").findOne({ _id: new ObjectId(params.id) })
-        return NextResponse.json(collections, { status: 200 })
+        const supplier = await db.collection("suppliers").findOne({ _id: new ObjectId(params.id) })
+        return NextResponse.json(supplier, { status: 200 })
     }
     catch (error) {
         return errorResponse(error)
@@ -19,11 +19,13 @@ export async function GET(_: NextRequest, { params }: { params: { id: string } }
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
     try {
 
-        const payload = ApiCollectionSchema.parse(await request.json())
+        const data = await request.json()
+
+        const payload = ApiSupplierSchema.parse(data)
         payload.updatedAt = new Date()
 
         const db = await getDb()
-        const updateResult = await db.collection("collections").updateOne({ _id: new ObjectId(params.id) }, { $set: payload })
+        const updateResult = await db.collection("suppliers").updateOne({ _id: new ObjectId(params.id) }, { $set: payload })
         return NextResponse.json(updateResult, { status: 200 })
     }
     catch (error) {
@@ -35,7 +37,7 @@ export async function DELETE(_: NextRequest, { params }: { params: { id: string 
     try {
 
         const db = await getDb()
-        const deleteResult = await db.collection("collections").deleteOne({ _id: new ObjectId(params.id) })
+        const deleteResult = await db.collection("suppliers").deleteOne({ _id: new ObjectId(params.id) })
         return NextResponse.json(deleteResult, { status: 200 })
     }
     catch (error) {
