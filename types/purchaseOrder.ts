@@ -1,4 +1,4 @@
-import { Supplier, SupplierSchema } from "./supplier"
+import { Supplier } from "./supplier"
 import { z } from "zod"
 
 const AdjustmentNames = z.enum([

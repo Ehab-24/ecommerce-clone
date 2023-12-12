@@ -8,14 +8,14 @@ export enum Operator {
   Contains = "contains",
   NotContains = "not-contains",
   StartsWith = "starts-with",
-  EndsWith = "ends-with"
+  EndsWith = "ends-with",
 }
 
 const ConditionSchema = z.object({
   field: z.string(),
   operator: z.nativeEnum(Operator),
   value: z.union([z.string(), z.number()]),
-})
+});
 
 const ApiCollectionSchema = z.object({
   title: z.string(),
@@ -36,8 +36,20 @@ const ApiCollectionSchema = z.object({
 type ApiCollection = z.infer<typeof ApiCollectionSchema>;
 type Condition = z.infer<typeof ConditionSchema>;
 
-type Collection = Omit<Omit<Omit<ApiCollection, "createdAt">, "updatedAt">, "products"> & {
-  _id: string; createdAt: Date; updatedAt: Date; products: string[];
+type Collection = Omit<
+  Omit<Omit<ApiCollection, "createdAt">, "updatedAt">,
+  "products"
+> & {
+  _id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  products: string[];
 };
 
-export { ApiCollectionSchema, ConditionSchema, type ApiCollection, type Collection, type Condition }
+export {
+  ApiCollectionSchema,
+  ConditionSchema,
+  type ApiCollection,
+  type Collection,
+  type Condition,
+};

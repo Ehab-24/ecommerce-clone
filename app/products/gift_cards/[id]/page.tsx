@@ -20,7 +20,6 @@ export default function GiftCardPage() {
     initialValue: 50,
     hasExpiry: true,
     createdBy: {
-      _id: "1",
       name: "John Doe",
     },
     customer: 'CustomerID123',

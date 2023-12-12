@@ -22,11 +22,14 @@ export default async function CollectionsPage() {
         },
       ],
       conditionsMatch: "all",
-      products: 8,
+      products: ["8", "9"],
       seo: {
         title: "Automated Collection",
         description: "Discover our automated collection",
       },
+      _id: "1",
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
     {
       title: "Manual Collection",
@@ -40,11 +43,14 @@ export default async function CollectionsPage() {
         },
       ],
       conditionsMatch: "any",
-      products: 25,
+      products: ["1", "2", "3", "4", "5", "6", "7"],
       seo: {
         title: "Manual Collection",
         description: "Explore our manually curated collection",
       },
+      _id: "2",
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
     {
       title: "Summer Sale",
@@ -63,11 +69,14 @@ export default async function CollectionsPage() {
         },
       ],
       conditionsMatch: "all",
-      products: 22,
+      products: ["1", "2", "3", "4", "5", "6", "7"],
       seo: {
         title: "Summer Sale Collection",
         description: "Get exciting discounts on summer products",
       },
+      _id: "3",
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
     {
       title: "Best Sellers",
@@ -81,11 +90,14 @@ export default async function CollectionsPage() {
         },
       ],
       conditionsMatch: "any",
-      products: 50,
+      products: ["1", "2", "3", "4", "5", "6", "7"],
       seo: {
         title: "Best Sellers Collection",
         description: "Discover our most popular products",
       },
+      _id: "4",
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
   ];
 
