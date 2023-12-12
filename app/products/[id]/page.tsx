@@ -18,54 +18,29 @@ import countries from "@/data/countries";
 import Heading from "@/components/Heading";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import OutlinedButtonSmall from "@/components/buttons/OutlinedButtonSmall";
-
+import ImageUploader from "@/components/ImageUploader";
+import Image from "next/image";
+import { useParams } from "next/navigation";
+import Spinner from "@/components/Spinner";
+import axios, { AxiosError } from "axios";
 
 export default function NewProductPage() {
-  const [product, setProduct] = React.useState<Product>({
-    title: "Smartphone",
-    description: "A powerful smartphone with great features",
-    price: 699.99,
-    compareAtPrice: 799.99,
-    chargeTaxes: true,
-    tax: 0,
-    taxRate: 0,
-    variants: [],
-    costPerItem: 450,
-    profit: 249.99,
-    margin: 36,
-    trackQuantity: true,
-    quantity: 100,
-    continueSellingWhenOutOfStock: false,
-    hasSku: true,
-    sku: "SP001",
-    barcode: "987654321",
-    isPhysicalProduct: true,
-    weight: 0.2,
-    weightUnit: "kg",
-    countryOfOrigin: "China",
-    status: "active",
-    productCategory: "Electronics",
-    productType: "Smartphone",
-    vendor: "Vendor Y",
-    collection: "Tech Gadgets",
-    tags: ["Tech", "Mobile", "Android"],
-    media: [
-      {
-        url: 'https://loremflickr.com/cache/resized/65535_52552903348_288981b690_320_280_nofilter.jpg',
-        altText: 'Coffee Maker',
-        type: 'image'
-      }
-    ],
-    seo: {
-      title: "Smartphone",
-      description: "A powerful smartphone with great features",
-    },
-    createdAt: new Date(),
-    updatedAt: new Date()
-  });
+
+  const params = useParams();
+  const [product, setProduct] = React.useState<Product>()
+  const [initialProduct, setInitialProduct] = React.useState<Product>()
 
   useEffect(() => {
-    if (product.price !== 0 && product.costPerItem !== 0) {
+    async function getProduct() {
+      const { data } = await axios.get(`/api/products/${params.id}`)
+      setProduct(data as Product)
+      setInitialProduct(data as Product)
+    }
+    getProduct()
+  }, [])
+
+  useEffect(() => {
+    if (product && product.price !== 0 && product.costPerItem !== 0) {
       setProduct({
         ...product,
         profit: product.price - product.costPerItem,
@@ -75,125 +50,145 @@ export default function NewProductPage() {
           ) / 100,
       });
     }
-  }, [product.price, product.costPerItem]);
+  }, [product?.price, product?.costPerItem]);
 
   async function handleSave() {
-    try { } catch (error) {
-      console.log(product.description);
-      toast.error((error as ZodError).errors[0].message);
+    try {
+      await axios.put(`/api/products/${params.id}`, product)
+      toast.success("Product saved successfully");
+    } catch (error) {
+      if (error instanceof ZodError) {
+        toast.error((error as ZodError).errors[0].message);
+      } else if (error instanceof AxiosError) {
+        toast.error(error.message);
+        console.log(error)
+      } else {
+        toast.error("Something went wrong");
+      }
     }
   }
 
   async function handleDelete() {
     try { } catch (error) {
-      console.log(product.description);
       toast.error((error as ZodError).errors[0].message);
     }
   }
 
-  return (
-    <div className=" w-full bg-gray-100 items-center flex flex-col">
-      <div className="flex-col max-w-4xl w-full flex gap-6 p-8 ">
-        <div className="flex gap-3 items-start ">
-          <Link href="/products" className="p-2 rounded-md hover:bg-black/10 transition-all">
-            <FaArrowLeft className="text-sm text-[#1a1a1a]" />
-          </Link>
-          <Heading>{product.title}</Heading>
-        </div>
-
-        <div className="w-full flex flex-col 2xl:flex-row justify-center gap-4">
-          <div className=" flex flex-col w-full max-w-3xl self-center gap-4 mb-8">
-            <Card className="flex flex-col gap-4 items-stretch">
-              <Input
-                id="title"
-                value={product.title}
-                onChange={(e) => setProduct({ ...product, title: e.target.value })}
-                label="Title"
-                placeholder="Title"
-              />
-              <TextArea
-                label="Description"
-                value={product.description}
-                onChange={(e) =>
-                  setProduct({ ...product, description: e.target.value })
-                }
-              />
-            </Card>
-
-            <Card className="flex flex-col gap-4 items-stretch">
-              <SectionTitle title="Media" />
-              {
-                product.media.map((item, i) => (
-                  <img key={i} src={item.url} alt={product.title} width="240" height="240" className="rounded-md" />
-                ))
-              }
-            </Card>
-
-            <Card className="flex flex-col gap-4 items-stretch">
-              <SectionTitle title="Pricing" />
-              <Pricing product={product} setProduct={setProduct} />
-            </Card>
-
-            <Card className=" flex-col flex gap-4">
-              <SectionTitle title="Inventory" />
-              <Inventory product={product} setProduct={setProduct} />
-            </Card>
-
-            <Card className=" flex-col flex gap-4">
-              <SectionTitle title="Shipping" />
-              <Shipping product={product} setProduct={setProduct} />
-            </Card>
-
-            <Card className=" flex-col flex gap-4">
-              <SectionTitle title="Variants" />
-              <Variants product={product} setProduct={setProduct} />
-              <div className="flex ">
-                <OutlinedButtonSmall onClick={() => setProduct({ ...product, variants: [...product.variants, { name: "", values: [] }] })}>Add Variant</OutlinedButtonSmall>
-              </div>
-            </Card>
-
-            <Card className="flex flex-col mb-4 items-stretch">
-              <SectionTitle title="Search Engine Listing" />
-              <p className=" text-xs text-gray-900 mb-8">Add a title and description to see how this collection might appear in a search engine listing</p>
-              <Input id="seo-title" onChange={e => setProduct({ ...product, seo: { ...product.seo, title: e.target.value } })} label="SEO Title" placeholder="" />
-              <div className="h-4" />
-              <TextArea label="SEO Description" onChange={e => setProduct({ ...product, seo: { ...product.seo, description: e.target.value } })} />
-            </Card>
+  if (product) {
+    return (
+      <div className=" w-full bg-gray-100 items-center flex flex-col">
+        <div className="flex-col max-w-4xl w-full flex gap-6 p-8 ">
+          <div className="flex gap-3 items-start ">
+            <Link href="/products" className="p-2 rounded-md hover:bg-black/10 transition-all">
+              <FaArrowLeft className="text-sm text-[#1a1a1a]" />
+            </Link>
+            <Heading>{product.title}</Heading>
           </div>
 
-          <div className="flex flex-col gap-4">
-            <Card className=" flex-col flex gap-4">
-              <SectionTitle title="Status" />
-              <Select
-                label="Status"
-                options={[
-                  { label: "Active", value: "active" },
-                  { label: "Draft", value: "draft" },
-                ]}
-                onChange={(e) =>
-                  setProduct({
-                    ...product,
-                    status: e.target.value as "active" | "draft",
-                  })
-                }
-              />
-            </Card>
+          <div className="w-full flex flex-col 2xl:flex-row justify-center gap-4">
+            <div className=" flex flex-col w-full max-w-3xl self-center gap-4 mb-8">
+              <Card className="flex p-4 flex-col gap-4 items-stretch">
+                <Input
+                  id="title"
+                  value={product.title}
+                  onChange={(e) => setProduct({ ...product, title: e.target.value })}
+                  label="Title"
+                  placeholder="Title"
+                />
+                <TextArea
+                  label="Description"
+                  value={product.description}
+                  onChange={(e) =>
+                    setProduct({ ...product, description: e.target.value })
+                  }
+                />
+              </Card>
 
-            <Card className=" flex-col flex gap-4">
-              <SectionTitle title="Product Organization" />
-              <ProductOrganization product={product} setProduct={setProduct} />
-            </Card>
+              <Card className="flex p-4 flex-col gap-4 items-stretch">
+                <SectionTitle title="Media" />
+
+                <div className={product.media.length === 0 ? "w-full" : "w-full gap-2 grid grid-cols-2 lg:grid-cols-3"}>
+                  {
+                    product.media.map((m, i) => (
+                      <div key={i} className="rounded-md overflow-hidden" >
+                        <Image src={m.url} alt={product.title} width={0} height={0} sizes="100vw" style={{ width: '100%', height: '100%' }} />
+                      </div>
+                    ))
+                  }
+
+                  <ImageUploader onSave={(url) => setProduct({ ...product, media: [...product.media, { type: "image", url }] })} />
+                </div>
+
+              </Card>
+
+              <Card className="flex p-4 flex-col gap-4 items-stretch">
+                <SectionTitle title="Pricing" />
+                <Pricing product={product} setProduct={setProduct} />
+              </Card>
+
+              <Card className=" flex-col flex p-4 gap-4">
+                <SectionTitle title="Inventory" />
+                <Inventory product={product} setProduct={setProduct} />
+              </Card>
+
+              <Card className=" flex-col flex p-4 gap-4">
+                <SectionTitle title="Shipping" />
+                <Shipping product={product} setProduct={setProduct} />
+              </Card>
+
+              <Card className=" flex-col flex p-4 gap-4">
+                <SectionTitle title="Variants" />
+                <Variants product={product} setProduct={setProduct} />
+                <div className="flex ">
+                  <OutlinedButtonSmall onClick={() => setProduct({ ...product, variants: [...product.variants, { name: "", values: [] }] })}>Add Variant</OutlinedButtonSmall>
+                </div>
+              </Card>
+
+              <Card className="flex p-4 flex-col mb-4 items-stretch">
+                <SectionTitle title="Search Engine Listing" />
+                <p className=" text-xs text-gray-900 mb-8">Add a title and description to see how this collection might appear in a search engine listing</p>
+                <Input id="seo-title" onChange={e => setProduct({ ...product, seo: { ...product.seo, title: e.target.value } })} label="SEO Title" placeholder="" />
+                <div className="h-4" />
+                <TextArea label="SEO Description" onChange={e => setProduct({ ...product, seo: { ...product.seo, description: e.target.value } })} />
+              </Card>
+            </div>
+
+            <div className="flex flex-col gap-4">
+              <Card className=" flex-col flex p-4 gap-4">
+                <SectionTitle title="Status" />
+                <Select
+                  label="Status"
+                  options={[
+                    { label: "Active", value: "active" },
+                    { label: "Draft", value: "draft" },
+                  ]}
+                  onChange={(e) =>
+                    setProduct({
+                      ...product,
+                      status: e.target.value as "active" | "draft",
+                    })
+                  }
+                />
+              </Card>
+
+              <Card className=" flex-col flex p-4 gap-4">
+                <SectionTitle title="Product Organization" />
+                <ProductOrganization product={product} setProduct={setProduct} />
+              </Card>
+            </div>
+
           </div>
+        </div>
 
+        <div className="w-full max-w-4xl flex gap-4 justify-end mb-8">
+          <FilledButton bgClass="bg-red-500" onClick={handleDelete}>Delete Product</FilledButton>
+          <FilledButton disabled={product == initialProduct} onClick={handleSave}>Save</FilledButton>
         </div>
       </div>
+    )
+  }
 
-      <div className="w-full max-w-4xl flex gap-4 justify-end mb-8">
-        <FilledButton bgClass="bg-red-500" onClick={handleDelete}>Delete Product</FilledButton>
-        <FilledButton onClick={handleSave}>Save</FilledButton>
-      </div>
-    </div>
-  );
+  return <Spinner />
 }
 
 function Pricing({
@@ -515,11 +510,12 @@ function ProductOrganization({
           setProduct({ ...product, productType: e.target.value })
         }
       />
+
+      { /*TODO: change to Select*/}
       <Input
         id="vendor"
-        value={product.vendor}
+        value={product.vendor._id}
         label="Vendor"
-        placeholder=""
         onChange={(e) => setProduct({ ...product, vendor: e.target.value })}
       />
       <Input

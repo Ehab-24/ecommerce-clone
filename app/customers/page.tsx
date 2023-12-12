@@ -1,32 +1,53 @@
-// pages/orders.tsx
+"use client";
+
 import React from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import FilledButton from "@/components/buttons/FilledButton";
 import EmptyPage from "@/components/EmptyPage";
-
-import { CustomerSchema } from "@/types/customer";
-
-import { generateMock } from "@anatine/zod-mock";
 import DataTable from "@/components/customers/Datatable";
 import Heading from "@/components/Heading";
 import ExportImportButtons from "@/components/products/ExportImportButtons";
-
-const mockCustomer = generateMock(CustomerSchema);
-const mockCustomers = Array.from({ length: 10 }, () => mockCustomer);
+import { apiUrl } from "@/lib/utils";
+import { Customer } from "@/types/customer";
 
 const DraftOrders = () => {
-  if (mockCustomers.length == 0) {
-    return;
-    <EmptyPage
-      heading="Customers"
-      title="Everything customers-related in one place"
-      text="Manage customer details, see customer order history, and group customers into segments."
-      img="/customers-img.svg"
-    >
-      <Link href="/customers/new">
-        <FilledButton>Add Customer</FilledButton>
-      </Link>
-    </EmptyPage>;
+  const [customers, setCustomers] = useState<Customer[]>([]);
+
+  useEffect(() => {
+    const fetchCustomers = async () => {
+      const res = await fetch(`api/customers`);
+      const data = await res.json();
+      setCustomers(data);
+    };
+
+    fetchCustomers();
+  }, []);
+
+  const handleDelete = async (id: string) => {
+    const res: any = await fetch(`api/customers/${id}`, {
+      method: "DELETE",
+      cache: "no-cache",
+    });
+
+    if (res.status === 200) {
+      setCustomers(customers.filter((c) => c._id !== id));
+    }
+  };
+
+  if (customers.length === 0) {
+    return (
+      <EmptyPage
+        heading="Customers"
+        title="Everything customers-related in one place"
+        text="Manage customer details, see customer order history, and group customers into segments."
+        img="/customers-img.svg"
+      >
+        <Link href="/customers/new">
+          <FilledButton>Add Customer</FilledButton>
+        </Link>
+      </EmptyPage>
+    );
   }
 
   return (
@@ -41,7 +62,7 @@ const DraftOrders = () => {
           </Link>
         </div>
       </div>
-      <DataTable customers={mockCustomers} />
+      <DataTable customers={customers} handleDelete={handleDelete} />
     </div>
   );
 };

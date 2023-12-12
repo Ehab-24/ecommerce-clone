@@ -1,11 +1,12 @@
 import React from "react"
 
-export default function Checkbox({ id, label, checked, onChange }: { id: string, label: string, checked?: boolean, onChange: React.ChangeEventHandler<HTMLInputElement> }) {
+export default function Checkbox({ id, label, checked, disabled = false, onChange }: { id: string, label: string, checked?: boolean, disabled?: boolean, onChange: React.ChangeEventHandler<HTMLInputElement> }) {
   return (
     <>
       <div className="inline-flex items-center">
         <label className="relative flex items-center rounded-full cursor-pointer" htmlFor="check">
           <input type="checkbox"
+            disabled={disabled}
             checked={checked}
             onChange={onChange}
             className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border-2 border-blue-gray-900 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-gray-900 checked:bg-gray-900 checked:before:bg-gray-900 hover:before:opacity-10"

@@ -1,8 +1,8 @@
-import { array, z } from "zod";
+import { z } from "zod";
 import { AddressSchema } from "./address";
 
 const CustomerSchema = z.object({
-  _id: z.string(),
+  _id: z.any().optional(),
   firstName: z.string(),
   lastName: z.string(),
   language: z.string(),

@@ -21,7 +21,7 @@ const EmptyPage = ({
 }) => {
   return (
     <div className="p-5">
-      <Heading>{heading}</Heading>
+      <Heading className="!pb-5">{heading}</Heading>
       <Card className="flex flex-col items-center justify-center py-16">
         <Image src={img} width="250" height="250" alt="No Orders Image" />
         <Title>{title}</Title>

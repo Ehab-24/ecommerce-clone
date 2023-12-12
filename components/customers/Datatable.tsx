@@ -4,6 +4,9 @@ import { useState } from "react";
 import { Customer } from "@/types/customer";
 import Checkbox from "../Checkbox";
 import InputSearch from "../InputSearch";
+import { apiUrl } from "@/lib/utils";
+import FilledButton from "../buttons/FilledButton";
+import Link from "next/link";
 
 const Pill = ({ text, success }: { text: string; success: boolean }) => (
   <span
@@ -15,7 +18,14 @@ const Pill = ({ text, success }: { text: string; success: boolean }) => (
   </span>
 );
 
-const Datatable = ({ customers }: { customers: Customer[] }) => {
+const Datatable = ({
+  customers,
+  handleDelete,
+}: {
+  customers: Customer[];
+  handleDelete: any;
+}) => {
+  const [customersLocal, setCustomersLocal] = useState<Customer[]>(customers); // [1
   const [selected, setSelected] = useState<Customer[]>([]);
 
   const handleSelect = (customer: Customer) => {
@@ -56,31 +66,46 @@ const Datatable = ({ customers }: { customers: Customer[] }) => {
       </div>
 
       <div className="bg-white">
-        {customers.map((customer) => (
-          <div
-            key={customer._id}
-            className="flex items-center gap-2 p-2 hover:bg-neutral-50"
-          >
-            <div className="flex-none">
-              <Checkbox
-                id={customer._id}
-                label=""
-                checked={selected.some((c) => c._id === customer._id)}
-                onChange={() => handleSelect(customer)}
-              />
+        {customersLocal.map((customer) => (
+          <>
+            <div
+              key={customer._id}
+              className="flex items-center gap-2 p-2 hover:bg-neutral-50"
+            >
+              <div className="flex-none">
+                <Checkbox
+                  id={customer._id}
+                  label=""
+                  checked={selected.some((c) => c._id === customer._id)}
+                  onChange={() => handleSelect(customer)}
+                />
+              </div>
+              <div className="flex-1">
+                <Link href={`customers/${customer._id}`} className="hover:underline">{customer.firstName}</Link>
+              </div>
+              <div className="flex-1">
+                {customer.marketing ? (
+                  <Pill text="Subscribed" success={true} />
+                ) : (
+                  <Pill text="Not subscribed" success={false} />
+                )}
+              </div>
+              <div className="flex-1">{customer.address.address}</div>
+              <div className="flex-1">0</div>
+              <div className="flex-1">0</div>
             </div>
-            <div className="flex-1">{customer.firstName}</div>
-            <div className="flex-1">
-              {customer.marketing ? (
-                <Pill text="Subscribed" success={true} />
-              ) : (
-                <Pill text="Not subscribed" success={false} />
-              )}
-            </div>
-            <div className="flex-1">{customer.address.city}</div>
-            <div className="flex-1">0</div>
-            <div className="flex-1">0</div>
-          </div>
+
+            {selected.length > 0 && selected.includes(customer) && (
+              <div
+                key={customer._id}
+                className="p-2 bg-neutral-100 flex justify-center"
+              >
+                <FilledButton onClick={() => handleDelete(customer._id)}>
+                  Delete
+                </FilledButton>
+              </div>
+            )}
+          </>
         ))}
       </div>
     </div>
