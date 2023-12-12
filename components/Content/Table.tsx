@@ -16,7 +16,7 @@ const MetaTable = () => {
                             <Checkbox id={''} label={''} onChange={function (event: React.ChangeEvent<HTMLInputElement>): void {
                                 throw new Error('Function not implemented.')
                             }} />
-                            <th scope='col'  className="py-3">
+                            <th scope='col' className="py-3">
                                 Display Name
                             </th>
                         </th>
@@ -41,35 +41,29 @@ const MetaTable = () => {
                     </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-
-                    <tr className="hover:bg-gray-50">
+                    <tr className="hover:bg-gray-50 py-3">
                         <td className="pl-6 flex flex-row">
                             <Checkbox id={''} label={''} onChange={function (event: React.ChangeEvent<HTMLInputElement>): void {
                                 throw new Error('Function not implemented.')
                             }} />
-                            <td className="px-6 whitespace-nowrap">
-                            <div className="flex items-center">
-                                <div className="flex-shrink-0 w-10 h-10">
-                                </div>
-                                <div className="ml-4">
-                                    <div className="text-sm font-medium text-gray-900"></div>
-                                    <div className="text-sm text-gray-500"></div>
-                                </div>
-                            </div>
+                            <td className="py-3 whitespace-nowrap">
+                                <div className="text-sm font-medium text-gray-900">Suraj Meta #QVTR7KKO</div>
+                            </td>
                         </td>
+                        <td className="px-3 py-3 whitespace-nowrap"></td>
+                        <td className="px-3 py-3 whitespace-nowrap"></td>
+   
+                        <td className="px-6 py-3 whitespace-nowrap">
+                            <span className="inline-flex text-xs leading-5 font-semibold rounded-full">Suraj Meta</span>
                         </td>
-                        
-                        <td className="px-6 whitespace-nowrap">
-                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full `}></span>
+                        <td className="px-6 py-3 whitespace-nowrap">
+                            <div className="text-sm text-gray-900">Read</div>
                         </td>
-                        <td className="px-6 whitespace-nowrap">
-                            <div className="text-sm text-gray-900"></div>
-                            <div className="text-sm text-gray-500"></div>
+                        <td className="px-6 py-3 whitespace-nowrap text-sm">
+                            <span className="px-3 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
                         </td>
-                        <td className="px-6 whitespace-nowrap text-sm text-gray-500"></td>
-                        <td className="px-6 whitespace-nowrap text-sm text-gray-500"></td>
-                        <td className="px-6 whitespace-nowrap text-sm text-gray-500"></td>
-                        <td className="px-6 whitespace-nowrap text-sm text-gray-500"></td>
+                        <td className="px-6 py-3 whitespace-nowrap text-sm text-gray-500">Dec 11, 2023</td>
+                        <td className="px-6 py-3 whitespace-nowrap text-sm text-gray-500 text-center">0</td>
                     </tr>
                 </tbody>
             </table>
