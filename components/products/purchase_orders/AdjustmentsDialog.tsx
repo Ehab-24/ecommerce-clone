@@ -14,10 +14,10 @@ import TextButton from "@/components/buttons/TextButton"
 import TitleMini from "@/components/TitleMini"
 import Input from "@/components/Input"
 import Select from "@/components/Select";
-import { AdjustmentName, PurchaseOrder } from "@/types/purchaseOrder";
+import { AdjustmentName, ApiPurchaseOrder } from "@/types/purchaseOrder";
 
 
-export default function AdjustmentsDialog({ text, purchaseOrder, setPurchaseOrder }: { text: string, purchaseOrder: PurchaseOrder, setPurchaseOrder: React.Dispatch<React.SetStateAction<PurchaseOrder>> }) {
+export default function AdjustmentsDialog({ text, purchaseOrder, setPurchaseOrder }: { text: string, purchaseOrder: ApiPurchaseOrder, setPurchaseOrder: React.Dispatch<React.SetStateAction<ApiPurchaseOrder>> }) {
 
   return (
     <Dialog>

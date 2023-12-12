@@ -14,7 +14,7 @@ const AdjustmentNames = z.enum([
 ])
 
 const ApiPurchaseOrderSchema = z.object({
-    destination: z.string(),
+    destination: z.string().min(1, "Destination is required"),
     paymentTerms: z.optional(z.string()),
     status: z.enum(["draft", "ordered", "received", "cancelled"]),
     shipping: z.object({
@@ -22,12 +22,12 @@ const ApiPurchaseOrderSchema = z.object({
         carrier: z.string(),
         trackingNumber: z.string(),
     }),
-    products: z.array(z.string()),
-    total: z.number(),
-    referenceNumber: z.string(),
+    products: z.array(z.string()).min(1, "At least one product is required"),
+    total: z.number().min(0, "Total must be greater than 0"),
+    referenceNumber: z.string().min(1, "Reference number is required"),
     noteToSupplier: z.string(),
     tags: z.array(z.string()),
-    supplier: z.string(),
+    supplier: z.string().min(1, "Supplier is required"),
     costAdjustments: z.array(z.object({
         name: AdjustmentNames,
         value: z.number(),

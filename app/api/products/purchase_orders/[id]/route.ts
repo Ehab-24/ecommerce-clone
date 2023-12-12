@@ -4,6 +4,18 @@ import { ObjectId } from "mongodb"
 import { ApiPurchaseOrderSchema } from "@/types/purchaseOrder"
 import { errorResponse } from "@/app/api/utils"
 
+export async function GET(_: NextRequest, { params }: { params: { id: string } }) {
+    try {
+
+        const db = await getDb()
+        const purchaseOrder = await db.collection("purchase_orders").findOne({ _id: new ObjectId(params.id) })
+        return NextResponse.json(purchaseOrder, { status: 200 })
+    }
+    catch (error) {
+        return errorResponse(error)
+    }
+}
+
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
     try {
 

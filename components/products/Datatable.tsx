@@ -58,9 +58,9 @@ export default function Datatable({ products }: { products: Product[] }) {
 
                 <th scope="row" onClick={() => router.push(`/products/${p._id}`)} className="px-6 flex gap-1 items-center xl:min-w-[240px] py-4 font-medium text-gray-900 whitespace-nowrap cursor-pointer">
                   {
-                    p.media.length > 0 && (p.media.map((m, i) =>
+                    p.media?.length > 0 && (p.media.map((m, i) =>
                       <div key={i} className=" aspect-square h-8 bg-gray-200 rounded-md overflow-hidden">
-                        <Image width="32" height="32" src={m.url} alt={m.altText} className="w-full h-full object-cover" />
+                        <Image width="32" height="32" src={m.url} alt={p.title} className="w-full h-full object-cover" />
                       </div>
                     ))
                   }
@@ -84,7 +84,7 @@ export default function Datatable({ products }: { products: Product[] }) {
                   {p.productCategory}
                 </td>
                 <td className="px-6 py-4">
-                  {p.vendor}
+                  {p.vendor.name}
                 </td>
               </tr>
             ))

@@ -2,6 +2,7 @@ import getDb from "@/lib/db";
 import { ApiPurchaseOrderSchema } from "@/types/purchaseOrder";
 import { NextRequest, NextResponse } from "next/server";
 import { errorResponse } from "../../utils";
+import { PUT } from "../[id]/route";
 
 export async function POST(request: NextRequest) {
     try {
@@ -27,7 +28,7 @@ export async function GET(request: NextRequest) {
         const limit = Number(searchParams.get('limit') || 20)
         const page = Number(searchParams.get('page') || 0)
 
-        const pipeline = [
+        const pipeline: any = [
             {
                 $lookup: {
                     from: 'products',
@@ -44,12 +45,15 @@ export async function GET(request: NextRequest) {
                     as: "supplier"
                 }
             },
-            {
+        ]
+
+        if (fields.length) {
+            pipeline.push({
                 $project: {
                     ...fields?.reduce((acc, field) => ({ ...acc, [field]: 1 }), {}),
                 }
-            }
-        ]
+            })
+        }
 
         const db = await getDb()
         const purchaseOrders = await db.collection("purchase_orders").aggregate(pipeline).limit(limit).skip(page * limit).toArray()

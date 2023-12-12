@@ -21,8 +21,6 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 
         const data = await request.json()
 
-        console.log(data)
-
         const payload = ApiProductSchema.parse(data)
         payload.updatedAt = new Date()
 
