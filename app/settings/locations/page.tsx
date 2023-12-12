@@ -8,45 +8,60 @@ import FilledButton from "@/components/buttons/FilledButton"
 import { Location } from "@/types/location"
 import Card from "@/components/Card";
 import ChangeLocationDialog from "@/components/settings/locations/DefaultLocationDialog";
+import { apiUrl } from "@/lib/utils";
 
-export default function LocationsPage() {
+export default async function LocationsPage() {
 
-  const locations: Location[] = [
-    {
-      _id: "1",
-      name: "Sample Location",
-      country: "Sample Country",
-      address: "123 Sample Street",
-      city: "Sample City",
-      postalCode: "12345",
-      phone: {
-        number: "123-456-7890",
-        countryCode: "US"
-      },
-      fulfilOrders: true,
-      status: "active",
-      isDefault: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      _id: "2",
-      name: "Sample Location",
-      isDefault: false,
-      country: "Sample Country",
-      address: "123 Sample Street",
-      city: "Sample City",
-      postalCode: "12345",
-      phone: {
-        number: "123-456-7890",
-        countryCode: "US"
-      },
-      fulfilOrders: true,
-      status: "active",
-      createdAt: new Date(),
-      updatedAt: new Date(),
+  // const locations: Location[] = [
+  //   {
+  //     _id: "1",
+  //     name: "Sample Location",
+  //     country: "Sample Country",
+  //     address: "123 Sample Street",
+  //     city: "Sample City",
+  //     postalCode: "12345",
+  //     phone: {
+  //       number: "123-456-7890",
+  //       countryCode: "US"
+  //     },
+  //     fulfilOrders: true,
+  //     status: "active",
+  //     isDefault: true,
+  //     createdAt: new Date(),
+  //     updatedAt: new Date(),
+  //   },
+  //   {
+  //     _id: "2",
+  //     name: "Sample Location",
+  //     isDefault: false,
+  //     country: "Sample Country",
+  //     address: "123 Sample Street",
+  //     city: "Sample City",
+  //     postalCode: "12345",
+  //     phone: {
+  //       number: "123-456-7890",
+  //       countryCode: "US"
+  //     },
+  //     fulfilOrders: true,
+  //     status: "active",
+  //     createdAt: new Date(),
+  //     updatedAt: new Date(),
+  //   }
+  // ]
+
+  const res = await fetch(apiUrl("/api/settings/locations"), {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json"
     }
-  ]
+  });
+
+  if (res.status !== 200) {
+    throw new Error("Failed to fetch locations")
+  }
+
+  const locations: Location[] = await res.json()
+  console.log(locations)
 
   return (
     <div className="bg-gray-100 min-h-screen w-full px-4 flex flex-col">

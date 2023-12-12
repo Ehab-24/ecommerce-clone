@@ -11,8 +11,8 @@ const ApiGiftCardSchema = z.object({
   createdBy: z.object({
     name: z.string(),
   }),
-  createdAt: z.date(),
-  updatedAt: z.date(),
+  createdAt: z.optional(z.date()),
+  updatedAt: z.optional(z.date()),
 });
 
 type ApiGiftCard = z.infer<typeof ApiGiftCardSchema>;
