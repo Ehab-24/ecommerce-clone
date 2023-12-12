@@ -90,6 +90,7 @@ export default function NewProductPage() {
     setLoading(true)
 
     try {
+
       const result = ApiProductSchema.parse(product);
       const { status } = await axios.post(`/api/products`, result)
 
@@ -99,7 +100,15 @@ export default function NewProductPage() {
       }
 
     } catch (error) {
-      toast.error((error as ZodError).errors[0].message);
+
+      if (error instanceof ZodError) {
+        toast.error(error.errors[0].message);
+      }
+      else {
+        toast.error("Something went wrong");
+        console.log(error);
+      }
+
     } finally {
       setLoading(false)
     }

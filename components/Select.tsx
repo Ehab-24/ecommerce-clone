@@ -19,12 +19,14 @@ export default function Select({
   label?: string;
   value?: string;
 }) {
+
   return (
     <div className="w-full min-w-[200px]">
       <label className="block pb-1 text-sm font-medium text-gray-700">
         {label}
       </label>
       <select
+        defaultValue={options[0].value}
         disabled={disabled}
         value={value}
         onChange={onChange}

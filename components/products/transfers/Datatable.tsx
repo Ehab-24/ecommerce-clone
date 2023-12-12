@@ -1,17 +1,15 @@
-
-
 "use client"
 
 import Checkbox from "@/components/Checkbox"
 import { useState } from "react"
-import { PurchaseOrder } from "@/types/purchaseOrder"
 import StatusText from "../StatusText"
 import { useRouter } from "next/navigation"
+import { Transfer } from "@/types/transfer"
 
-export default function Datatable({ purchaseOrders }: { purchaseOrders: PurchaseOrder[] }) {
+export default function Datatable({ transfers }: { transfers: Transfer[] }) {
 
   const router = useRouter()
-  const [selectedProducts, setSelectedProducts] = useState<boolean[]>(new Array(purchaseOrders.length).fill(false))
+  const [selectedProducts, setSelectedProducts] = useState<boolean[]>(new Array(transfers.length).fill(false))
 
   return (
     <div className="relative overflow-x-auto overflow-y-scroll shadow-md sm:rounded-lg">
@@ -19,13 +17,13 @@ export default function Datatable({ purchaseOrders }: { purchaseOrders: Purchase
         <thead className="text-[10px] text-gray-700 uppercase bg-gray-100 border-t-2 border-b-2 ">
           <tr>
             <th scope="col" className="p-4">
-              <Checkbox id="select-all-purchaseOrders" label="" checked={selectedProducts.every(e => e)} onChange={e => setSelectedProducts(new Array(purchaseOrders.length).fill(e.target.checked))} />
+              <Checkbox id="select-all-purchaseOrders" label="" checked={selectedProducts.every(e => e)} onChange={e => setSelectedProducts(new Array(transfers.length).fill(e.target.checked))} />
             </th>
             <th scope="col" className="px-6 py-3">
-              Purchase Order
+              Transfer
             </th>
             <th scope="col" className="px-6 py-3">
-              Supplier
+              Origin
             </th>
             <th scope="col" className="px-6 py-3">
               Destination
@@ -37,9 +35,6 @@ export default function Datatable({ purchaseOrders }: { purchaseOrders: Purchase
               Recieved
             </th>
             <th scope="col" className="px-6 py-3">
-              Total
-            </th>
-            <th scope="col" className="px-6 py-3">
               Expected Arrival
             </th>
           </tr>
@@ -47,36 +42,34 @@ export default function Datatable({ purchaseOrders }: { purchaseOrders: Purchase
 
         <tbody className="text-xs">
           {
-            purchaseOrders.map((p, i) => (
-              <tr key={p._id} className="bg-white border-b hover:bg-gray-50 ">
+            transfers.map((t, i) => (
+              <tr key={t._id} className="bg-white border-b hover:bg-gray-50 ">
                 <td className="w-4 p-4">
-                  <Checkbox id={"select-" + p._id} checked={selectedProducts[i]} label="" onChange={e => {
+                  <Checkbox id={"select-" + t._id} checked={selectedProducts[i]} label="" onChange={e => {
                     const newSelectProducts = [...selectedProducts]
                     newSelectProducts[i] = e.target.checked
                     setSelectedProducts(newSelectProducts)
                   }} />
                 </td>
 
-                <td onClick={() => router.push(`/products/purchase_orders/${p._id}`)} className="px-6 py-4 cursor-pointer ">
-                  {p.referenceNumber}
+                <td onClick={() => router.push(`/products/transfers/${t._id}`)} className="px-6 py-4 cursor-pointer ">
+                  #{t.referenceNumber}
                 </td>
                 <td className="px-6 py-4">
-                  {p.supplier.company}
+                  {t.origin.name}
+
                 </td>
                 <td className="px-6 py-4">
-                  {p.destination}
+                  {t.destination.name}
                 </td>
                 <td className="px-6 py-4">
-                  <StatusText status={p.status} />
+                  <StatusText status={t.status} />
                 </td>
                 <td className="px-6 py-4">
                   0 of 0
                 </td>
                 <td className="px-6 py-4">
-                  {p.total}
-                </td>
-                <td className="px-6 py-4">
-                  {p.shipping.arrivalDate.toISOString().slice(0, 10)}
+                  {t.shipping.arrivalDate ? (new Date(t.shipping.arrivalDate)).toISOString().slice(0, 10) : ""}
                 </td>
               </tr>
             ))

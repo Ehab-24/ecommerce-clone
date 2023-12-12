@@ -8,8 +8,8 @@ export async function GET(_: NextRequest, { params }: { params: { id: string } }
     try {
 
         const db = await getDb()
-        const collections = await db.collection("collections").findOne({ _id: new ObjectId(params.id) })
-        return NextResponse.json(collections, { status: 200 })
+        const collection = await db.collection("collections").findOne({ _id: new ObjectId(params.id) })
+        return NextResponse.json(collection, { status: 200 })
     }
     catch (error) {
         return errorResponse(error)
@@ -20,7 +20,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     try {
 
         const payload = ApiCollectionSchema.parse(await request.json())
-        payload.updatedAt = new Date()
+        payload.updatedAt = (new Date()).toString()
 
         const db = await getDb()
         const updateResult = await db.collection("collections").updateOne({ _id: new ObjectId(params.id) }, { $set: payload })

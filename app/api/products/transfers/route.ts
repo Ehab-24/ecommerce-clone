@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
         const limit = Number(searchParams.get('limit') || 20)
         const page = Number(searchParams.get('page') || 0)
 
-        const pipeline = [
+        const pipeline: any = [
             {
                 $lookup: {
                     from: 'locations',
@@ -51,12 +51,15 @@ export async function GET(request: NextRequest) {
                     as: 'products'
                 }
             },
-            {
+        ]
+
+        if (fields.length > 0) {
+            pipeline.push({
                 $project: {
                     ...fields?.reduce((acc, field) => ({ ...acc, [field]: 1 }), {}),
                 }
-            }
-        ]
+            })
+        }
 
         const db = await getDb()
         const transfers = await db.collection("transfers").aggregate(pipeline).limit(limit).skip(page * limit).toArray()
