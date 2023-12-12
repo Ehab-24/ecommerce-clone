@@ -2,14 +2,13 @@ import getDb from "@/lib/db";
 import { ApiPurchaseOrderSchema } from "@/types/purchaseOrder";
 import { NextRequest, NextResponse } from "next/server";
 import { errorResponse } from "../../utils";
-import { PUT } from "../[id]/route";
 
 export async function POST(request: NextRequest) {
     try {
 
         const payload = ApiPurchaseOrderSchema.parse(await request.json())
-        payload.createdAt = new Date()
-        payload.updatedAt = new Date()
+        payload.createdAt = (new Date()).toString()
+        payload.updatedAt = (new Date()).toString()
 
         const db = await getDb()
         const insertResult = await db.collection("purchase_orders").insertOne(payload)
@@ -43,6 +42,14 @@ export async function GET(request: NextRequest) {
                     localField: "supplier",
                     foreignField: "_id",
                     as: "supplier"
+                }
+            },
+            {
+                $lookup: {
+                    from: "locations",
+                    localField: "destination",
+                    foreignField: "_id",
+                    as: "destination"
                 }
             },
         ]

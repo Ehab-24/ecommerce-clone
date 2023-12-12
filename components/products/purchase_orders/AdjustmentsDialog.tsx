@@ -57,7 +57,7 @@ export default function AdjustmentsDialog({ text, purchaseOrder, setPurchaseOrde
                   <div className="w-full">
                     <Input id={a.name} value={a.value} onChange={e => {
                       setPurchaseOrder({ ...purchaseOrder, costAdjustments: purchaseOrder.costAdjustments.map(_a => _a.name === a.name ? { ..._a, value: +e.target.value } : _a) })
-                    }} label="" placeholder="" />
+                    }} />
                   </div>
 
                   <button onClick={() => setPurchaseOrder({ ...purchaseOrder, costAdjustments: purchaseOrder.costAdjustments.filter(_a => _a !== a) })}>

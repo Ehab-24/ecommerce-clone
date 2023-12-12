@@ -7,8 +7,8 @@ export async function POST(request: NextRequest) {
     try {
 
         const payload = ApiTransferSchema.parse(await request.json())
-        payload.createdAt = new Date()
-        payload.updatedAt = new Date()
+        payload.createdAt = (new Date()).toString()
+        payload.updatedAt = (new Date()).toString()
 
         const db = await getDb()
         const insertResult = await db.collection("transfers").insertOne(payload)

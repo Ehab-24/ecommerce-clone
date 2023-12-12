@@ -18,14 +18,14 @@ import FilledButton from "@/components/buttons/FilledButton"
 import axios from "axios"
 import toast from "react-hot-toast"
 import { ZodError } from "zod"
+import Spinner from "@/components/Spinner"
 
 export default function CreatePurchaseOrderForm({ suppliers, locations, currencies }: { suppliers: Supplier[], locations: Location[], currencies: { label: string, value: string, disabled?: boolean }[] }) {
 
   const defaultPurchaseOrder: ApiPurchaseOrder = {
-    destination: "",
+    destination: locations[0]._id,
     status: "draft",
     shipping: {
-      arrivalDate: new Date(),
       carrier: "",
       trackingNumber: "",
     },
@@ -38,10 +38,16 @@ export default function CreatePurchaseOrderForm({ suppliers, locations, currenci
     supplier: "",
     costAdjustments: [],
   }
+
   const [purchaseOrder, setPurchaseOrder] = React.useState<ApiPurchaseOrder>(defaultPurchaseOrder);
+  const [loading, setLoading] = React.useState<boolean>(false);
 
   async function handleSave() {
+
+    setLoading(true)
+
     try {
+
       ApiPurchaseOrderSchema.parse(purchaseOrder)
       const { status } = await axios.post("/api/products/purchase_orders", purchaseOrder)
       if (status === 201) {
@@ -51,8 +57,10 @@ export default function CreatePurchaseOrderForm({ suppliers, locations, currenci
       else {
         toast.error("Failed to create purchase order")
       }
+
     }
     catch (error) {
+
       if (error instanceof ZodError) {
         toast.error(error.issues[0].message)
       }
@@ -60,21 +68,27 @@ export default function CreatePurchaseOrderForm({ suppliers, locations, currenci
         toast.error("Failed to create purchase order")
         console.log(error)
       }
+
+    }
+    finally {
+      setLoading(false)
     }
   }
 
   return (
     <>
-      <div className="flex-col max-w-4xl w-full flex gap-6 my-8">
+      <div className="flex-col max-w-4xl w-full flex gap-6 ">
 
         <Card className="flex flex-col items-center justify-center p-4">
           <div className="flex w-full h-full gap-4">
+
             <div className="w-full h-full flex flex-col items-start gap-4">
               <SectionTitle title="Supplier" />
               {suppliers.length > 0 ? (
                 <Select
                   label="Select Supplier"
-                  onChange={() => { }}
+                  onChange={e => setPurchaseOrder({ ...purchaseOrder, supplier: e.target.value })}
+                  value={purchaseOrder.supplier}
                   options={
                     suppliers.map(s => ({ label: s.company, value: s._id }))
                   }
@@ -101,7 +115,8 @@ export default function CreatePurchaseOrderForm({ suppliers, locations, currenci
               <SectionTitle title="Destination" />
               <Select
                 label="Select Destination"
-                onChange={() => { }}
+                value={purchaseOrder.destination}
+                onChange={e => setPurchaseOrder({ ...purchaseOrder, destination: e.target.value })}
                 options={
                   locations.map(l => ({ label: l.name, value: l._id }))
                 }
@@ -112,7 +127,8 @@ export default function CreatePurchaseOrderForm({ suppliers, locations, currenci
           <div className="w-full flex justify-between gap-4 mt-8">
             <Select
               label="Payment Terms (optional)"
-              onChange={() => { }}
+              onChange={e => setPurchaseOrder({ ...purchaseOrder, paymentTerms: e.target.value })}
+              value={purchaseOrder.paymentTerms}
               options={[
                 { label: "None", value: "" },
                 { label: "Cash on delivery", value: "COD" },
@@ -128,41 +144,43 @@ export default function CreatePurchaseOrderForm({ suppliers, locations, currenci
 
             <Select
               label="Supplier Currency"
-              onChange={() => { }}
+              value={purchaseOrder.currency}
+              onChange={e => setPurchaseOrder({ ...purchaseOrder, currency: e.target.value })}
               options={currencies}
             />
           </div>
         </Card>
 
-        <Card className="p-4">
+        <Card className="p-4 flex flex-col items-start">
           <SectionTitle title="Shipping Details" />
-          <div className="mt-4 items-end flex gap-4">
-            <DatePicker />
-            <Input id="" label="Shipping carrier" placeholder="" />
-            <Input id="" label="Tracking number" placeholder="" />
+          <div className="mt-4 items-start flex flex-col w-full xl:flex-row gap-4">
+            <DatePicker date={purchaseOrder.shipping.arrivalDate ? new Date(purchaseOrder.shipping.arrivalDate) : undefined} setDate={(d => setPurchaseOrder({ ...purchaseOrder, shipping: { ...purchaseOrder.shipping, arrivalDate: d?.toString() ?? "" } }))} />
+            <Input id="shipping-carrier" value={purchaseOrder.shipping.carrier} label="Shipping carrier" onChange={(e => setPurchaseOrder({ ...purchaseOrder, shipping: { ...purchaseOrder.shipping, carrier: e.target.value } }))} />
+            <Input id="tracking-number" value={purchaseOrder.shipping.trackingNumber} label="Tracking number" onChange={(e => setPurchaseOrder({ ...purchaseOrder, shipping: { ...purchaseOrder.shipping, trackingNumber: e.target.value } }))} />
           </div>
         </Card>
 
         <Card className="p-4">
           <SectionTitle title="Add Products" />
           <div className=" w-full flex gap-4">
+            {/*TODO: replace with a select popover for suppliers*/}
             <Input
               icon={<IoIosSearch />}
               id="add-products"
-              label=""
               placeholder="Search products"
+              onChange={e => setPurchaseOrder({ ...purchaseOrder, supplier: e.target.value })}
             />
             <OutlinedButton onClick={() => { }}>Browse</OutlinedButton>
           </div>
         </Card>
 
-        <div className=" flex w-full gap-6">
-          <Card className="p-4 w-1/2 max-w-[50%] flex gap-4 flex-col">
+        <div className=" flex flex-col 2xl:flex-row w-full gap-6">
+          <Card className="p-4 w-full flex gap-4 flex-col">
             <SectionTitle title="Additional details" />
-            <AdditionalDetails />
+            <AdditionalDetails purchaseOrder={purchaseOrder} setPurchaseOrder={setPurchaseOrder} />
           </Card>
 
-          <Card className="p-4 w-1/2 h-max">
+          <Card className="p-4 w-full h-max">
             <div className="flex items-center justify-between w-full">
               <TitleMini text="Cost summary" />
               <AdjustmentsDialog
@@ -186,34 +204,36 @@ export default function CreatePurchaseOrderForm({ suppliers, locations, currenci
             <p className="text-xs text-neutral-800">0 items</p>
 
             <TitleMini text="Cost adjustments" />
-            <CostAdjustments
-              adjustments={[
-                { name: "Shipping", value: 0 },
-                { name: "Discount", value: 0 },
-                { name: "Credit", value: 0 },
-                { name: "Other", value: 0 },
-              ]}
-            />
+            <CostAdjustments purchaseOrder={purchaseOrder} />
 
             <div className="flex justify-between items-center w-full mt-4">
               <h3 className="text-xs font-bold mb-2 text-neutral-800">Total</h3>
               <p className="text-xs text-neutral-800">$ 0.00</p>
             </div>
+
           </Card>
+
         </div>
       </div>
 
       <div className="w-full max-w-4xl flex justify-end mb-8">
-        <FilledButton onClick={handleSave}>Save</FilledButton>
+        {
+          loading ? (
+            <Spinner />
+          ) : (
+            <FilledButton onClick={handleSave}>Save</FilledButton>
+          )
+        }
       </div>
+
     </>
   )
 }
 
-function CostAdjustments({ adjustments }: { adjustments: any }) {
+function CostAdjustments({ purchaseOrder }: { purchaseOrder: ApiPurchaseOrder }) {
   return (
     <>
-      {adjustments.map((a: any) => (
+      {purchaseOrder.costAdjustments.map((a: any) => (
         <div key={a.name} className="flex justify-between items-center w-full">
           <h3 className="text-xs mb-2 text-neutral-800">{a.name}</h3>
           <p className="text-xs text-neutral-800">$ {a.value}</p>
@@ -223,17 +243,16 @@ function CostAdjustments({ adjustments }: { adjustments: any }) {
   );
 }
 
-function AdditionalDetails() {
+function AdditionalDetails({ purchaseOrder, setPurchaseOrder }: { purchaseOrder: ApiPurchaseOrder, setPurchaseOrder: React.Dispatch<React.SetStateAction<ApiPurchaseOrder>> }) {
   const [tags, setTags] = React.useState<string[]>([]);
 
   return (
     <>
-      <Input id="reference-number" label="Reference number" placeholder="" />
-      <Input id="note-to-supplier" label="Note to supplier" placeholder="" />
+      <Input id="reference-number" label="Reference number" value={purchaseOrder.referenceNumber} onChange={e => setPurchaseOrder({ ...purchaseOrder, referenceNumber: e.target.value })} />
+      <Input id="note-to-supplier" label="Note to supplier" />
       <Input
         id="tags"
-        label="Tags"
-        placeholder=""
+        label={`Tags ${tags.length > 0 ? `(${tags.length})` : ""}`}
         onKeyDown={(e) => {
           const value = e.currentTarget.value;
           if (e.key === "Enter" && value !== "") {

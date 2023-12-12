@@ -89,7 +89,7 @@ export default function Datatable({
               <td className="px-3 py-4">0 of 0</td>
               <td className="px-3 py-4">{p.total}</td>
               <td className="px-3 py-4">
-                {p.shipping.arrivalDate.toISOString().slice(0, 10)}
+                {p.shipping.arrivalDate ? new Date(p.shipping.arrivalDate).toLocaleDateString() : "N/A"}
               </td>
             </tr>
           ))}
