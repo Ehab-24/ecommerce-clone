@@ -12,16 +12,14 @@ import { apiUrl } from "@/lib/utils";
 
 export default async function PurchaseOrdersPage() {
 
-  const res = await fetch(apiUrl("/api/products/purchase_orders"))
-  console.log(res.status)
+  const res = await fetch(apiUrl("/api/products/purchase_orders"), { cache: "no-cache" })
   if (res.status !== 200) {
     throw new Error("Failed to fetch purchase orders")
   }
   const purchaseOrders: PurchaseOrder[] = await res.json()
 
-
   return (
-    <div className="bg-gray-100 p-5">
+    <div className="bg-gray-100 px-4 min-h-screen py-8">
       <div className=" flex items-center justify-between">
         <Heading className="!pb-0">Purchase Orders</Heading>
 

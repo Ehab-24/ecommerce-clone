@@ -58,7 +58,9 @@ export default function ImageUploader({ onSave }: { onSave: (imageUrl: string) =
 
       {
         loading ? (
-          <Spinner />
+          <div className="w-full h-full grid place-items-center">
+            <Spinner />
+          </div>
         ) : (
           <input {...getInputProps()} />
         )
