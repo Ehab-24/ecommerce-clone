@@ -1,22 +1,17 @@
+"use client";
+
 import React from 'react'
 import { AddModal } from './modals/ContainerBarModals/AddModal'
 import { SortPopover } from './popovers/ContainerbarPopover'
 import { Input } from "@/components/ui/input"
 import Image from 'next/image'
+import { set } from 'date-fns';
 
 const CardTopBar = () => {
 
-    const [searchclicked, setSearchClicked] = React.useState(false)
+    const [searchclicked, setSearchClicked] = React.useState(true)
 
-    const clicked = () => {
-        if (searchclicked === false) {
-            setSearchClicked(true)
-        }
-        else {
-            setSearchClicked(false)
-        }
-
-    }
+    const [search, setSearch] = React.useState('')
 
     return (
         <div className="py-2 w-full border-b border-gray-300 ">
@@ -26,7 +21,7 @@ const CardTopBar = () => {
                     <AddModal />
                 </div>
                 <div className="flex items-center gap-3">
-                    <button onClick={clicked} className="py-1 px-1 border rounded-md flex items-center shadow-sm shadow-neutral-200">
+                    <button onClick={()=> setSearchClicked(false)} className="py-1 px-1 border rounded-md flex items-center shadow-sm shadow-neutral-200">
                         <Image
                             src="/SearchIcon.svg"
                             width={20}
@@ -48,7 +43,7 @@ const CardTopBar = () => {
                     <div className="flex justify-between items-center px-5">
                         <Input className='h-8 w-[85%]' type="Text" placeholder="Searching in All" />
                         <div className='flex items-center gap-3'>
-                            <button className='text-xs text-gray-700 font-semibold' onClick={clicked}>
+                            <button className='text-xs text-gray-700 font-semibold' onClick={()=> setSearchClicked(true)}>
                                 Cancel
                             </button>
                             <button className="h-7 py-1 px-2 rounded-md text-xs font-semibold text-gray-400  bg-gray-100 transition">

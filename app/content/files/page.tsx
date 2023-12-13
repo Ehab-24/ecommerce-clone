@@ -16,11 +16,12 @@ import OuterLink from "@/components/Link";
 import { AddModal } from "@/components/modals/ContainerBarModals/AddModal";
 import { SortPopover } from "@/components/popovers/ContainerbarPopover";
 import CardTopBar from "@/components/CardTopBar";
+import UploadTable from "@/components/Content/UploadTable";
 
 const Files = () => {
   return (
     <>
-      <div className="flex justify-between items-center mb-3">
+      {/* <div className="flex justify-between items-center mb-3">
         <Heading className="pb-0">Files</Heading>
         <div>
           <FilledButton>Upload File</FilledButton>
@@ -41,6 +42,19 @@ const Files = () => {
           </Text>
           <TransparentButton>Upload File</TransparentButton>
         </div>
+      </Card>
+      <OuterText>
+        Learn more about <OuterLink>files</OuterLink>
+      </OuterText> */}
+      <div className="flex justify-between items-center mb-3">
+        <Heading className="pb-0">Files</Heading>
+        <div>
+          <FilledButton>Upload File</FilledButton>
+        </div>
+      </div>
+      <Card >
+        <CardTopBar />
+        <UploadTable/>
       </Card>
       <OuterText>
         Learn more about <OuterLink>files</OuterLink>
