@@ -22,7 +22,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
         const data = await request.json()
 
         const payload = ApiSupplierSchema.parse(data)
-        payload.updatedAt = new Date()
+        payload.updatedAt = (new Date()).toString()
 
         const db = await getDb()
         const updateResult = await db.collection("suppliers").updateOne({ _id: new ObjectId(params.id) }, { $set: payload })

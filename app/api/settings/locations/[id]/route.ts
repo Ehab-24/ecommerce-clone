@@ -8,7 +8,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     try {
 
         const payload = ApiLocationSchema.parse(await request.json())
-        payload.updatedAt = new Date()
+        payload.updatedAt = (new Date()).toString()
 
         const db = await getDb()
         const updateResult = await db.collection("locations").updateOne({ _id: new ObjectId(params.id) }, { $set: payload })

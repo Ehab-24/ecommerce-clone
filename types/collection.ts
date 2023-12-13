@@ -29,6 +29,7 @@ const ApiCollectionSchema = z.object({
     title: z.string(),
     description: z.string(),
   }),
+  includeInOnlineStore: z.boolean(),
   createdAt: z.optional(z.string()),
   updatedAt: z.optional(z.string()),
 });

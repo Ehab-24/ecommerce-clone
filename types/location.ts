@@ -15,8 +15,8 @@ const ApiLocationSchema = z.object({
   fulfilOrders: z.boolean(),
   status: z.enum(["active", "inactive"]),
   isDefault: z.boolean(),
-  createdAt: z.date().optional(),
-  updatedAt: z.date().optional(),
+  createdAt: z.string().optional(),
+  updatedAt: z.string().optional(),
 });
 
 type ApiLocation = z.infer<typeof ApiLocationSchema>;

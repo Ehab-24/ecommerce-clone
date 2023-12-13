@@ -8,8 +8,8 @@ export async function POST(request: NextRequest) {
         const payload = ApiLocationSchema.parse(await request.json())
         const db = await getDb()
 
-        payload.createdAt = new Date()
-        payload.updatedAt = new Date()
+        payload.createdAt = (new Date()).toString()
+        payload.updatedAt = (new Date()).toString()
 
         const insertResult = await db.collection("locations").insertOne(payload)
         return NextResponse.json(insertResult, { status: 201 })

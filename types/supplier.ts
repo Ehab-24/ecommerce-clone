@@ -11,8 +11,8 @@ const ApiSupplierSchema = z.object({
     contactName: z.string(),
     email: z.string(),
     phoneNumber: z.string(),
-    createdAt: z.date().optional(),
-    updatedAt: z.date().optional(),
+    createdAt: z.string().optional(),
+    updatedAt: z.string().optional(),
 });
 
 type ApiSupplier = z.infer<typeof ApiSupplierSchema>;

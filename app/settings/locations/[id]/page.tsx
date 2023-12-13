@@ -11,17 +11,17 @@ import countries from "@/data/countries"
 import { AiOutlineSearch } from "react-icons/ai"
 import Checkbox from "@/components/Checkbox"
 import FilledButton from "@/components/buttons/FilledButtonSmall"
-import { Location } from "@/types/location"
+import { ApiLocation } from "@/types/location"
 import { useState } from "react"
 import Heading from "@/components/Heading"
 
 export default function CreateLocationPage() {
 
-  const [location, setLocation] = useState<Location>({
-    _id: "1",
+  const [location, setLocation] = useState<ApiLocation>({
     name: "Sample Location",
     country: "Sample Country",
     address: "123 Sample Street",
+    apartment: "Sample Apartment",
     city: "Sample City",
     postalCode: "12345",
     phone: {
@@ -31,8 +31,6 @@ export default function CreateLocationPage() {
     fulfilOrders: true,
     status: "active",
     isDefault: true,
-    createdAt: new Date(),
-    updatedAt: new Date(),
   })
 
   function handleSave() {
