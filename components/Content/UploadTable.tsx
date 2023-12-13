@@ -2,6 +2,9 @@
 
 import React from 'react'
 import Checkbox from '../Checkbox'
+import Image from 'next/image'
+import CopyHoverCard from './CopyHoverCard'
+
 
 
 const UploadTable = () => {
@@ -59,7 +62,9 @@ const UploadTable = () => {
                             <div className="text-sm text-gray-900">23.25 KB</div>
                         </td>
                         <td className="px-6 py-3 whitespace-nowrap text-sm text-gray-500 ">---</td>
-                        <td className="px-6 py-3 whitespace-nowrap text-sm text-gray-500 ">link</td>
+                        <td className="px-6 py-3 whitespace-nowrap ">
+                            <CopyHoverCard />
+                        </td>
                     </tr>
                 </tbody>
             </table>
