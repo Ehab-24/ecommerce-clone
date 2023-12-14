@@ -115,7 +115,7 @@ const OrdersPage = () => {
           )}
         </Card>
 
-        <Card>
+        <Card className="p-4">
           <div className="flex justify-between align-middle">
             <SectionTitle title="Notes" />
             <AddNotesModal addItem={addNote} />
@@ -143,7 +143,7 @@ const OrdersPage = () => {
           )}
         </Card>
 
-        <Card>
+        <Card className="p-4">
           <div className="flex justify-between align-middle">
             <SectionTitle title="Customer" />
           </div>
@@ -151,7 +151,7 @@ const OrdersPage = () => {
           <CustomerPopover />
         </Card>
 
-        <Card>
+        <Card className="p-4">
           <SectionTitle title="Customer" />
           <p className="text-sm font-semibold text-neutral-700">
             Primary Market
@@ -159,7 +159,7 @@ const OrdersPage = () => {
           <p className="text-xs">Kingdom of Saudi Arabia (SAR riyals)</p>
         </Card>
 
-        <Card>
+        <Card className="p-4">
           <SectionTitle title="Tags" />
           <Input id="tags" placeholder="" />
         </Card>
