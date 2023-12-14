@@ -6,6 +6,8 @@ import { FaArrowLeft } from "react-icons/fa";
 import CreatePurchaseOrderForm from "@/components/products/purchase_orders/CreatePurchaseOrderForm";
 import { apiUrl } from "@/lib/utils";
 
+import { Supplier } from "@/types/supplier";
+
 export default function CreatePurchaseOrderPage() {
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [locations, setLocations] = useState<any[]>([]);
