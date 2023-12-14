@@ -12,7 +12,8 @@ import Card from "@/components/Card";
 import ChangeLocationDialog from "@/components/settings/locations/DefaultLocationDialog";
 import { apiUrl } from "@/lib/utils";
 
-export default function LocationsPage() {
+export default async function LocationsPage() {
+
   // const locations: Location[] = [
   //   {
   //     _id: "1",
@@ -50,16 +51,12 @@ export default function LocationsPage() {
   //   }
   // ]
 
-  const [locations, setLocations] = useState<Location[]>([]);
-
-  useEffect(() => {
-    const fetchLocations = async () => {
-      const res = await fetch(apiUrl("/api/settings/locations"), {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+  const res = await fetch(apiUrl("/api/settings/locations"), {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  });
 
       if (res.status !== 200) {
         throw new Error("Failed to fetch locations");

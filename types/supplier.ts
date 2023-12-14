@@ -15,14 +15,10 @@ const ApiSupplierSchema = z.object({
     updatedAt: z.string().optional(),
 });
 
-const SupplierSchema = ApiSupplierSchema.extend({
-    _id: z.string(),
-});
-
 type ApiSupplier = z.infer<typeof ApiSupplierSchema>;
 
 type Supplier = Omit<Omit<ApiSupplier, "createdAt">, "updatedAt"> & {
-    _id: string; createdAt: string; updatedAt: string;
+    _id: string; createdAt: Date; updatedAt: Date;
 };
 
-export { type Supplier, ApiSupplierSchema, SupplierSchema, type ApiSupplier }
+export { type Supplier, ApiSupplierSchema, type ApiSupplier }

@@ -1,24 +1,16 @@
-"use client";
-
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
 import CreateTransferForm from "@/components/products/transfers/CreateTransferForm";
 import { apiUrl } from "@/lib/utils";
 import { Location } from "@/types/location";
 
-export default function CreateTransferPage() {
-  const [locations, setLocations] = useState<Location[]>([]);
-
-  useEffect(() => {
-    const fetchLocations = async () => {
-      const res = await fetch(apiUrl("/api/settings/locations"));
-      const data = await res.json();
-      setLocations(data);
-    };
-
-    fetchLocations();
-  }, []);
+export default async function CreateTransferPage() {
+  const res = await fetch(apiUrl("/api/settings/locations"));
+  if (!res.ok) {
+    throw new Error("Failed to fetch locations");
+  }
+  const locations: Location[] = await res.json();
 
   return (
     <div className=" w-full min-h-screen bg-gray-100 items-center flex flex-col">

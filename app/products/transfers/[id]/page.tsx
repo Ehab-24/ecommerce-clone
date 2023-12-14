@@ -6,8 +6,8 @@ import { Location } from "@/types/location"
 export default async function TransferPage({ params }: { params: { id: string } }) {
 
   const requests = [
-    fetch(apiUrl("/api/settings/locations"), { cache: "no-cache" }),
-    fetch(apiUrl(`/api/products/transfers/${params.id}`), { cache: "no-cache" }),
+    fetch(apiUrl("/api/settings/locations")),
+    fetch(apiUrl(`/api/products/transfers/${params.id}`)),
   ]
 
   const [locationsRes, transferRes] = await Promise.all(requests)

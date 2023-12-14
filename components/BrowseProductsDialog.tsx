@@ -46,7 +46,7 @@ export default function BrowseProductsDialog({ defaultQuery = "", setProducts }:
         case "Vendors":
           return <VendorMenu subMenu={activeSubMenu} selectedProducts={selectedProducts} setSelectedProducts={setSelectedProducts} />
         default:
-          throw new Error(`Invalid activeSubMenu: ${activeMenu}, ${activeSubMenu.params}`)
+          throw new Error("Invalid activeSubMenu")
       }
     }
 
@@ -66,7 +66,7 @@ export default function BrowseProductsDialog({ defaultQuery = "", setProducts }:
       case "Vendors":
         return <VendorsMenu setSubMenu={setActiveSubMenu} />;
       case "Selected Products":
-        return <SelectedProductsMenu setMenu={setActiveMenu} selectedProducts={selectedProducts} setSelectedProducts={setSelectedProducts} />;
+        return <SelectedProductsMenu setActiveMenu={setActiveMenu} selectedProducts={selectedProducts} setSelectedProducts={setSelectedProducts} />;
     }
   }
 
@@ -111,10 +111,7 @@ export default function BrowseProductsDialog({ defaultQuery = "", setProducts }:
             selectedProducts.length === 0 || activeMenu === "Selected Products" ? (
               <Text>{selectedProducts.length} variants selected</Text>
             ) : (
-              <OutlinedButton onClick={() => {
-                setActiveMenu("Selected Products")
-                setActiveSubMenu(null)
-              }}>{selectedProducts.length} variants selected</OutlinedButton>
+              <OutlinedButton onClick={() => setActiveMenu("Selected Products")}>{selectedProducts.length} variants selected</OutlinedButton>
             )
           }
 
@@ -233,6 +230,7 @@ function ProductTagsMenu({ setSubMenu }: { setSubMenu: React.Dispatch<React.SetS
 }
 
 function ProductTagMenu({ subMenu, selectedProducts, setSelectedProducts }: { subMenu: SubMenu; selectedProducts: Product[], setSelectedProducts: React.Dispatch<React.SetStateAction<Product[]>>; }) {
+  console.log(subMenu!.params.toString())
   return (
     <ProductsMenu selectedProducts={selectedProducts} setSelectedProducts={setSelectedProducts} load={async () => {
       const res = await axios.get(`/api/products?${subMenu!.params.toString()}`);
@@ -262,10 +260,12 @@ function VendorMenu({ subMenu, selectedProducts, setSelectedProducts }: { subMen
 }
 
 
-function SelectedProductsMenu({ setMenu, selectedProducts, setSelectedProducts }: { setMenu: React.Dispatch<React.SetStateAction<Menu>>; selectedProducts: Product[], setSelectedProducts: React.Dispatch<React.SetStateAction<Product[]>> }) {
+function SelectedProductsMenu({ setActiveMenu, selectedProducts, setSelectedProducts }: { setActiveMenu: React.Dispatch<React.SetStateAction<Menu>>; selectedProducts: Product[], setSelectedProducts: React.Dispatch<React.SetStateAction<Product[]>> }) {
 
   React.useEffect(() => {
-    if (selectedProducts.length === 0) setMenu("Add Products")
+    if (selectedProducts.length === 0) {
+      setActiveMenu("Add Products")
+    }
   }, [selectedProducts]
   )
 

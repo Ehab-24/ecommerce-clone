@@ -8,22 +8,19 @@ import { Product } from "@/types/product";
 import Link from "next/link";
 import React from "react";
 
-import { useState, useEffect } from "react";
-
 // export const runtime = "edge";
 
-export default function ProductsPage() {
-  const [products, setProducts] = useState<Product[]>([]);
+export default async function ProductsPage() {
+  const res = await fetch(apiUrl("/api/products"), {
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+  });
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      const res = await fetch(`/api/products`);
-      const data = await res.json();
-      setProducts(data);
-    };
-
-    fetchProducts();
-  }, []);
+  const products: Product[] = await res.json();
+  console.log(products);
 
   return (
     <div className="bg-gray-100 min-h-screen p-8">

@@ -1,37 +1,20 @@
 import React from "react";
 import { apiUrl } from "@/lib/utils";
+import { PurchaseOrder } from "@/types/purchaseOrder";
 import EditPurchaseOrderForm from "@/components/products/purchase_orders/EditPurchaseOrderForm";
 
-export default async function PurchaseOrderPage({ params }: { params: { id: string } }) {
+export default async function CreatePurchaseOrderPage({ params }: { params: { id: string } }) {
 
-  const requests = [
-    fetch(apiUrl(`/api/products/purchase_orders/${params.id}`), { cache: "no-cache" }),
-    fetch(apiUrl(`/api/suppliers`), { cache: "no-cache" }),
-    fetch(apiUrl(`/api/settings/locations`), { cache: "no-cache" })
-  ]
-  const [orderResponse, suppliersResponse, locationsResponse] = await Promise.all(requests);
-
-  if (!orderResponse.ok) {
-    throw new Error("Failed to load");
+  const res = await fetch(apiUrl(`/api/products/purchase_orders/${params.id}`))
+  if (!res.ok) {
+    throw new Error("Failed to fetch purchase order")
   }
-  if (!suppliersResponse.ok) {
-    throw new Error("Failed to load");
-  }
-  if (!locationsResponse.ok) {
-    throw new Error("Failed to load");
-  }
-
-  const [order, suppliers, locations] = await Promise.all([
-    orderResponse.json(),
-    suppliersResponse.json(),
-    locationsResponse.json()
-  ]);
-
+  const order: PurchaseOrder = await res.json();
 
   return (
     <div className=" w-full bg-gray-100 items-center flex flex-col">
       <div className="flex-col max-w-4xl w-full flex gap-6 p-8 ">
-        <EditPurchaseOrderForm locations={locations} suppliers={suppliers} initialOrder={order} currencies={currencies} />
+        <EditPurchaseOrderForm initialOrder={order} currencies={currencies} />
       </div>
     </div>
   );

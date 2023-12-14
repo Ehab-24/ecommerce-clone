@@ -1,5 +1,6 @@
 import { z } from "zod"
 
+
 const ApiLocationSchema = z.object({
   name: z.string().min(1, "Location name is required"),
   country: z.string().min(1, "Country is required"),
@@ -18,14 +19,10 @@ const ApiLocationSchema = z.object({
   updatedAt: z.string().optional(),
 });
 
-const LocationSchema = ApiLocationSchema.extend({
-  _id: z.string(),
-});
-
 type ApiLocation = z.infer<typeof ApiLocationSchema>;
 
 type Location = Omit<Omit<ApiLocation, "createdAt">, "updatedAt"> & {
   _id: string; createdAt: string; updatedAt: string;
 };
 
-export { type Location, ApiLocationSchema, LocationSchema, type ApiLocation }
+export { type Location, ApiLocationSchema, type ApiLocation }

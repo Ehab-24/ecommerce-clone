@@ -3,31 +3,27 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
+import { Supplier } from "@/types/supplier";
 import CreatePurchaseOrderForm from "@/components/products/purchase_orders/CreatePurchaseOrderForm";
 import { apiUrl } from "@/lib/utils";
 
-import { Supplier } from "@/types/supplier";
+export default async function CreatePurchaseOrderPage() {
+  const requests = [
+    fetch(apiUrl("/api/settings/locations")),
+    fetch(apiUrl("/api/suppliers")),
+  ];
 
-export default function CreatePurchaseOrderPage() {
-  const [suppliers, setSuppliers] = useState<Supplier[]>([]);
-  const [locations, setLocations] = useState<any[]>([]);
+  const [locationsRes, suppliersRes] = await Promise.all(requests);
 
-  useEffect(() => {
-    const fetchSuppliers = async () => {
-      const res = await fetch(`/api/suppliers`);
-      const data = await res.json();
-      setSuppliers(data);
-    };
+  if (!locationsRes.ok) {
+    throw new Error("Failed to fetch locations");
+  }
+  if (!suppliersRes.ok) {
+    throw new Error("Failed to fetch suppliers");
+  }
 
-    const fetchLocations = async () => {
-      const res = await fetch(`/api/settings/locations`);
-      const data = await res.json();
-      setLocations(data);
-    };
-
-    fetchSuppliers();
-    fetchLocations();
-  }, []);
+  const locations = await locationsRes.json();
+  const suppliers: Supplier[] = await suppliersRes.json();
 
   return (
     <div className=" w-full bg-gray-100 min-h-screen items-center flex flex-col">

@@ -116,7 +116,7 @@ export default function NewProductPage() {
 
   return (
     <div className=" w-full bg-gray-100 items-center flex flex-col">
-      <div className="flex-col max-w-4xl w-full flex gap-6 p-8 ">
+      <div className="flex-col max-w-5xl w-full flex gap-6 p-8 ">
         <div className="flex gap-3 items-start ">
           <Link href="/products" className="p-2 rounded-md hover:bg-black/10 transition-all">
             <FaArrowLeft className="text-sm text-[#1a1a1a]" />

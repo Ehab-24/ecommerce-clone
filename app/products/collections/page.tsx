@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -7,18 +7,14 @@ import FilledButton from "@/components/buttons/FilledButton";
 import { apiUrl } from "@/lib/utils";
 import { Collection } from "@/types/collection";
 
-export default function CollectionsPage() {
-  const [collections, setCollections] = useState<Collection[]>([]);
-
-  useEffect(() => {
-    const fetchCollections = async () => {
-      const res = await fetch(`/api/collections`);
-      const data = await res.json();
-      setCollections(data);
-    };
-
-    fetchCollections();
-  }, []);
+export default async function CollectionsPage() {
+  const res = await fetch(apiUrl("/api/products/collections"), {
+    cache: "no-cache",
+  });
+  if (!res.ok) {
+    throw new Error("Failed to fetch");
+  }
+  const collections: Collection[] = await res.json();
 
   return (
     <div className="bg-gray-100 min-h-screen p-8">

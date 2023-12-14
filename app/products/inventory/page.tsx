@@ -8,8 +8,6 @@ import React from "react";
 import ExportImportButtons from "@/components/products/ExportImportButtons";
 import FilledButton from "@/components/buttons/FilledButton";
 
-import { useState, useEffect } from "react";
-
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
 
@@ -25,7 +23,6 @@ export default function ProductsPage() {
 
   return (
     <div className="bg-gray-100 min-h-screen p-8">
-
       <div className=" mb-8 w-full flex justify-between">
         <h1 className="text-xl font-bold text-[#1a1a1a]">Inventory</h1>
 

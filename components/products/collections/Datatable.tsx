@@ -4,7 +4,6 @@ import { Collection } from "@/types/collection"
 import Checkbox from "../../Checkbox"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import Image from "next/image"
 
 export default function Datatable({ collections }: { collections: Collection[] }) {
 
@@ -43,16 +42,8 @@ export default function Datatable({ collections }: { collections: Collection[] }
                   }} />
                 </td>
 
-                <th scope="row" onClick={() => router.push(`/products/collections/${c._id}`)} className="flex gap-1 items-center xl:min-w-[240px] py-4 font-medium text-gray-900 whitespace-nowrap cursor-pointer">
-                  {
-                    c.image && (
-                      <div key={i} className=" aspect-square h-8 bg-gray-200 rounded-md ">
-                        <Image width="32" height="32" src={c.image} alt={c.title} className="w-full h-full object-cover rounded-md border border-gray-300" />
-                      </div>
-                    )
-                  }
-
-                  <p className="ml-4">{c.title}</p>
+                <th scope="row" onClick={() => router.push(`/products/collections/${c._id}`)} className="px-6 flex gap-1 items-center xl:min-w-[240px] py-4 font-medium text-gray-900 whitespace-nowrap  cursor-pointer">
+                  {c.title}
                 </th>
                 <td className="px-6 py-4">
                   {c.products}

@@ -5,8 +5,6 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "experimental-compile": "next experimental-compile",
-    "experimental-generate": "next experimental-generate",
     "start": "next start",
     "lint": "next lint"
   },

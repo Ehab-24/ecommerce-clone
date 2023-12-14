@@ -7,10 +7,12 @@ import { FaArrowLeft } from "react-icons/fa"
 import Card from "@/components/Card"
 import SectionTitle from "@/components/SectionTitle"
 import DatePicker from "@/components/DatePicker"
+import OutlinedButtonSmall from "@/components/buttons/OutlinedButtonSmall"
 import Select from "@/components/Select"
 import { Location } from "@/types/location"
 import StatusText from "@/components/products/StatusText"
-import { ApiTransfer, ApiTransferSchema, Transfer } from "@/types/transfer"
+import FilledButtonSmall from "@/components/buttons/FilledButtonSmall"
+import { ApiTransferSchema, Transfer } from "@/types/transfer"
 import Input from "@/components/Input"
 import { IoIosClose, IoIosSearch } from "react-icons/io"
 import Spinner from "@/components/Spinner"
@@ -18,21 +20,11 @@ import FilledButton from "@/components/buttons/FilledButton"
 import axios from "axios"
 import toast from "react-hot-toast"
 import { ZodError } from "zod"
-import OutlinedButton from "@/components/buttons/OutlinedButton"
-import BrowseProductsDialog from "@/components/BrowseProductsDialog"
-import { Product } from "@/types/product"
-import Datatable from "../Datatable"
 
 export default function EditTransferForm({ locations, initialTransfer }: { locations: Location[], initialTransfer: Transfer }) {
 
-  const [transfer, setTransfer] = React.useState<ApiTransfer>({ ...initialTransfer, products: initialTransfer.products.map(p => p._id), origin: initialTransfer._id, destination: initialTransfer.destination._id })
+  const [transfer, setTransfer] = React.useState<Transfer>(initialTransfer)
   const [loading, setLoading] = React.useState(false)
-  const [products, setProducts] = React.useState<Product[]>([])
-
-  React.useEffect(() => {
-    setTransfer(t => ({ ...t, products: [...t.products, ...products.map(p => p._id)] }))
-  }, [products])
-
 
   async function handleSave() {
 
@@ -62,49 +54,6 @@ export default function EditTransferForm({ locations, initialTransfer }: { locat
     }
   }
 
-  async function handleSattusChange(status: ApiTransfer["status"]) {
-    setLoading(true)
-    try {
-      const res = await axios.put(`/api/products/transfers/${initialTransfer._id}`, transfer)
-      if (res.status === 200) {
-        toast.success("Transfer saved!")
-        setTransfer({ ...transfer, status })
-      }
-    } catch (error) {
-      toast.error("Something went wrong")
-      console.log(error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  function handleReceiveInventory() {
-    toast.success("Inventory received!")
-  }
-
-  function MainActionButton() {
-    if (loading) {
-      return <Spinner />
-    }
-
-    switch (transfer.status) {
-      case "received":
-        return (
-          <FilledButton onClick={handleReceiveInventory}>
-            Recieve inventory
-          </FilledButton>
-        )
-      case "pending":
-        return (
-          <FilledButton onClick={handleReceiveInventory}>
-            Recieve inventory
-          </FilledButton>
-        )
-      case "draft":
-        <FilledButton onClick={() => handleSattusChange("pending")}>Mark as pending</FilledButton>
-    }
-  }
-
   return (
     <div className="flex-col max-w-4xl w-full flex gap-6 p-8 ">
       <div className="flex gap-3 items-center justify-between">
@@ -120,21 +69,23 @@ export default function EditTransferForm({ locations, initialTransfer }: { locat
         </div>
 
         <div className="flex gap-4">
-          <OutlinedButton onClick={() => { }}>
+          <OutlinedButtonSmall onClick={() => { }}>
             Delete
-          </OutlinedButton>
-          <OutlinedButton onClick={() => { }}>
+          </OutlinedButtonSmall>
+          <OutlinedButtonSmall onClick={() => { }}>
             Duplicate
-          </OutlinedButton>
+          </OutlinedButtonSmall>
 
           {
             transfer.status === "draft" ? (
-              <MainActionButton />
+              <FilledButtonSmall onClick={() => setTransfer({ ...transfer, status: "pending" })}>
+                Mark as Pending
+              </FilledButtonSmall>
             ) : (
 
-              <FilledButton onClick={() => { }}>
+              <FilledButtonSmall onClick={() => { }}>
                 Recieve Inventory
-              </FilledButton>
+              </FilledButtonSmall>
             )
           }
         </div>
@@ -145,7 +96,7 @@ export default function EditTransferForm({ locations, initialTransfer }: { locat
         <div className="flex flex-col w-full">
           <SectionTitle title="Origin" />
           <div className="w-min">
-            <Select value={transfer.origin} onChange={e => setTransfer({ ...transfer, origin: locations.find(l => l._id === e.target.value)!._id })} options={locations.map(l => ({ label: l.name, value: l._id! }))} />
+            <Select value={transfer.origin._id} onChange={e => setTransfer({ ...transfer, origin: locations.find(l => l._id === e.target.value)! })} options={locations.map(l => ({ label: l.name, value: l._id! }))} />
           </div>
         </div>
 
@@ -154,7 +105,7 @@ export default function EditTransferForm({ locations, initialTransfer }: { locat
         <div className="flex flex-col w-full">
           <SectionTitle title="Destination" />
           <div className="w-min">
-            <Select value={transfer.destination} onChange={e => setTransfer({ ...transfer, destination: locations.find(l => l._id === e.target.value)!._id })} options={locations.map(l => ({ label: l.name, value: l._id! }))} />
+            <Select value={transfer.destination._id} onChange={e => setTransfer({ ...transfer, destination: locations.find(l => l._id === e.target.value)! })} options={locations.map(l => ({ label: l.name, value: l._id! }))} />
           </div>
         </div>
       </Card>
@@ -162,18 +113,11 @@ export default function EditTransferForm({ locations, initialTransfer }: { locat
       <Card className="p-4">
         <SectionTitle title="Add Products" />
         <div className=" w-full flex gap-4">
-          {/*TODO: replace with a select popover for suppliers*/}
-          <Input icon={<IoIosSearch />} id="add-products" label="" placeholder="Search products" />
-
-          <BrowseProductsDialog productIds={transfer.products} setProducts={ps => setProducts(ps)} />
-
+          <Input icon={<IoIosSearch />} id="add-products" placeholder="Search products" />
+          <OutlinedButtonSmall onClick={() => { }}>
+            Browse
+          </OutlinedButtonSmall>
         </div>
-
-        {
-          products.length > 0 && (
-            <div className="mt-8"><Datatable products={products} /></div>
-          )
-        }
       </Card>
 
       <div className="flex gap-4">
@@ -204,7 +148,7 @@ export default function EditTransferForm({ locations, initialTransfer }: { locat
   )
 }
 
-function AdditionalDetails({ transfer, setTransfer }: { transfer: ApiTransfer, setTransfer: React.Dispatch<React.SetStateAction<ApiTransfer>> }) {
+function AdditionalDetails({ transfer, setTransfer }: { transfer: Transfer, setTransfer: React.Dispatch<React.SetStateAction<Transfer>> }) {
 
   return (
     <>
