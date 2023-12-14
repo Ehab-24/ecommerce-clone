@@ -9,6 +9,9 @@ import LinkMini from "@/components/LinkMini";
 import { apiUrl } from "@/lib/utils";
 import { Transfer } from "@/types/transfer";
 import Datatable from "@/components/products/transfers/Datatable";
+import FilledButton from "@/components/buttons/FilledButton";
+
+export const runtime = "edge"
 
 export default async function TransfersPage() {
 
@@ -31,6 +34,9 @@ export default async function TransfersPage() {
     <div className="bg-gray-100 min-h-screen h-full p-8">
       <div className=" w-full flex justify-between">
         <Heading>Transfers</Heading>
+        <FilledButton>
+          <Link href="/products/transfers/new">Create Transfer</Link>
+        </FilledButton>
       </div>
       <div className="h-8" />
 

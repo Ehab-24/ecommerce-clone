@@ -16,6 +16,7 @@ export default function Datatable({
     new Array(purchaseOrders.length).fill(false)
   );
 
+  console.log(purchaseOrders[0].destination);
   return (
     <div className="relative overflow-x-auto overflow-y-scroll shadow-md sm:rounded-lg">
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 ">
@@ -82,7 +83,7 @@ export default function Datatable({
                 {p.referenceNumber}
               </td>
               <td className="px-3 py-4">{p.supplier.company}</td>
-              <td className="px-3 py-4">{p.destination}</td>
+              <td className="px-3 py-4">{p.destination.name}</td>
               <td className="px-3 py-4">
                 <StatusText status={p.status} />
               </td>

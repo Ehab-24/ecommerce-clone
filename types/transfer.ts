@@ -22,7 +22,7 @@ const ApiTransferSchema = z.object({
 type ApiTransfer = z.infer<typeof ApiTransferSchema>;
 
 type Transfer = Omit<Omit<Omit<Omit<Omit<ApiTransfer, "createdAt">, "updatedAt">, "products">, "origin">, "destination"> & {
-  _id: string; products: Product[]; createdAt: Date; updatedAt: Date; origin: Location; destination: Location;
+  _id: string; products: Product[]; createdAt: string; updatedAt: string; origin: Location; destination: Location;
 };
 
 export { type Transfer, ApiTransferSchema, type ApiTransfer };

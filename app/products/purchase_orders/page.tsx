@@ -10,6 +10,8 @@ import Link from "next/link";
 import FilledButton from "@/components/buttons/FilledButton";
 import { apiUrl } from "@/lib/utils";
 
+export const runtime = "edge"
+
 export default async function PurchaseOrdersPage() {
 
   const res = await fetch(apiUrl("/api/products/purchase_orders"), { cache: "no-cache" })

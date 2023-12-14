@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
-import { Supplier } from "@/types/supplier";
 import CreatePurchaseOrderForm from "@/components/products/purchase_orders/CreatePurchaseOrderForm";
 import { apiUrl } from "@/lib/utils";
 

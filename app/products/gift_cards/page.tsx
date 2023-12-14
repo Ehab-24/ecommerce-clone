@@ -13,6 +13,8 @@ import { GiftCard } from "@/types/giftCard";
 import FilledButton from "@/components/buttons/FilledButton";
 import Link from "next/link";
 
+export const runtime = "edge"
+
 import { useState, useEffect } from "react";
 
 export default function CreateGiftCardPage() {

@@ -23,16 +23,132 @@ import AdjustmentsDialog from "@/components/products/purchase_orders/Adjustments
 import TitleMini from "@/components/TitleMini";
 import StatusText from "@/components/products/StatusText";
 import Datatable from "@/components/products/Datatable";
-import { AdjustmentName, ApiPurchaseOrder, PurchaseOrder } from "@/types/purchaseOrder";
+import { AdjustmentName, ApiPurchaseOrder, ApiPurchaseOrderSchema, PurchaseOrder } from "@/types/purchaseOrder";
 import FilledButton from "@/components/buttons/FilledButton";
+import BrowseProductsDialog from "@/components/BrowseProductsDialog";
+import { Product } from "@/types/product";
+import { toast } from "react-hot-toast";
+import { ZodError } from "zod";
+import axios, { AxiosError } from "axios";
+import Spinner from "@/components/Spinner";
+import { Location } from "@/types/location";
 
-export default function EditPurchaseOrderForm({ initialOrder, currencies }: { currencies: { label: string, value: string }[], initialOrder: PurchaseOrder }) {
 
-  const [purchaseOrder, setPurchaseOrder] = React.useState<ApiPurchaseOrder>({ ...initialOrder, products: initialOrder.products.map(p => p._id), supplier: initialOrder.supplier._id })
+export default function EditPurchaseOrderForm({ initialOrder, currencies, suppliers, locations }: { currencies: { label: string, value: string }[], locations: Location[], suppliers: Supplier[]; initialOrder: PurchaseOrder }) {
+
+  const [purchaseOrder, setPurchaseOrder] = React.useState<ApiPurchaseOrder>({ ...initialOrder, products: initialOrder.products.map(p => p._id), supplier: initialOrder.supplier._id, destination: initialOrder.destination._id })
+  const [products, setProducts] = React.useState<Product[]>(initialOrder.products)
   const [loading, setLoading] = React.useState(false)
+
+  React.useEffect(() => {
+    setPurchaseOrder(po => ({ ...po, products: [...po.products, ...products.map(p => p._id)] }))
+  }, [products])
+
 
   function getTotalTax() {
     return initialOrder.products.reduce((acc, product) => acc + product.tax, 0);
+  }
+
+  async function handleSave() {
+    setLoading(true)
+    try {
+
+      ApiPurchaseOrderSchema.parse(purchaseOrder)
+      const { status } = await axios.put(`/api/products/purchase_orders/${initialOrder._id}`, purchaseOrder)
+      if (status === 200) {
+        toast.success("Purchase order saved!")
+      }
+      toast.success("Purchase order saved!")
+
+    }
+    catch (error) {
+
+      if (error instanceof ZodError) {
+        console.log(error)
+        console.log(purchaseOrder)
+        toast.error((error as ZodError).errors[0].message);
+      } else if (error instanceof AxiosError) {
+        toast.error(error.message);
+        console.log(error)
+      } else {
+        toast.error("Something went wrong");
+        console.log(error)
+      }
+
+    }
+    finally {
+      setLoading(false)
+    }
+  }
+
+  async function handleStatusChange(status: "draft" | "ordered" | "received" | "cancelled") {
+    setLoading(true)
+    try {
+
+      const res = await axios.put(`/api/products/purchase_orders/${initialOrder._id}`, purchaseOrder)
+      if (res.status === 200) {
+        toast.success(`Marked as ${status}`)
+        setPurchaseOrder({ ...purchaseOrder, status })
+      } else {
+        toast.error("Unable to save order")
+      }
+
+    }
+    catch (error) {
+
+      if (error instanceof ZodError) {
+        console.log(error)
+        toast.error((error as ZodError).errors[0].message);
+      } else if (error instanceof AxiosError) {
+        toast.error(error.message);
+        console.log(error)
+      } else {
+        toast.error("Something went wrong");
+        console.log(error)
+      }
+
+    }
+    finally {
+      setLoading(false)
+    }
+  }
+
+  function handleReceiveInventory() {
+    toast.success("Inventory received!")
+  }
+
+  function MainActionButton() {
+
+    if (loading) {
+      return <Spinner />
+    }
+
+    switch (purchaseOrder.status) {
+      case "received":
+        return (
+          <FilledButton disabled={loading} onClick={handleReceiveInventory}>
+            Receive inventory
+          </FilledButton>
+        )
+      case "draft":
+        return (
+          <FilledButton disabled={loading} onClick={() => handleStatusChange("ordered")}>
+            Mark as ordered
+          </FilledButton>
+        )
+      case "ordered":
+        return (
+          <FilledButton disabled={loading} onClick={handleReceiveInventory}>
+            Receive inventory
+          </FilledButton>
+        )
+      case "cancelled":
+        return (
+          <FilledButton disabled={loading} onClick={() => handleStatusChange("draft")}>
+            Mark as draft
+          </FilledButton>
+        )
+    }
   }
 
   return (
@@ -55,9 +171,7 @@ export default function EditPurchaseOrderForm({ initialOrder, currencies }: { cu
           <OutlinedButton onClick={() => { }}>
             Duplicate
           </OutlinedButton>
-          <FilledButton onClick={() => { }}>
-            Mark as Ordered
-          </FilledButton>
+          <MainActionButton />
         </div>
       </div>
 
@@ -66,14 +180,18 @@ export default function EditPurchaseOrderForm({ initialOrder, currencies }: { cu
           <div className="w-full h-full flex flex-col items-start gap-4">
             <SectionTitle title="Supplier" />
             {
-              purchaseOrder.supplier ?
-                <div className="flex flex-col w-full items-start gap-2">
-                  <h3 className="text-xl text-gray-900 font-bold">{initialOrder.supplier.company}</h3>
-                  <div className="w-full flex justify-between">
-                    <Text>{initialOrder.supplier.address}, {initialOrder.supplier.city}</Text>
-                    <SupplierPopover supplier={initialOrder.supplier} />
-                  </div>
-                </div>
+              // purchaseOrder.supplier ?
+              //   <div className="flex flex-col w-full items-start gap-2">
+              //     <h3 className="text-xl text-gray-900 font-bold">{initialOrder.supplier.company}</h3>
+              //     <div className="w-full flex justify-between">
+              //       <Text>{initialOrder.supplier.address}, {initialOrder.supplier.city}</Text>
+              //       <SupplierPopover supplier={initialOrder.supplier} />
+              //     </div>
+              //   </div>
+              //   :
+              suppliers.length > 0 ? (
+                <Select label="Select Supplier" value={purchaseOrder.supplier} onChange={e => setPurchaseOrder({ ...purchaseOrder, supplier: e.target.value })} options={suppliers.map(s => ({ label: s.company, value: s._id }))} />
+              )
                 :
                 <SupplierDialog text="Create Supplier" heading="Create Supplier" onSave={s => setPurchaseOrder({ ...purchaseOrder, supplier: s._id })} />
             }
@@ -81,7 +199,7 @@ export default function EditPurchaseOrderForm({ initialOrder, currencies }: { cu
 
           <div className="w-full h-full flex flex-col gap-4">
             <SectionTitle title="Destination" />
-            <Select label="Select Destination" value={purchaseOrder.destination} onChange={() => { }} options={[
+            <Select label="Select Destination" value={purchaseOrder.destination} onChange={e => setPurchaseOrder({ ...purchaseOrder, destination: e.target.value })} options={[
               { label: "Destination 1", value: "destination1" },
               { label: "Destination 2", value: "destination2" },
               { label: "Destination 3", value: "destination3" },
@@ -119,14 +237,24 @@ export default function EditPurchaseOrderForm({ initialOrder, currencies }: { cu
 
       <Card className="p-4">
         <SectionTitle title="Add Products" />
-        <div className=" w-full flex gap-4 mb-8">
-          <Input icon={<IoIosSearch />} id="add-products" label="" placeholder="Search products" />
-          <OutlinedButton onClick={() => { }}>
-            Browse
-          </OutlinedButton>
+        <div className=" w-full flex gap-4">
+          {/*TODO: replace with a select popover for suppliers*/}
+          <Input
+            icon={<IoIosSearch />}
+            id="add-products"
+            placeholder="Search products"
+            onChange={() => { }}
+          />
+
+          <BrowseProductsDialog productIds={purchaseOrder.products} setProducts={ps => setProducts(ps)} />
+
         </div>
 
-        <Datatable products={initialOrder.products} />
+        {
+          products.length > 0 && (
+            <div className="mt-8"><Datatable products={products} /></div>
+          )
+        }
       </Card>
 
       <div className=" flex flex-col 2xl:flex-row w-full gap-6">
@@ -160,6 +288,17 @@ export default function EditPurchaseOrderForm({ initialOrder, currencies }: { cu
             <p className="text-xs text-neutral-800" >$ {initialOrder.products.reduce((acc, p) => acc + p.price + p.tax, 0).toFixed(2)}</p>
           </div>
         </Card>
+
+      </div>
+
+      <div className="w-full max-w-4xl flex justify-end mb-8">
+        {
+          loading ? (
+            <Spinner />
+          ) : (
+            <FilledButton disabled={loading} onClick={handleSave}>Save</FilledButton>
+          )
+        }
       </div>
     </>
   )
@@ -243,6 +382,7 @@ function SupplierPopover({ supplier }: { supplier: Supplier }) {
         <Text className="text-gray-900">{supplier.email}</Text>
         <Text className="text-gray-900 mb-3">{supplier.phoneNumber}</Text>
 
+        {/*TODO: handleSave*/}
         <SupplierDialog text="Edit Supplier" heading="Edit Supplier" onSave={s => console.log(s)} />
 
       </PopoverContent>

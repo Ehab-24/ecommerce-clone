@@ -5,7 +5,6 @@ import Input from "@/components/Input"
 import Card from "@/components/Card"
 import SectionTitle from "@/components/SectionTitle"
 import DatePicker from "@/components/DatePicker"
-import OutlinedButtonSmall from "@/components/buttons/OutlinedButtonSmall"
 import Select from "@/components/Select"
 import { Location } from "@/types/location"
 import { IoIosClose, IoIosSearch } from "react-icons/io"
@@ -15,6 +14,9 @@ import { ApiTransfer, ApiTransferSchema } from "@/types/transfer"
 import { ZodError } from "zod"
 import toast from "react-hot-toast"
 import axios from "axios"
+import BrowseProductsDialog from "@/components/BrowseProductsDialog"
+import Datatable from "../Datatable"
+import { Product } from "@/types/product"
 
 export default function CreateTranserForm({ locations }: { locations: Location[] }) {
 
@@ -33,6 +35,12 @@ export default function CreateTranserForm({ locations }: { locations: Location[]
 
   const [loading, setLoading] = React.useState(false)
   const [transfer, setTransfer] = React.useState<ApiTransfer>(defaultTransfer)
+  const [products, setProducts] = React.useState<Product[]>([])
+
+  React.useEffect(() => {
+    setTransfer(t => ({ ...t, products: [...t.products, ...products.map(p => p._id)] }))
+  }, [products])
+
 
   async function handleSave() {
 
@@ -87,11 +95,18 @@ export default function CreateTranserForm({ locations }: { locations: Location[]
       <Card className="p-4">
         <SectionTitle title="Add Products" />
         <div className=" w-full flex gap-4">
+          {/*TODO: replace with a select popover for suppliers*/}
           <Input icon={<IoIosSearch />} id="add-products" label="" placeholder="Search products" />
-          <OutlinedButtonSmall onClick={() => { }}>
-            Browse
-          </OutlinedButtonSmall>
+
+          <BrowseProductsDialog productIds={transfer.products} setProducts={ps => setProducts(ps)} />
+
         </div>
+
+        {
+          products.length > 0 && (
+            <div className="mt-8"><Datatable products={products} /></div>
+          )
+        }
       </Card>
 
       <div className="flex gap-4">
@@ -129,7 +144,7 @@ function AdditionalDetails({ transfer, setTransfer }: { transfer: ApiTransfer, s
       <Input id="reference-number" label="Reference number" value={transfer.referenceNumber} onChange={e => setTransfer({ ...transfer, referenceNumber: e.target.value })} />
       <Input
         id="tags"
-        label="Tags"
+        label={`Tags (${transfer.tags.length})`}
         onKeyDown={(e) => {
           const value = e.currentTarget.value;
           if (e.key === "Enter" && value !== "") {
