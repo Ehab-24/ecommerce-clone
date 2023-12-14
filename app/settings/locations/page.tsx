@@ -10,44 +10,9 @@ import Card from "@/components/Card";
 import ChangeLocationDialog from "@/components/settings/locations/DefaultLocationDialog";
 import { apiUrl } from "@/lib/utils";
 
-export default async function LocationsPage() {
+export const runtime = "edge"
 
-  // const locations: Location[] = [
-  //   {
-  //     _id: "1",
-  //     name: "Sample Location",
-  //     country: "Sample Country",
-  //     address: "123 Sample Street",
-  //     city: "Sample City",
-  //     postalCode: "12345",
-  //     phone: {
-  //       number: "123-456-7890",
-  //       countryCode: "US"
-  //     },
-  //     fulfilOrders: true,
-  //     status: "active",
-  //     isDefault: true,
-  //     createdAt: new Date(),
-  //     updatedAt: new Date(),
-  //   },
-  //   {
-  //     _id: "2",
-  //     name: "Sample Location",
-  //     isDefault: false,
-  //     country: "Sample Country",
-  //     address: "123 Sample Street",
-  //     city: "Sample City",
-  //     postalCode: "12345",
-  //     phone: {
-  //       number: "123-456-7890",
-  //       countryCode: "US"
-  //     },
-  //     fulfilOrders: true,
-  //     status: "active",
-  //     createdAt: new Date(),
-  //     updatedAt: new Date(),
-  //   }
-  // ]
+export default async function LocationsPage() {
 
   const res = await fetch(apiUrl("/api/settings/locations"), {
     method: "GET",

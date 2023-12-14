@@ -6,6 +6,8 @@ import React from "react";
 import ExportImportButtons from "@/components/products/ExportImportButtons";
 import FilledButton from "@/components/buttons/FilledButton";
 
+export const runtime = "edge"
+
 export default async function ProductsPage() {
 
   const res = await fetch(apiUrl("/api/products"), { cache: "no-cache" })

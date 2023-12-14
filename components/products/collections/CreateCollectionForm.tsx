@@ -104,7 +104,7 @@ export default function CreateCollectionForm() {
             <SectionTitle title="Collection image" />
             {
               collection.image ? (
-                <div className="w-full">
+                <div className="w-full bg-gray-200 rounded-lg overflow-hidden">
                   <Image src={collection.image} alt={collection.title} width={0} height={0} sizes="100vw" style={{ width: '100%', height: '100%' }} />
                 </div>
               ) : (

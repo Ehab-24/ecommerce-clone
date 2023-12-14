@@ -5,9 +5,11 @@ import CreateTransferForm from "@/components/products/transfers/CreateTransferFo
 import { apiUrl } from "@/lib/utils"
 import { Location } from "@/types/location"
 
+export const runtime = "edge"
+
 export default async function CreateTransferPage() {
 
-  const res = await fetch(apiUrl("/api/settings/locations"))
+  const res = await fetch(apiUrl("/api/settings/locations"), { cache: "no-cache" })
   if (!res.ok) {
     throw new Error("Failed to fetch locations")
   }

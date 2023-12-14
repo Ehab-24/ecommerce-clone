@@ -1,15 +1,16 @@
 import React from "react";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
-import { Supplier } from "@/types/supplier";
 import CreatePurchaseOrderForm from "@/components/products/purchase_orders/CreatePurchaseOrderForm";
 import { apiUrl } from "@/lib/utils";
+
+export const runtime = "edge"
 
 export default async function CreatePurchaseOrderPage() {
 
   const requests = [
-    fetch(apiUrl("/api/settings/locations")),
-    fetch(apiUrl("/api/suppliers")),
+    fetch(apiUrl("/api/settings/locations"), { cache: "no-cache" }),
+    fetch(apiUrl("/api/suppliers"), { cache: "no-cache" }),
   ]
 
   const [locationsRes, suppliersRes] = await Promise.all(requests)
@@ -21,8 +22,10 @@ export default async function CreatePurchaseOrderPage() {
     throw new Error("Failed to fetch suppliers")
   }
 
-  const locations = await locationsRes.json()
-  const suppliers: Supplier[] = await suppliersRes.json()
+  const [locations, suppliers] = await Promise.all([
+    locationsRes.json(),
+    suppliersRes.json(),
+  ])
 
   return (
     <div className=" w-full bg-gray-100 min-h-screen items-center flex flex-col">

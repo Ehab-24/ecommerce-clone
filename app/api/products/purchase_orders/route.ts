@@ -29,11 +29,18 @@ export async function GET(request: NextRequest) {
 
         const pipeline: any = [
             {
+                $addFields: {
+                    destination: { $toObjectId: "$destination" },
+                    supplier: { $toObjectId: "$supplier" },
+                    products: { $map: { input: "$products", as: "product", in: { $toObjectId: "$$product" } } }
+                }
+            },
+            {
                 $lookup: {
-                    from: 'products',
-                    localField: 'products',
-                    foreignField: '_id',
-                    as: 'products'
+                    from: "locations",
+                    localField: "destination",
+                    foreignField: "_id",
+                    as: "destination"
                 }
             },
             {
@@ -46,12 +53,12 @@ export async function GET(request: NextRequest) {
             },
             {
                 $lookup: {
-                    from: "locations",
-                    localField: "destination",
+                    from: "products",
+                    localField: "products",
                     foreignField: "_id",
-                    as: "destination"
+                    as: "products"
                 }
-            },
+            }
         ]
 
         if (fields.length) {
@@ -63,7 +70,8 @@ export async function GET(request: NextRequest) {
         }
 
         const db = await getDb()
-        const purchaseOrders = await db.collection("purchase_orders").aggregate(pipeline).limit(limit).skip(page * limit).toArray()
+        const results = await db.collection("purchase_orders").aggregate(pipeline).limit(limit).skip(page * limit).toArray()
+        const purchaseOrders = results.map((result: any) => ({ ...result, destination: result.destination[0], supplier: result.supplier[0] }))
 
         return NextResponse.json(purchaseOrders, { status: 200 })
     }

@@ -11,10 +11,13 @@ import { GiftCard } from "@/types/giftCard";
 import FilledButton from "@/components/buttons/FilledButton";
 import Link from "next/link";
 
+export const runtime = "edge"
+
 export default async function CreateGiftCardPage() {
 
   const res = await fetch(apiUrl("/api/products/gift_cards"), { cache: "no-cache" })
   if (!res.ok) {
+    console.log(await res.text())
     throw new Error("Failed to fetch gift cards")
   }
   const giftCards: GiftCard[] = await res.json()

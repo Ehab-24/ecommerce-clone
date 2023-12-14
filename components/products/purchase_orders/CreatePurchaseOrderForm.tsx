@@ -37,7 +37,7 @@ export default function CreatePurchaseOrderForm({ suppliers, locations, currenci
     referenceNumber: "",
     noteToSupplier: "",
     tags: [],
-    supplier: "",
+    supplier: suppliers[0]._id,
     costAdjustments: [],
   }
 
@@ -45,7 +45,12 @@ export default function CreatePurchaseOrderForm({ suppliers, locations, currenci
   const [purchaseOrder, setPurchaseOrder] = React.useState<ApiPurchaseOrder>(defaultPurchaseOrder);
   const [loading, setLoading] = React.useState<boolean>(false);
 
+  React.useEffect(() => {
+    setPurchaseOrder(po => ({ ...po, products: [...po.products, ...products.map(p => p._id)] }))
+  }, [products])
+
   async function handleSave() {
+    console.log(purchaseOrder)
 
     setLoading(true)
 
@@ -65,6 +70,7 @@ export default function CreatePurchaseOrderForm({ suppliers, locations, currenci
     catch (error) {
 
       if (error instanceof ZodError) {
+        console.log(error)
         toast.error(error.issues[0].message)
       }
       else {
@@ -77,10 +83,6 @@ export default function CreatePurchaseOrderForm({ suppliers, locations, currenci
       setLoading(false)
     }
   }
-
-  React.useEffect(() => {
-    setPurchaseOrder(po => ({ ...po, products: [...po.products, ...products.map(p => p._id)] }))
-  }, [products])
 
   return (
     <>
@@ -169,20 +171,24 @@ export default function CreatePurchaseOrderForm({ suppliers, locations, currenci
 
         <Card className="p-4">
           <SectionTitle title="Add Products" />
-          <div className=" w-full flex mb-8 gap-4">
+          <div className=" w-full flex gap-4">
             {/*TODO: replace with a select popover for suppliers*/}
             <Input
               icon={<IoIosSearch />}
               id="add-products"
               placeholder="Search products"
-              onChange={e => setPurchaseOrder({ ...purchaseOrder, supplier: e.target.value })}
+              onChange={() => { }}
             />
 
             <BrowseProductsDialog productIds={purchaseOrder.products} setProducts={ps => setProducts(ps)} />
 
           </div>
 
-          <Datatable products={products} />
+          {
+            products.length > 0 && (
+              <div className="mt-8"><Datatable products={products} /></div>
+            )
+          }
         </Card>
 
         <div className=" flex flex-col 2xl:flex-row w-full gap-6">
