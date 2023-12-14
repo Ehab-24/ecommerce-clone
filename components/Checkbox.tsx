@@ -1,6 +1,6 @@
 import React from "react"
 
-export default function Checkbox({ id, label, checked, disabled = false, onChange }: { id: string, label: string, checked?: boolean, disabled?: boolean, onChange: React.ChangeEventHandler<HTMLInputElement> }) {
+export default function Checkbox({ id, label, checked, disabled = false, onChange }: { id: string, label?: string, checked?: boolean, disabled?: boolean, onChange: React.ChangeEventHandler<HTMLInputElement> }) {
   return (
     <>
       <div className="inline-flex items-center">

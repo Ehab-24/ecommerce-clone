@@ -10,7 +10,6 @@ import SupplierDialog from "./SupplierDialog"
 import DatePicker from "@/components/DatePicker"
 import Input from "@/components/Input"
 import { IoIosClose, IoIosSearch } from "react-icons/io"
-import OutlinedButton from "@/components/buttons/OutlinedButton"
 import TitleMini from "@/components/TitleMini"
 import AdjustmentsDialog from "./AdjustmentsDialog"
 import { Location } from "@/types/location"
@@ -19,6 +18,9 @@ import axios from "axios"
 import toast from "react-hot-toast"
 import { ZodError } from "zod"
 import Spinner from "@/components/Spinner"
+import BrowseProductsDialog from "@/components/BrowseProductsDialog"
+import Datatable from "../Datatable"
+import { Product } from "@/types/product"
 
 export default function CreatePurchaseOrderForm({ suppliers, locations, currencies }: { suppliers: Supplier[], locations: Location[], currencies: { label: string, value: string, disabled?: boolean }[] }) {
 
@@ -39,6 +41,7 @@ export default function CreatePurchaseOrderForm({ suppliers, locations, currenci
     costAdjustments: [],
   }
 
+  const [products, setProducts] = React.useState<Product[]>([])
   const [purchaseOrder, setPurchaseOrder] = React.useState<ApiPurchaseOrder>(defaultPurchaseOrder);
   const [loading, setLoading] = React.useState<boolean>(false);
 
@@ -74,6 +77,10 @@ export default function CreatePurchaseOrderForm({ suppliers, locations, currenci
       setLoading(false)
     }
   }
+
+  React.useEffect(() => {
+    setPurchaseOrder(po => ({ ...po, products: [...po.products, ...products.map(p => p._id)] }))
+  }, [products])
 
   return (
     <>
@@ -162,7 +169,7 @@ export default function CreatePurchaseOrderForm({ suppliers, locations, currenci
 
         <Card className="p-4">
           <SectionTitle title="Add Products" />
-          <div className=" w-full flex gap-4">
+          <div className=" w-full flex mb-8 gap-4">
             {/*TODO: replace with a select popover for suppliers*/}
             <Input
               icon={<IoIosSearch />}
@@ -170,8 +177,12 @@ export default function CreatePurchaseOrderForm({ suppliers, locations, currenci
               placeholder="Search products"
               onChange={e => setPurchaseOrder({ ...purchaseOrder, supplier: e.target.value })}
             />
-            <OutlinedButton onClick={() => { }}>Browse</OutlinedButton>
+
+            <BrowseProductsDialog productIds={purchaseOrder.products} setProducts={ps => setProducts(ps)} />
+
           </div>
+
+          <Datatable products={products} />
         </Card>
 
         <div className=" flex flex-col 2xl:flex-row w-full gap-6">
