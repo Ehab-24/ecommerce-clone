@@ -42,10 +42,10 @@ export default function Datatable({ collections }: { collections: Collection[] }
                   }} />
                 </td>
 
-                <th scope="row" className="px-6 flex gap-1 items-center xl:min-w-[240px] py-4 font-medium text-gray-900 whitespace-nowrap ">
+                <th scope="row" onClick={() => router.push(`/products/collections/${c._id}`)} className="px-6 flex gap-1 items-center xl:min-w-[240px] py-4 font-medium text-gray-900 whitespace-nowrap  cursor-pointer">
                   {c.title}
                 </th>
-                <td onClick={() => router.push(`/products/collections/${c._id}`)} className="px-6 py-4 cursor-pointer">
+                <td className="px-6 py-4">
                   {c.products}
                 </td>
                 <td className="px-6 py-4">

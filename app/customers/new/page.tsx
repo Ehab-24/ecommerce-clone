@@ -15,10 +15,11 @@ import Title from "@/components/Title";
 import { Customer } from "@/types/customer";
 
 import countries from "@/data/countries";
-import SectionTitle from "@/components/SectionTitle";
+import FilledButton from "@/components/buttons/FilledButton";
+
+import { toast } from "react-hot-toast";
 
 const defaultCustomer: Customer = {
-  _id: "",
   firstName: "",
   lastName: "",
   language: "English",
@@ -46,13 +47,25 @@ const defaultCustomer: Customer = {
   tags: [],
 };
 
-const OrdersPage = () => {
+const NewCustomer = () => {
   const [customer, setCustomer] = useState<Customer>(defaultCustomer);
 
   const handleFieldChange = (field: string, value: string) => {
     setCustomer((prevCustomer: any) => {
       if (prevCustomer) {
         return { ...prevCustomer, [field]: value };
+      }
+      return null;
+    });
+  };
+
+  const handleAddressFieldChange = (field: string, value: string) => {
+    setCustomer((prevCustomer: any) => {
+      if (prevCustomer) {
+        return {
+          ...prevCustomer,
+          address: { ...prevCustomer.address, [field]: value },
+        };
       }
       return null;
     });
@@ -67,6 +80,29 @@ const OrdersPage = () => {
     });
   };
 
+  const handleCheckboxChange = (field: string, value: boolean) => {
+    setCustomer((prevCustomer: any) => {
+      if (prevCustomer) {
+        return { ...prevCustomer, [field]: value };
+      }
+      return null;
+    });
+  };
+
+  const addCustomer = () => {
+    try {
+      const response = fetch("/api/customers", {
+        method: "POST",
+        body: JSON.stringify(customer),
+      });
+
+      toast.success("Customer added successfully!");
+      setCustomer(defaultCustomer);
+    } catch (error) {
+      toast.error("Error adding customer");
+    }
+  };
+
   return (
     <div className="min-h-screen p-5 md:w-[100%] lg:px-[20%]">
       <div className="flex flex-col gap-4">
@@ -78,10 +114,24 @@ const OrdersPage = () => {
         </div>
 
         <Title>Customer Overview</Title>
-        <Card className="flex flex-col gap-4">
+        <Card className="flex flex-col p-5 gap-4">
           <div className="flex gap-4">
-            <Input label="First Name" id="firstName" placeholder="" />
-            <Input label="Last Name" id="lastName" placeholder="" />
+            <Input
+              onChange={(e) => {
+                handleFieldChange("firstName", e.target.value);
+              }}
+              label="First Name"
+              id="firstName"
+              placeholder=""
+            />
+            <Input
+              onChange={(e) => {
+                handleFieldChange("lastName", e.target.value);
+              }}
+              label="Last Name"
+              id="lastName"
+              placeholder=""
+            />
           </div>
 
           <select
@@ -115,35 +165,23 @@ const OrdersPage = () => {
                 handleFieldChange("phone", e.target.value);
               }}
             />
-
-            {/* <select
-              className=""
-              value={customer?.country}
-              onChange={(e) => {
-                handleFieldChange("country", e.target.value);
-              }}
-            >
-              {countries.map((country) => (
-                <option key={country.code} value={country.code}>
-                  {country.name} ({country.code})
-                </option>
-              ))}
-            </select> */}
           </div>
 
           <Checkbox
-            onChange={() => {
-              console.log("hello");
+            checked={customer.marketing}
+            onChange={(e) => {
+              handleCheckboxChange("marketing", e.target.checked);
             }}
             id="marketingEmail"
             label="Customer agreed to receive marketing emails."
           />
 
           <Checkbox
-            onChange={() => {
-              console.log("hello");
+            checked={customer.smsMarketing}
+            onChange={(e) => {
+              handleCheckboxChange("smsMarketing", e.target.checked);
             }}
-            id="marketingSMS"
+            id="smsMarketing"
             label="Customer agreed to receive SMS marketing text messages."
           />
 
@@ -159,21 +197,56 @@ const OrdersPage = () => {
             The primary address of this customer
           </p>
         </div>
-        <Card className="flex flex-col gap-2">
+        <Card className="flex flex-col p-5 gap-2">
           <Select
             label="Country/Region of origin"
             options={countries}
             onChange={(e) => {
-              handleFieldChange("country", e.target.value);
+              handleAddressFieldChange("country", e.target.value);
             }}
           />
           <div className="flex gap-4">
-            <Input label="First Name" id="firstName" placeholder="" />
-            <Input label="Last Name" id="lastName" placeholder="" />
+            <Input
+              onChange={(e) => {
+                handleAddressFieldChange("firstName", e.target.value);
+              }}
+              label="First Name"
+              id="firstName"
+              placeholder=""
+            />
+            <Input
+              onChange={(e) => {
+                handleAddressFieldChange("lastName", e.target.value);
+              }}
+              label="Last Name"
+              id="lastName"
+              placeholder=""
+            />
           </div>
-          <Input label="Phone" id="phone" placeholder="" />
-          <Input label="Address" id="address" placeholder="" />
-          <Input label="Apartment, suite, etc." id="apartment" placeholder="" />
+          <Input
+            onChange={(e) => {
+              handleAddressFieldChange("company", e.target.value);
+            }}
+            label="Phone"
+            id="phone"
+            placeholder=""
+          />
+          <Input
+            onChange={(e) => {
+              handleAddressFieldChange("address", e.target.value);
+            }}
+            label="Address"
+            id="address"
+            placeholder=""
+          />
+          <Input
+            onChange={(e) => {
+              handleAddressFieldChange("apartment", e.target.value);
+            }}
+            label="Apartment, suite, etc."
+            id="apartment"
+            placeholder=""
+          />
 
           <div className="flex gap-4">
             <Input label="City" id="city" placeholder="" />
@@ -191,13 +264,13 @@ const OrdersPage = () => {
         <div className="py-4">
           <Title>Tax Exemptions</Title>
         </div>
-        <Card>
+        <Card className="p-5">
           <Checkbox
             id="taxExempt"
             label="Collect Tax"
             checked={customer?.taxExempt}
             onChange={(e) => {
-              handleFieldChange("taxExempt", e.target.value);
+              handleCheckboxChange("taxExempt", e.target.checked);
             }}
           />
         </Card>
@@ -208,7 +281,7 @@ const OrdersPage = () => {
             Tags can be used to categorize customers into groups.
           </p>
         </div>
-        <Card>
+        <Card className="p-5">
           <Input
             label="Note"
             id="note"
@@ -226,7 +299,7 @@ const OrdersPage = () => {
             Tags can be used to categorize customers into groups.
           </p>
         </div>
-        <Card>
+        <Card className="p-5">
           <Input
             id="tags"
             label="Tags"
@@ -245,7 +318,7 @@ const OrdersPage = () => {
             {customer?.tags.map((tag) => (
               <div
                 key={tag}
-                className="bg-slate-200 text-gray-900 px-2 py-1 rounded-md text-sm flex items-center gap-1"
+                className="bg-slate-200 mt-2 text-gray-900 px-2 py-1 rounded-md text-sm flex items-center gap-1"
               >
                 {tag}
                 <button
@@ -262,9 +335,13 @@ const OrdersPage = () => {
             ))}
           </div>
         </Card>
+
+        <div className="self-end">
+          <FilledButton onClick={addCustomer}>Add Customer</FilledButton>
+        </div>
       </div>
     </div>
   );
 };
 
-export default OrdersPage;
+export default NewCustomer;

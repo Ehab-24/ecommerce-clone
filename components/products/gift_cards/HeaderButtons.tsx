@@ -1,17 +1,17 @@
 'use client'
 
+import OutlinedButton from "@/components/buttons/OutlinedButton";
 import React from "react";
-import OutlinedButtonSmall from "@/components/buttons/OutlinedButtonSmall";
 
 export default function ExportImportButtons() {
   return (
     <>
-      <OutlinedButtonSmall onClick={() => { }}>
+      <OutlinedButton onClick={() => { }}>
         Add gift card product
-      </OutlinedButtonSmall>
-      <OutlinedButtonSmall onClick={() => { }}>
+      </OutlinedButton>
+      <OutlinedButton onClick={() => { }}>
         Export
-      </OutlinedButtonSmall>
+      </OutlinedButton>
     </>
   )
 }

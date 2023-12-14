@@ -3,14 +3,19 @@
 import { Product } from "@/types/product"
 import Checkbox from "../Checkbox"
 import Image from "next/image"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import StatusText from "./StatusText"
 import { useRouter } from "next/navigation"
 
 export default function Datatable({ products }: { products: Product[] }) {
 
   const router = useRouter()
+  const [allChecked, setAllChecked] = useState<boolean>(false)
   const [selectedProducts, setSelectedProducts] = useState<boolean[]>(new Array(products.length).fill(false))
+
+  useEffect(() => {
+    setAllChecked(selectedProducts.length > 0 && selectedProducts.every(p => p))
+  }, [products, selectedProducts])
 
   return (
     <div className="relative overflow-x-auto overflow-y-scroll shadow-md sm:rounded-lg">
@@ -18,7 +23,7 @@ export default function Datatable({ products }: { products: Product[] }) {
         <thead className="text-[10px] text-gray-700 uppercase bg-gray-100 border-t-2 border-b-2 ">
           <tr>
             <th scope="col" className="p-4">
-              <Checkbox id="select-all-products" label="" checked={selectedProducts.every(e => e)} onChange={e => setSelectedProducts(new Array(products.length).fill(e.target.checked))} />
+              <Checkbox id="select-all-products" label="" checked={allChecked} onChange={e => setSelectedProducts(new Array(products.length).fill(e.target.checked))} />
             </th>
             <th scope="col" className="px-6 py-3">
               Product
@@ -58,9 +63,9 @@ export default function Datatable({ products }: { products: Product[] }) {
 
                 <th scope="row" onClick={() => router.push(`/products/${p._id}`)} className="px-6 flex gap-1 items-center xl:min-w-[240px] py-4 font-medium text-gray-900 whitespace-nowrap cursor-pointer">
                   {
-                    p.media.length > 0 && (p.media.map((m, i) =>
+                    p.media?.length > 0 && (p.media.map((m, i) =>
                       <div key={i} className=" aspect-square h-8 bg-gray-200 rounded-md overflow-hidden">
-                        <Image width="32" height="32" src={m.url} alt={m.altText} className="w-full h-full object-cover" />
+                        <Image width="32" height="32" src={m.url} alt={p.title} className="w-full h-full object-cover" />
                       </div>
                     ))
                   }
@@ -84,7 +89,7 @@ export default function Datatable({ products }: { products: Product[] }) {
                   {p.productCategory}
                 </td>
                 <td className="px-6 py-4">
-                  {p.vendor}
+                  {p.vendor.name}
                 </td>
               </tr>
             ))

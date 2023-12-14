@@ -5,57 +5,19 @@ import Title from "@/components/Title";
 import Text from "@/components/Text";
 import LinkMini from "@/components/LinkMini";
 import Datatable from "@/components/products/gift_cards/Datatable";
-import { GiftCard } from "@/types/giftCard";
 import HeaderButtons from "@/components/products/gift_cards/HeaderButtons";
+import { apiUrl } from "@/lib/utils";
+import { GiftCard } from "@/types/giftCard";
+import FilledButton from "@/components/buttons/FilledButton";
+import Link from "next/link";
 
-export default function CreateGiftCardPage() {
-  const giftCards: GiftCard[] = [
-    {
-      _id: "1",
-      code: "GIFT123",
-      status: "active",
-      initialValue: 50,
-      hasExpiry: true,
-      customer: "CustomerID123",
-      internalNotes: "Birthday gift for a loyal customer",
-      expiresAt: new Date("2024-12-31"),
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      createdBy: {
-        name: "John Doe",
-      },
-    },
+export default async function CreateGiftCardPage() {
 
-    {
-      _id: "2",
-      code: "GIFT456",
-      status: "inactive",
-      initialValue: 25,
-      hasExpiry: false,
-      customer: "CustomerID789",
-      internalNotes: "Promotional gift card for the holiday season",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      createdBy: {
-        name: "John Doe",
-      },
-    },
-
-    {
-      _id: "3",
-      code: "GIFT789",
-      status: "redeemed",
-      initialValue: 100,
-      hasExpiry: true,
-      customer: "CustomerID456",
-      expiresAt: new Date("2023-12-25"),
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      createdBy: {
-        name: "John Doe",
-      },
-    },
-  ];
+  const res = await fetch(apiUrl("/api/products/gift_cards"), { cache: "no-cache" })
+  if (!res.ok) {
+    throw new Error("Failed to fetch gift cards")
+  }
+  const giftCards: GiftCard[] = await res.json()
 
   return (
     <div className="bg-gray-100 min-h-screen p-8">
@@ -64,7 +26,7 @@ export default function CreateGiftCardPage() {
 
         <div className=" flex items-center gap-4">
           <HeaderButtons />
-          <LinkMini href="gift_cards/new">Create Gift Card</LinkMini>
+          <FilledButton><Link href="/products/gift_cards/new">Create Gift Card</Link></FilledButton>
         </div>
       </div>
       <div className="h-8" />

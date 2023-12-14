@@ -1,8 +1,8 @@
-import { array, z } from "zod";
+import { z } from "zod";
 import { AddressSchema } from "./address";
 
 const CustomerSchema = z.object({
-  _id: z.string(),
+  _id: z.any().optional(),
   firstName: z.string(),
   lastName: z.string(),
   language: z.string(),
@@ -18,7 +18,7 @@ const CustomerSchema = z.object({
 
   note: z.string(),
 
-  tags: array(z.any()),
+  tags: z.array(z.any()),
 });
 
 type Customer = z.infer<typeof CustomerSchema>;

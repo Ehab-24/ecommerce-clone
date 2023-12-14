@@ -1,6 +1,6 @@
-import { SupplierSchema } from "./supplier"
+import { Product } from "./product";
+import { Supplier } from "./supplier"
 import { z } from "zod"
-import { ProductSchema } from "./product"
 
 const AdjustmentNames = z.enum([
     "Shipping",
@@ -14,32 +14,36 @@ const AdjustmentNames = z.enum([
     "Other"
 ])
 
-const PurchaseOrderSchema = z.object({
-    _id: z.optional(z.string()),
-    destination: z.string(),
+const ApiPurchaseOrderSchema = z.object({
+    destination: z.string().min(1, "Destination is required"),
     paymentTerms: z.optional(z.string()),
     status: z.enum(["draft", "ordered", "received", "cancelled"]),
     shipping: z.object({
-        arrivalDate: z.date(),
+        arrivalDate: z.string().optional(),
         carrier: z.string(),
         trackingNumber: z.string(),
     }),
-    products: z.array(ProductSchema),
-    total: z.number(),
-    referenceNumber: z.string(),
+    // TODO: change 0 to 1 after implementing 'browse' dialog
+    products: z.array(z.string()).min(0, "At least one product is required"),
+    total: z.number().min(0, "Total must be greater than 0"),
+    referenceNumber: z.string().min(1, "Reference number is required"),
     noteToSupplier: z.string(),
     tags: z.array(z.string()),
-    supplier: SupplierSchema,
+    supplier: z.string().min(1, "Supplier is required"),
     costAdjustments: z.array(z.object({
         name: AdjustmentNames,
         value: z.number(),
     })),
     currency: z.string(),
-    createdAt: z.optional(z.date()),
-    updatedAt: z.optional(z.date()),
+    createdAt: z.optional(z.string()),
+    updatedAt: z.optional(z.string()),
 });
 
-type PurchaseOrder = z.infer<typeof PurchaseOrderSchema>
 type AdjustmentName = z.infer<typeof AdjustmentNames>
+type ApiPurchaseOrder = z.infer<typeof ApiPurchaseOrderSchema>
 
-export { PurchaseOrderSchema, type PurchaseOrder, type AdjustmentName }
+type PurchaseOrder = Omit<Omit<Omit<Omit<ApiPurchaseOrder, "createdAt">, "updatedAt">, "supplier">, "products"> & {
+    _id: string; createdAt: string; updatedAt: string; supplier: Supplier; products: Product[]
+};
+
+export { ApiPurchaseOrderSchema, type PurchaseOrder, type AdjustmentName, type ApiPurchaseOrder }

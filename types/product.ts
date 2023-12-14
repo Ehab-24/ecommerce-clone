@@ -1,7 +1,7 @@
-import { z } from "zod"
+import { z } from "zod";
+import { Vendor } from "./vendor";
 
-const ProductSchema = z.object({
-  _id: z.optional(z.string()),
+const ApiProductSchema = z.object({
   title: z.string().min(1, "Product title is required"),
   description: z.string().min(1, "Product description is required"),
   price: z.number().gt(0, "Price must be greater than 0"),
@@ -20,30 +20,42 @@ const ProductSchema = z.object({
   barcode: z.optional(z.string()),
   isPhysicalProduct: z.boolean(),
   weight: z.number().gte(0),
-  weightUnit: z.string(),
+  weightUnit: z.enum(["kg", "lb", "oz", "g"]),
   countryOfOrigin: z.string(),
-  status: z.enum(['active', 'draft']),
+  status: z.enum(["active", "draft"]),
   productCategory: z.string().min(1, "Product category is required"),
   productType: z.string().min(1, "Product type is required"),
-  vendor: z.string().min(1, "Vendor is required"),
+  vendor: z.string(),
   collection: z.string(),
   tags: z.array(z.string().min(1)).min(1, "At least one tag is required"),
-  variants: z.array(z.object({
-    name: z.string(),
-    values: z.array(z.string()),
-  })),
-  media: z.array(z.object({
-    url: z.string(),
-    type: z.enum(['image', 'video']),
-    altText: z.string()
-  })),
+  variants: z.array(
+    z.object({
+      name: z.string(),
+      values: z
+        .array(z.string())
+        .min(1, "At least one variant value is required")
+        .max(4, "Maximum of 4 variant values allowed"),
+    })
+  ),
+  media: z.array(
+    z.object({
+      url: z.string(),
+      type: z.enum(["image", "video"]),
+    })
+  ),
   seo: z.object({
     title: z.string(),
     description: z.string(),
   }),
-  createdAt: z.optional(z.date()),
-  updatedAt: z.optional(z.date()),
-})
+  createdAt: z.optional(z.union([z.string(), z.date()])),
+  updatedAt: z.optional(z.union([z.string(), z.date()])),
+});
 
-type Product = z.infer<typeof ProductSchema>
-export { ProductSchema, type Product }
+type ApiProduct = z.infer<typeof ApiProductSchema>;
+
+type Product = Omit<
+  Omit<Omit<ApiProduct, "createdAt">, "updatedAt">,
+  "vendor"
+> & { _id: string; createdAt: string; updatedAt: string; vendor: Vendor };
+
+export { type Product, ApiProductSchema, type ApiProduct };

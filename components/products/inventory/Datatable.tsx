@@ -37,6 +37,9 @@ export default function Datatable({ products }: { products: Product[] }) {
             <th scope="col" className="px-6 py-3">
               On hand
             </th>
+            <th scope="col" className="px-6 py-3">
+              Incoming
+            </th>
           </tr>
         </thead>
 
@@ -77,6 +80,9 @@ export default function Datatable({ products }: { products: Product[] }) {
                 </td>
                 <td className="px-6 py-4">
                   {p.quantity + 0 + 0}
+                </td>
+                <td className="px-6 py-4">
+                  0
                 </td>
               </tr>
             ))

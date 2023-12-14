@@ -1,7 +1,6 @@
 import { z } from "zod";
 
-const SupplierSchema = z.object({
-    _id: z.optional(z.string()),
+const ApiSupplierSchema = z.object({
     name: z.string(),
     company: z.string(),
     address: z.string(),
@@ -11,9 +10,15 @@ const SupplierSchema = z.object({
     postalCode: z.string(),
     contactName: z.string(),
     email: z.string(),
-    phoneNumber: z.string()
+    phoneNumber: z.string(),
+    createdAt: z.string().optional(),
+    updatedAt: z.string().optional(),
 });
 
-type Supplier = z.infer<typeof SupplierSchema>;
+type ApiSupplier = z.infer<typeof ApiSupplierSchema>;
 
-export { type Supplier, SupplierSchema }
+type Supplier = Omit<Omit<ApiSupplier, "createdAt">, "updatedAt"> & {
+    _id: string; createdAt: Date; updatedAt: Date;
+};
+
+export { type Supplier, ApiSupplierSchema, type ApiSupplier }

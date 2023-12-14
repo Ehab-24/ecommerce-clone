@@ -1,33 +1,68 @@
-// pages/orders.tsx
+"use client";
+
 import React from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import Heading from "@/components/Heading";
-import Card from "@/components/Card";
-import Image from "next/image";
-import Title from "@/components/Title";
-import Text from "@/components/Text";
 import FilledButton from "@/components/buttons/FilledButton";
+import EmptyPage from "@/components/EmptyPage";
+import DataTable from "@/components/customers/Datatable";
+import Heading from "@/components/Heading";
+import ExportImportButtons from "@/components/products/ExportImportButtons";
+import { apiUrl } from "@/lib/utils";
+import { Customer } from "@/types/customer";
 
 const DraftOrders = () => {
-  return (
-    <div className="p-5">
-      <Heading>Customers</Heading>
-      <Card className="flex flex-col items-center justify-center py-16">
-        <Image
-          src="/customers-img.svg"
-          width="250"
-          height="250"
-          alt="No Orders Image"
-        />
-        <Title>Everything customers-related in one place</Title>
-        <Text className="text-center pb-4 w-96">
-          Manage customer details, see customer order history, and group
-          customers into segments.
-        </Text>
+  const [customers, setCustomers] = useState<Customer[]>([]);
+
+  useEffect(() => {
+    const fetchCustomers = async () => {
+      const res = await fetch(`api/customers`);
+      const data = await res.json();
+      setCustomers(data);
+    };
+
+    fetchCustomers();
+  }, []);
+
+  const handleDelete = async (id: string) => {
+    const res: any = await fetch(`api/customers/${id}`, {
+      method: "DELETE",
+      cache: "no-cache",
+    });
+
+    if (res.status === 200) {
+      setCustomers(customers.filter((c) => c._id !== id));
+    }
+  };
+
+  if (customers.length === 0) {
+    return (
+      <EmptyPage
+        heading="Customers"
+        title="Everything customers-related in one place"
+        text="Manage customer details, see customer order history, and group customers into segments."
+        img="/customers-img.svg"
+      >
         <Link href="/customers/new">
           <FilledButton>Add Customer</FilledButton>
         </Link>
-      </Card>
+      </EmptyPage>
+    );
+  }
+
+  return (
+    <div className="p-5">
+      <div className="flex items-center justify-between mb-5">
+        <Heading className="!pb-0">Customers</Heading>
+
+        <div className="flex gap-2">
+          <ExportImportButtons />
+          <Link href="/customers/new">
+            <FilledButton>Add Customer</FilledButton>
+          </Link>
+        </div>
+      </div>
+      <DataTable customers={customers} handleDelete={handleDelete} />
     </div>
   );
 };

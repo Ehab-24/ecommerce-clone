@@ -1,106 +1,31 @@
-"use client";
-
-import Card from "@/components/Card";
 import React from "react";
-import Input from "@/components/Input";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
-import { IoIosClose, IoIosSearch } from "react-icons/io";
-import SectionTitle from "@/components/SectionTitle";
-import Select from "@/components/Select";
-import DatePicker from "@/components/DatePicker";
-import OutlinedButton from "@/components/buttons/OutlinedButtonSmall";
-import AdjustmentsDialog from "@/components/products/purchase_orders/AdjustmentsDialog";
-import TitleMini from "@/components/TitleMini";
-import SupplierDialog from "@/components/products/purchase_orders/SupplierDialog";
-import { PurchaseOrder } from "@/types/purchaseOrder";
 import { Supplier } from "@/types/supplier";
-import { title } from "process";
+import CreatePurchaseOrderForm from "@/components/products/purchase_orders/CreatePurchaseOrderForm";
+import { apiUrl } from "@/lib/utils";
 
-export default function CreatePurchaseOrderPage() {
-  const suppliers: Supplier[] = [];
+export default async function CreatePurchaseOrderPage() {
 
-  const [purchaseOrder, setPurchaseOrder] = React.useState<PurchaseOrder>({
-    _id: "2",
-    destination: "Another Destination",
-    status: "received",
-    shipping: {
-      arrivalDate: new Date("2023-12-20"),
-      carrier: "Another Carrier",
-      trackingNumber: "XYZ987654321",
-    },
-    currency: "USD",
-    products: [
-      {
-        title: "Yoga Mat",
-        description: "Eco-friendly yoga mat for comfortable workouts",
-        price: 29.99,
-        compareAtPrice: 39.99,
-        chargeTaxes: true,
-        tax: 0.0,
-        taxRate: 0.0,
-        costPerItem: 15.0,
-        profit: 14.99,
-        margin: 50,
-        trackQuantity: true,
-        quantity: 60,
-        continueSellingWhenOutOfStock: false,
-        hasSku: true,
-        sku: "YM001",
-        barcode: "9876543211",
-        isPhysicalProduct: true,
-        weight: 1.0,
-        weightUnit: "kg",
-        countryOfOrigin: "India",
-        status: "active",
-        productCategory: "Fitness",
-        productType: "Yoga Mat",
-        vendor: "Vendor D",
-        collection: "Fitness Gear",
-        tags: ["Yoga", "Fitness", "Health"],
-        seo: {
-          title: "Yoga Mat",
-          description: "Eco-friendly yoga mat for comfortable workouts",
-        },
-        media: [
-          {
-            url: "https://loremflickr.com/cache/resized/65535_52933847621_1b59865752_320_280_nofilter.jpg",
-            altText: "Coffee Maker",
-            type: "image",
-          },
-          {
-            url: "https://loremflickr.com/cache/resized/65535_52552903348_288981b690_320_280_nofilter.jpg",
-            altText: "Coffee Maker",
-            type: "image",
-          },
-        ],
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        variants: [{ name: "Color", values: ["Black"] }],
-      },
-    ],
-    total: 46.47,
-    referenceNumber: "REF67890",
-    noteToSupplier: "Thank you for the prompt delivery.",
-    tags: ["clothing"],
-    supplier: {
-      name: "Supplier 2",
-      _id: "s2",
-      company: "XYZ Company",
-      postalCode: "98765",
-      city: "Another City",
-      email: "spplier2@domain.com",
-      country: "Another Country",
-      apartment: "Apt 987",
-      contactName: "XYZ Suppliers",
-      address: "Another Supplier Address",
-      phoneNumber: "987-654-3210",
-    },
-    costAdjustments: [],
-  });
+  const requests = [
+    fetch(apiUrl("/api/settings/locations")),
+    fetch(apiUrl("/api/suppliers")),
+  ]
+
+  const [locationsRes, suppliersRes] = await Promise.all(requests)
+
+  if (!locationsRes.ok) {
+    throw new Error("Failed to fetch locations")
+  }
+  if (!suppliersRes.ok) {
+    throw new Error("Failed to fetch suppliers")
+  }
+
+  const locations = await locationsRes.json()
+  const suppliers: Supplier[] = await suppliersRes.json()
 
   return (
-    <div className=" w-full bg-gray-100 items-center flex flex-col">
+    <div className=" w-full bg-gray-100 min-h-screen items-center flex flex-col">
       <div className="flex-col max-w-4xl w-full flex gap-6 p-8 ">
         <div className="flex gap-3 items-center ">
           <Link
@@ -114,191 +39,12 @@ export default function CreatePurchaseOrderPage() {
           </h1>
         </div>
 
-        <Card className="flex flex-col items-center justify-center p-4">
-          <div className="flex w-full h-full gap-4">
-            <div className="w-full h-full flex flex-col items-start gap-4">
-              <SectionTitle title="Supplier" />
-              {suppliers.length > 0 ? (
-                <Select
-                  label="Select Supplier"
-                  onChange={() => {}}
-                  options={[
-                    { label: "Supplier 1", value: "supplier1" },
-                    { label: "Supplier 2", value: "supplier2" },
-                    { label: "Supplier 3", value: "supplier3" },
-                  ]}
-                />
-              ) : (
-                <SupplierDialog
-                  text="Create Supplier"
-                  heading="Create Supplier"
-                  supplier={purchaseOrder.supplier}
-                  onSave={(s) =>
-                    setPurchaseOrder({ ...purchaseOrder, supplier: s })
-                  }
-                />
-              )}
-            </div>
-
-            <div className="w-full h-full flex flex-col gap-4">
-              <SectionTitle title="Destination" />
-              <Select
-                label="Select Destination"
-                onChange={() => {}}
-                options={[
-                  { label: "Destination 1", value: "destination1" },
-                  { label: "Destination 2", value: "destination2" },
-                  { label: "Destination 3", value: "destination3" },
-                ]}
-              />
-            </div>
-          </div>
-
-          <div className="w-full flex justify-between gap-4 mt-8">
-            <Select
-              label="Payment Terms (optional)"
-              onChange={() => {}}
-              options={[
-                { label: "None", value: "" },
-                { label: "Cash on delivery", value: "COD" },
-                { label: "Payment on receipt", value: "ON_RECEIPT" },
-                { label: "Payment in advance", value: "IN_ADVANCE" },
-                { label: "Net 7", value: "NET7" },
-                { label: "Net 15", value: "NET15" },
-                { label: "Net 30", value: "NET30" },
-                { label: "Net 45", value: "NET45" },
-                { label: "Net 60", value: "NET60" },
-              ]}
-            />
-
-            <Select
-              label="Supplier Currency"
-              onChange={() => {}}
-              options={currencies}
-            />
-          </div>
-        </Card>
-
-        <Card className="">
-          <SectionTitle title="Shipping Details" />
-          <div className="mt-4 items-end flex gap-4">
-            <DatePicker />
-            <Input id="" label="Shipping carrier" placeholder="" />
-            <Input id="" label="Tracking number" placeholder="" />
-          </div>
-        </Card>
-
-        <Card className="p-4">
-          <SectionTitle title="Add Products" />
-          <div className=" w-full flex gap-4">
-            <Input
-              icon={<IoIosSearch />}
-              id="add-products"
-              label=""
-              placeholder="Search products"
-            />
-            <OutlinedButton onClick={() => {}}>Browse</OutlinedButton>
-          </div>
-        </Card>
-
-        <div className=" flex w-full gap-6">
-          <Card className="p-4 w-1/2 max-w-[50%] flex gap-4 flex-col">
-            <SectionTitle title="Additional details" />
-            <AdditionalDetails />
-          </Card>
-
-          <Card className="p-4 w-1/2 h-max">
-            <div className="flex items-center justify-between w-full">
-              <TitleMini text="Cost summary" />
-              <AdjustmentsDialog
-                text="Manage"
-                purchaseOrder={purchaseOrder}
-                setPurchaseOrder={setPurchaseOrder}
-              />
-            </div>
-
-            <div className="flex items-center justify-between w-full">
-              <p className="text-xs mb-2 text-neutral-800">Taxes (included)</p>
-              <p className="text-xs text-neutral-800">$ 0.00</p>
-            </div>
-
-            <div className="flex items-center justify-between w-full">
-              <TitleMini text="Subtotal" />
-              <p className="text-xs whitespace-nowrap text-neutral-800">
-                $ 0.00
-              </p>
-            </div>
-            <p className="text-xs text-neutral-800">0 items</p>
-
-            <TitleMini text="Cost adjustments" />
-            <CostAdjustments
-              adjustments={[
-                { name: "Shipping", value: 0 },
-                { name: "Discount", value: 0 },
-                { name: "Credit", value: 0 },
-                { name: "Other", value: 0 },
-              ]}
-            />
-
-            <div className="flex justify-between items-center w-full mt-4">
-              <h3 className="text-xs font-bold mb-2 text-neutral-800">Total</h3>
-              <p className="text-xs text-neutral-800">$ 0.00</p>
-            </div>
-          </Card>
-        </div>
+        <CreatePurchaseOrderForm currencies={currencies} suppliers={suppliers} locations={locations} />
       </div>
     </div>
   );
 }
 
-function CostAdjustments({ adjustments }: { adjustments: any }) {
-  return (
-    <>
-      {adjustments.map((a: any) => (
-        <div key={a.name} className="flex justify-between items-center w-full">
-          <h3 className="text-xs mb-2 text-neutral-800">{a.name}</h3>
-          <p className="text-xs text-neutral-800">$ {a.value}</p>
-        </div>
-      ))}
-    </>
-  );
-}
-
-function AdditionalDetails() {
-  const [tags, setTags] = React.useState<string[]>([]);
-
-  return (
-    <>
-      <Input id="reference-number" label="Reference number" placeholder="" />
-      <Input id="note-to-supplier" label="Note to supplier" placeholder="" />
-      <Input
-        id="tags"
-        label="Tags"
-        placeholder=""
-        onKeyDown={(e) => {
-          const value = e.currentTarget.value;
-          if (e.key === "Enter" && value !== "") {
-            setTags([...tags, value]);
-            e.currentTarget.value = "";
-          }
-        }}
-      />
-      <div className="flex gap-2">
-        {tags.map((tag) => (
-          <div
-            key={tag}
-            className="bg-slate-200 w-min whitespace-nowrap text-gray-900 px-2 py-1 rounded-md text-sm flex items-center gap-1"
-          >
-            {tag}{" "}
-            <button onClick={() => setTags(tags.filter((t) => t !== tag))}>
-              <IoIosClose size={20} />
-            </button>
-          </div>
-        ))}
-      </div>
-    </>
-  );
-}
 
 const currencies = [
   { label: "Select", value: "", disabled: true },

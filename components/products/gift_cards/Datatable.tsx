@@ -57,11 +57,11 @@ export default function Datatable({ giftCards }: { giftCards: GiftCard[] }) {
                   }} />
                 </td>
 
-                <th scope="row" className="px-6 flex gap-1 items-center xl:min-w-[240px] py-4 font-medium text-gray-900 whitespace-nowrap ">
+                <th scope="row" onClick={() => router.push(`/products/gift_cards/${gc._id}`)} className="px-6 flex gap-1 items-center xl:min-w-[240px] py-4 font-medium text-gray-900 whitespace-nowrap cursor-pointer">
                   {gc.code.substring(gc.code.length - 4)}
                 </th>
 
-                <td onClick={() => router.push(`/products/gift_cards/${gc._id}`)} className="px-6 py-4 cursor-pointer">
+                <td className="px-6 py-4">
                   <StatusText status={gc.status} />
                 </td>
                 <td className="px-6 py-4">
@@ -71,10 +71,10 @@ export default function Datatable({ giftCards }: { giftCards: GiftCard[] }) {
                   No Recipient
                 </td>
                 <td className="px-6 py-4">
-                  {gc.createdAt.toISOString().slice(0, 10)}
+                  {gc.createdAt.substring(0, 10)}
                 </td>
                 <td className="px-6 py-4">
-                  {gc.expiresAt?.toISOString().slice(0, 10) ?? "--"}
+                  {gc.expiresAt ? (new Date(gc.expiresAt)).toISOString().slice(0, 10) : ""}
                 </td>
                 <td className="px-6 py-4">
                   $ {gc.initialValue}

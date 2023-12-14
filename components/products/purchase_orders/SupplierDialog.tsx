@@ -13,23 +13,60 @@ import TextButton from "@/components/buttons/TextButton";
 import Input from "@/components/Input";
 import Select from "@/components/Select";
 import countries from "@/data/countries";
-import { Supplier } from "@/types/supplier";
+import { ApiSupplier, Supplier } from "@/types/supplier";
+import toast from "react-hot-toast";
 
 export default function SupplierDialog({
   text,
   heading,
-  supplier,
   onSave,
 }: {
   text: string;
   heading: string;
-  supplier: Supplier;
   onSave: (supplier: Supplier) => void;
 }) {
+
+  const [supplier, setSupplier] = React.useState<ApiSupplier>({
+    name: "",
+    company: "",
+    address: "",
+    apartment: "",
+    city: "",
+    contactName: "",
+    country: "",
+    email: "",
+    phoneNumber: "",
+    postalCode: "",
+  })
+
+  const [open, setOpen] = React.useState(false);
+
+  async function createSuppier() {
+    try {
+      const response = await fetch("http://localhost:3000/api/suppliers", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(supplier),
+      });
+      const data = await response.json();
+
+      if (response.status == 201) {
+        toast.success("Supplier created successfully");
+        onSave(data);
+        setOpen(false)
+      }
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <TextButton onClick={() => {}}>{text}</TextButton>
+        <TextButton onClick={() => { }}>{text}</TextButton>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -40,12 +77,12 @@ export default function SupplierDialog({
           <Input
             id="supplier-company"
             label="Company"
-            onChange={() => {}}
+            onChange={e => setSupplier({ ...supplier, company: e.target.value })}
             placeholder=""
           />
           <Select
             label="Country/Region"
-            onChange={() => {}}
+            onChange={e => setSupplier({ ...supplier, country: e.target.value })}
             options={countries}
           />
 
@@ -53,13 +90,13 @@ export default function SupplierDialog({
             id="supplier-address"
             icon={<AiOutlineSearch />}
             label="Address"
-            onChange={() => {}}
+            onChange={e => setSupplier({ ...supplier, address: e.target.value })}
             placeholder=""
           />
           <Input
             id="supplier-apartment"
             label="Apartment, Suite etc"
-            onChange={() => {}}
+            onChange={e => setSupplier({ ...supplier, apartment: e.target.value })}
             placeholder=""
           />
 
@@ -67,13 +104,13 @@ export default function SupplierDialog({
             <Input
               id="supplier-city"
               label="City"
-              onChange={() => {}}
+              onChange={e => setSupplier({ ...supplier, city: e.target.value })}
               placeholder=""
             />
             <Input
               id="supplier-postal-code"
               label="Postal code"
-              onChange={() => {}}
+              onChange={e => setSupplier({ ...supplier, postalCode: e.target.value })}
               placeholder=""
             />
           </div>
@@ -81,7 +118,7 @@ export default function SupplierDialog({
           <Input
             id="supplier-contact-name"
             label="Contact name"
-            onChange={() => {}}
+            onChange={e => setSupplier({ ...supplier, contactName: e.target.value })}
             placeholder=""
           />
 
@@ -89,20 +126,21 @@ export default function SupplierDialog({
             <Input
               id="supplier-email"
               label="Email address"
-              onChange={() => {}}
+              onChange={e => setSupplier({ ...supplier, email: e.target.value })}
               placeholder=""
             />
             <Input
               id="supplier-phone-number"
               label="Phone number"
-              onChange={() => {}}
+              onChange={e => setSupplier({ ...supplier, phoneNumber: e.target.value })}
               placeholder=""
             />
           </div>
         </div>
 
         <DialogFooter>
-          <Button onClick={() => onSave(supplier)} size={"sm"} type="submit">
+          <Button onClick={() => createSuppier()} size={"sm"} type="submit">
+
             Save changes
           </Button>
         </DialogFooter>

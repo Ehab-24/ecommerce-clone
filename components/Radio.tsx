@@ -28,12 +28,12 @@ export default function Radio({ items, name, onChange, className = "" }: { items
               </span>
             </label>
             <div className="flex flex-col items-start">
-              <label className="mt-px text-sm font-light text-gray-700 cursor-pointer select-none" htmlFor={name + item.value}>
+              <label className="mt-px text-sm text-gray-900 cursor-pointer select-none" htmlFor={name + item.value}>
                 {item.label}
               </label>
               {
                 item.description && (
-                  <p className="text-xs mt-2 text-gray-500 text-center">
+                  <p className="text-xs mt-2 text-gray-500 text-start">
                     {item.description}
                   </p>
                 )
