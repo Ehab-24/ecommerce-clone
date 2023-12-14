@@ -4,6 +4,8 @@ import FilledButton from "@/components/buttons/FilledButton";
 import { apiUrl } from "@/lib/utils";
 import { Collection } from "@/types/collection";
 
+export const runtime = "edge"
+
 export default async function CollectionsPage() {
   const res = await fetch(apiUrl("/api/products/collections"), {
     cache: "no-cache",

@@ -10,6 +10,8 @@ import { apiUrl } from "@/lib/utils";
 import { Transfer } from "@/types/transfer";
 import Datatable from "@/components/products/transfers/Datatable";
 
+export const runtime = "edge"
+
 export default async function TransfersPage() {
 
   const requests = [

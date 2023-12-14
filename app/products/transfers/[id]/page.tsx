@@ -1,4 +1,4 @@
-import EditTransferForm from "@/components/products/transfers/EdittransferForm"
+import EditTransferForm from "@/components/products/transfers/EditTransferForm"
 import { apiUrl } from "@/lib/utils"
 import { Transfer } from "@/types/transfer"
 import { Location } from "@/types/location"

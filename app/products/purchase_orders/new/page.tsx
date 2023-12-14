@@ -5,24 +5,25 @@ import { Supplier } from "@/types/supplier";
 import CreatePurchaseOrderForm from "@/components/products/purchase_orders/CreatePurchaseOrderForm";
 import { apiUrl } from "@/lib/utils";
 
-export default async function CreatePurchaseOrderPage() {
+export const runtime = "edge"
 
+export default async function CreatePurchaseOrderPage() {
   const requests = [
     fetch(apiUrl("/api/settings/locations")),
     fetch(apiUrl("/api/suppliers")),
-  ]
+  ];
 
-  const [locationsRes, suppliersRes] = await Promise.all(requests)
+  const [locationsRes, suppliersRes] = await Promise.all(requests);
 
   if (!locationsRes.ok) {
-    throw new Error("Failed to fetch locations")
+    throw new Error("Failed to fetch locations");
   }
   if (!suppliersRes.ok) {
-    throw new Error("Failed to fetch suppliers")
+    throw new Error("Failed to fetch suppliers");
   }
 
-  const locations = await locationsRes.json()
-  const suppliers: Supplier[] = await suppliersRes.json()
+  const locations = await locationsRes.json();
+  const suppliers: Supplier[] = await suppliersRes.json();
 
   return (
     <div className=" w-full bg-gray-100 min-h-screen items-center flex flex-col">
@@ -39,12 +40,15 @@ export default async function CreatePurchaseOrderPage() {
           </h1>
         </div>
 
-        <CreatePurchaseOrderForm currencies={currencies} suppliers={suppliers} locations={locations} />
+        <CreatePurchaseOrderForm
+          currencies={currencies}
+          suppliers={suppliers}
+          locations={locations}
+        />
       </div>
     </div>
   );
 }
-
 
 const currencies = [
   { label: "Select", value: "", disabled: true },

@@ -11,13 +11,16 @@ import { GiftCard } from "@/types/giftCard";
 import FilledButton from "@/components/buttons/FilledButton";
 import Link from "next/link";
 
-export default async function CreateGiftCardPage() {
+export const runtime = "edge";
 
-  const res = await fetch(apiUrl("/api/products/gift_cards"), { cache: "no-cache" })
+export default async function CreateGiftCardPage() {
+  const res = await fetch(apiUrl("/api/products/gift_cards"), {
+    cache: "no-cache",
+  });
   if (!res.ok) {
-    throw new Error("Failed to fetch gift cards")
+    throw new Error("Failed to fetch gift cards");
   }
-  const giftCards: GiftCard[] = await res.json()
+  const giftCards: GiftCard[] = await res.json();
 
   return (
     <div className="bg-gray-100 min-h-screen p-8">
@@ -26,7 +29,9 @@ export default async function CreateGiftCardPage() {
 
         <div className=" flex items-center gap-4">
           <HeaderButtons />
-          <FilledButton><Link href="/products/gift_cards/new">Create Gift Card</Link></FilledButton>
+          <FilledButton>
+            <Link href="/products/gift_cards/new">Create Gift Card</Link>
+          </FilledButton>
         </div>
       </div>
       <div className="h-8" />
