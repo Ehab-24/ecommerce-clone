@@ -1,28 +1,32 @@
-import React from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
 import { Supplier } from "@/types/supplier";
 import CreatePurchaseOrderForm from "@/components/products/purchase_orders/CreatePurchaseOrderForm";
 import { apiUrl } from "@/lib/utils";
 
-export default async function CreatePurchaseOrderPage() {
+export default function CreatePurchaseOrderPage() {
+  const [suppliers, setSuppliers] = useState<Supplier[]>([]);
+  const [locations, setLocations] = useState<any[]>([]);
 
-  const requests = [
-    fetch(apiUrl("/api/settings/locations")),
-    fetch(apiUrl("/api/suppliers")),
-  ]
+  useEffect(() => {
+    const fetchSuppliers = async () => {
+      const res = await fetch(`/api/suppliers`);
+      const data = await res.json();
+      setSuppliers(data);
+    };
 
-  const [locationsRes, suppliersRes] = await Promise.all(requests)
+    const fetchLocations = async () => {
+      const res = await fetch(`/api/settings/locations`);
+      const data = await res.json();
+      setLocations(data);
+    };
 
-  if (!locationsRes.ok) {
-    throw new Error("Failed to fetch locations")
-  }
-  if (!suppliersRes.ok) {
-    throw new Error("Failed to fetch suppliers")
-  }
-
-  const locations = await locationsRes.json()
-  const suppliers: Supplier[] = await suppliersRes.json()
+    fetchSuppliers();
+    fetchLocations();
+  }, []);
 
   return (
     <div className=" w-full bg-gray-100 min-h-screen items-center flex flex-col">
@@ -39,12 +43,15 @@ export default async function CreatePurchaseOrderPage() {
           </h1>
         </div>
 
-        <CreatePurchaseOrderForm currencies={currencies} suppliers={suppliers} locations={locations} />
+        <CreatePurchaseOrderForm
+          currencies={currencies}
+          suppliers={suppliers}
+          locations={locations}
+        />
       </div>
     </div>
   );
 }
-
 
 const currencies = [
   { label: "Select", value: "", disabled: true },

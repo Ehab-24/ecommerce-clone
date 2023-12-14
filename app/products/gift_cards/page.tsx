@@ -1,3 +1,5 @@
+"use client";
+
 import Heading from "@/components/Heading";
 import Card from "@/components/Card";
 import Image from "next/image";
@@ -11,13 +13,21 @@ import { GiftCard } from "@/types/giftCard";
 import FilledButton from "@/components/buttons/FilledButton";
 import Link from "next/link";
 
-export default async function CreateGiftCardPage() {
+import { useState, useEffect } from "react";
 
-  const res = await fetch(apiUrl("/api/products/gift_cards"), { cache: "no-cache" })
-  if (!res.ok) {
-    throw new Error("Failed to fetch gift cards")
-  }
-  const giftCards: GiftCard[] = await res.json()
+export default function CreateGiftCardPage() {
+  const [giftCards, setGiftCards] = useState<GiftCard[]>([]);
+
+  useEffect(() => {
+    const fetchGiftCards = async () => {
+      const res = await fetch(`/api/gift_cards`);
+      const data = await res.json();
+      setGiftCards(data);
+    };
+
+    fetchGiftCards();
+  }, []);
+
 
   return (
     <div className="bg-gray-100 min-h-screen p-8">

@@ -1,3 +1,5 @@
+"use client";
+
 import FilledButton from "@/components/buttons/FilledButton";
 import Datatable from "@/components/products/Datatable";
 import ExportImportButtons from "@/components/products/ExportImportButtons";
@@ -6,19 +8,22 @@ import { Product } from "@/types/product";
 import Link from "next/link";
 import React from "react";
 
+import { useState, useEffect } from "react";
+
 // export const runtime = "edge";
 
-export default async function ProductsPage() {
-  const res = await fetch(apiUrl("/api/products"), {
-    cache: "no-cache",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
-  });
+export default function ProductsPage() {
+  const [products, setProducts] = useState<Product[]>([]);
 
-  const products: Product[] = await res.json();
-  console.log(products)
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const res = await fetch(`/api/products`);
+      const data = await res.json();
+      setProducts(data);
+    };
+
+    fetchProducts();
+  }, []);
 
   return (
     <div className="bg-gray-100 min-h-screen p-8">
