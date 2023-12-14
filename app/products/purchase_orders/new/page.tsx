@@ -1,11 +1,11 @@
-"use client";
-
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
 import { Supplier } from "@/types/supplier";
 import CreatePurchaseOrderForm from "@/components/products/purchase_orders/CreatePurchaseOrderForm";
 import { apiUrl } from "@/lib/utils";
+
+export const runtime = "edge"
 
 export default async function CreatePurchaseOrderPage() {
   const requests = [

@@ -1,5 +1,3 @@
-"use client";
-
 import Datatable from "@/components/products/inventory/Datatable";
 import { apiUrl } from "@/lib/utils";
 import { Product } from "@/types/product";
@@ -8,18 +6,14 @@ import React from "react";
 import ExportImportButtons from "@/components/products/ExportImportButtons";
 import FilledButton from "@/components/buttons/FilledButton";
 
-export default function ProductsPage() {
-  const [products, setProducts] = useState<Product[]>([]);
+export const runtime = "edge"
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      const res = await fetch(`/api/products`);
-      const data = await res.json();
-      setProducts(data);
-    };
-
-    fetchProducts();
-  }, []);
+export default async function InventoryPage() {
+  const res = await fetch(apiUrl("/api/products"), { cache: "no-cache" })
+  if (!res.ok) {
+    throw new Error("Failed to fetch products")
+  }
+  const products: Product[] = await res.json()
 
   return (
     <div className="bg-gray-100 min-h-screen p-8">

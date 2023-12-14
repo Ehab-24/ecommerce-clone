@@ -1,6 +1,4 @@
-"use client";
-
-import React, { useState, useEffect, use } from "react";
+import React from "react";
 import Link from "next/link";
 import { CiLocationOn } from "react-icons/ci";
 import Heading from "@/components/Heading";
@@ -12,64 +10,22 @@ import Card from "@/components/Card";
 import ChangeLocationDialog from "@/components/settings/locations/DefaultLocationDialog";
 import { apiUrl } from "@/lib/utils";
 
-export default async function LocationsPage() {
+export const runtime = "edge"
 
-  // const locations: Location[] = [
-  //   {
-  //     _id: "1",
-  //     name: "Sample Location",
-  //     country: "Sample Country",
-  //     address: "123 Sample Street",
-  //     city: "Sample City",
-  //     postalCode: "12345",
-  //     phone: {
-  //       number: "123-456-7890",
-  //       countryCode: "US"
-  //     },
-  //     fulfilOrders: true,
-  //     status: "active",
-  //     isDefault: true,
-  //     createdAt: new Date(),
-  //     updatedAt: new Date(),
-  //   },
-  //   {
-  //     _id: "2",
-  //     name: "Sample Location",
-  //     isDefault: false,
-  //     country: "Sample Country",
-  //     address: "123 Sample Street",
-  //     city: "Sample City",
-  //     postalCode: "12345",
-  //     phone: {
-  //       number: "123-456-7890",
-  //       countryCode: "US"
-  //     },
-  //     fulfilOrders: true,
-  //     status: "active",
-  //     createdAt: new Date(),
-  //     updatedAt: new Date(),
-  //   }
-  // ]
+export default async function LocationsPage() {
 
   const res = await fetch(apiUrl("/api/settings/locations"), {
     method: "GET",
     headers: {
       "Content-Type": "application/json"
-    }
+    },
+    cache: "no-cache"
   });
+  if (res.status !== 200) {
+    throw new Error("Failed to fetch locations");
+  }
 
-      if (res.status !== 200) {
-        throw new Error("Failed to fetch locations");
-      }
-
-      const locations: Location[] = await res.json();
-      console.log(locations);
-
-      setLocations(locations);
-    };
-
-    fetchLocations();
-  }, []);
+  const locations: Location[] = await res.json();
 
   return (
     <div className="bg-gray-100 min-h-screen w-full px-4 flex flex-col">

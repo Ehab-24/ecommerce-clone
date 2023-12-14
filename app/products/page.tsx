@@ -1,5 +1,3 @@
-"use client";
-
 import FilledButton from "@/components/buttons/FilledButton";
 import Datatable from "@/components/products/Datatable";
 import ExportImportButtons from "@/components/products/ExportImportButtons";
@@ -8,7 +6,7 @@ import { Product } from "@/types/product";
 import Link from "next/link";
 import React from "react";
 
-// export const runtime = "edge";
+export const runtime = "edge";
 
 export default async function ProductsPage() {
   const res = await fetch(apiUrl("/api/products"), {
@@ -20,7 +18,6 @@ export default async function ProductsPage() {
   });
 
   const products: Product[] = await res.json();
-  console.log(products);
 
   return (
     <div className="bg-gray-100 min-h-screen p-8">

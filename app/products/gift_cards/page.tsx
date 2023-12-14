@@ -1,5 +1,3 @@
-"use client";
-
 import Heading from "@/components/Heading";
 import Card from "@/components/Card";
 import Image from "next/image";
@@ -12,6 +10,8 @@ import { apiUrl } from "@/lib/utils";
 import { GiftCard } from "@/types/giftCard";
 import FilledButton from "@/components/buttons/FilledButton";
 import Link from "next/link";
+
+export const runtime = "edge";
 
 export default async function CreateGiftCardPage() {
   const res = await fetch(apiUrl("/api/products/gift_cards"), {
