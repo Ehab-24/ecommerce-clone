@@ -8,7 +8,56 @@ export async function GET(_: NextRequest, { params }: { params: { id: string } }
     try {
 
         const db = await getDb()
-        const transfer = await db.collection("transfers").findOne({ _id: new ObjectId(params.id) })
+        const pipeline = [
+            {
+                $match: {
+                    _id: new ObjectId(params.id)
+                }
+            },
+            {
+                $addFields: {
+                    origin: { $toObjectId: "$origin" }
+                }
+            },
+            {
+                $addFields: {
+                    destination: { $toObjectId: "$destination" }
+                }
+            },
+            {
+                $addFields: {
+                    products: { $map: { input: "$products", as: "product", in: { $toObjectId: "$$product" } } }
+                }
+            },
+            {
+                $lookup: {
+                    from: "locations",
+                    localField: "destination",
+                    foreignField: "_id",
+                    as: "destination"
+                }
+            },
+            {
+                $lookup: {
+                    from: "locations",
+                    localField: "origin",
+                    foreignField: "_id",
+                    as: "origin"
+                }
+            },
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "products",
+                    foreignField: "_id",
+                    as: "products"
+                }
+            }
+        ]
+
+        const result = await db.collection("transfers").aggregate(pipeline).toArray()
+        const transfer = { ...result[0], destination: result[0].destination[0], origin: result[0].origin[0] }
+
         return NextResponse.json(transfer, { status: 200 })
     }
     catch (error) {

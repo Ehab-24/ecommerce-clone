@@ -24,7 +24,7 @@ export default async function InventoryPage() {
           <ExportImportButtons />
 
           <FilledButton>
-            <Link href="/products/new">View Products</Link>
+            <Link href="/products">View Products</Link>
           </FilledButton>
         </div>
       </div>

@@ -82,7 +82,7 @@ export default function Datatable({
                 {p.referenceNumber}
               </td>
               <td className="px-3 py-4">{p.supplier.company}</td>
-              <td className="px-3 py-4">{p.destination}</td>
+              <td className="px-3 py-4">{p.destination.name}</td>
               <td className="px-3 py-4">
                 <StatusText status={p.status} />
               </td>

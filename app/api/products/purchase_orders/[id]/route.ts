@@ -8,7 +8,56 @@ export async function GET(_: NextRequest, { params }: { params: { id: string } }
     try {
 
         const db = await getDb()
-        const purchaseOrder = await db.collection("purchase_orders").findOne({ _id: new ObjectId(params.id) })
+        const pipeline = [
+            {
+                $match: {
+                    _id: new ObjectId(params.id)
+                }
+            },
+            {
+                $addFields: {
+                    supplier: { $toObjectId: "$supplier" }
+                }
+            },
+            {
+                $addFields: {
+                    destination: { $toObjectId: "$destination" }
+                }
+            },
+            {
+                $addFields: {
+                    products: { $map: { input: "$products", as: "product", in: { $toObjectId: "$$product" } } }
+                }
+            },
+            {
+                $lookup: {
+                    from: "locations",
+                    localField: "destination",
+                    foreignField: "_id",
+                    as: "destination"
+                }
+            },
+            {
+                $lookup: {
+                    from: "suppliers",
+                    localField: "supplier",
+                    foreignField: "_id",
+                    as: "supplier"
+                }
+            },
+            {
+                $lookup: {
+                    from: 'products',
+                    localField: 'products',
+                    foreignField: '_id',
+                    as: 'products'
+                }
+            },
+        ]
+
+        const result = await db.collection("purchase_orders").aggregate(pipeline).toArray()
+        const purchaseOrder = { ...result[0], destination: result[0].destination[0], supplier: result[0].supplier[0] }
+
         return NextResponse.json(purchaseOrder, { status: 200 })
     }
     catch (error) {

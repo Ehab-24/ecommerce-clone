@@ -11,6 +11,8 @@ export default function Datatable({ transfers }: { transfers: Transfer[] }) {
   const router = useRouter()
   const [selectedProducts, setSelectedProducts] = useState<boolean[]>(new Array(transfers.length).fill(false))
 
+  console.log(transfers)
+
   return (
     <div className="relative overflow-x-auto overflow-y-scroll shadow-md sm:rounded-lg">
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 ">
@@ -57,7 +59,6 @@ export default function Datatable({ transfers }: { transfers: Transfer[] }) {
                 </td>
                 <td className="px-6 py-4">
                   {t.origin.name}
-
                 </td>
                 <td className="px-6 py-4">
                   {t.destination.name}

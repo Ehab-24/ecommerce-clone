@@ -8,7 +8,30 @@ export async function GET(_: NextRequest, { params }: { params: { id: string } }
     try {
 
         const db = await getDb()
-        const collection = await db.collection("collections").findOne({ _id: new ObjectId(params.id) })
+        const pipeline = [
+            {
+                $match: {
+                    _id: new ObjectId(params.id)
+                }
+            },
+            {
+                $addFields: {
+                    products: { $map: { input: "$products", as: "product", in: { $toObjectId: "$$product" } } }
+                }
+            },
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "products",
+                    foreignField: "_id",
+                    as: "products"
+                }
+            }
+        ]
+
+        const result = await db.collection("collections").aggregate(pipeline).toArray()
+        const collection = result[0]
+
         return NextResponse.json(collection, { status: 200 })
     }
     catch (error) {

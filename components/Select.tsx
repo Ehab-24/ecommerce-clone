@@ -26,7 +26,7 @@ export default function Select({
         {label}
       </label>
       <select
-        defaultValue={options[0].value}
+        // defaultValue={options[0].value}
         disabled={disabled}
         value={value}
         onChange={onChange}
