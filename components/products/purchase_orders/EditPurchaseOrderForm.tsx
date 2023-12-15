@@ -25,11 +25,19 @@ import StatusText from "@/components/products/StatusText";
 import Datatable from "@/components/products/Datatable";
 import { AdjustmentName, ApiPurchaseOrder, PurchaseOrder } from "@/types/purchaseOrder";
 import FilledButton from "@/components/buttons/FilledButton";
+import BrowseProductsDialog from "@/components/BrowseProductsDialog";
+import { Product } from "@/types/product";
 
 export default function EditPurchaseOrderForm({ initialOrder, currencies }: { currencies: { label: string, value: string }[], initialOrder: PurchaseOrder }) {
 
-  const [purchaseOrder, setPurchaseOrder] = React.useState<ApiPurchaseOrder>({ ...initialOrder, products: initialOrder.products.map(p => p._id), supplier: initialOrder.supplier._id })
+  const [purchaseOrder, setPurchaseOrder] = React.useState<ApiPurchaseOrder>({ ...initialOrder, products: initialOrder.products.map(p => p._id), supplier: initialOrder.supplier._id, destination: initialOrder.destination._id })
   const [loading, setLoading] = React.useState(false)
+  const [products, setProducts] = React.useState<Product[]>(initialOrder.products)
+
+  React.useEffect(() => {
+    setPurchaseOrder(t => ({ ...t, products: [...t.products, ...products.map(p => p._id)] }))
+  }, [products])
+
 
   function getTotalTax() {
     return initialOrder.products.reduce((acc, product) => acc + product.tax, 0);
@@ -119,14 +127,20 @@ export default function EditPurchaseOrderForm({ initialOrder, currencies }: { cu
 
       <Card className="p-4">
         <SectionTitle title="Add Products" />
-        <div className=" w-full flex gap-4 mb-8">
-          <Input icon={<IoIosSearch />} id="add-products" label="" placeholder="Search products" />
-          <OutlinedButton onClick={() => { }}>
-            Browse
-          </OutlinedButton>
+        <div className=" w-full flex mb-8 gap-4">
+          {/*TODO: replace with a select popover for suppliers*/}
+          <Input
+            icon={<IoIosSearch />}
+            id="add-products"
+            placeholder="Search products"
+            onChange={() => { }}
+          />
+
+          <BrowseProductsDialog setProducts={ps => setProducts(ps)} />
+
         </div>
 
-        <Datatable products={initialOrder.products} />
+        <Datatable products={products} />
       </Card>
 
       <div className=" flex flex-col 2xl:flex-row w-full gap-6">

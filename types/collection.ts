@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { Product } from "./product";
 
 export enum Operator {
   Equals = "equals",
@@ -37,15 +38,8 @@ const ApiCollectionSchema = z.object({
 type ApiCollection = z.infer<typeof ApiCollectionSchema>;
 type Condition = z.infer<typeof ConditionSchema>;
 
-type Collection = Omit<
-  Omit<Omit<ApiCollection, "createdAt">, "updatedAt">,
-  "products"
-> & {
-  _id: string;
-  createdAt: string;
-  updatedAt: string;
-  products: string[];
-};
+type Collection = Omit<Omit<Omit<ApiCollection, "createdAt">, "updatedAt">, "products">
+  & { _id: string; createdAt: string; updatedAt: string; products: Product[]; };
 
 export {
   ApiCollectionSchema,

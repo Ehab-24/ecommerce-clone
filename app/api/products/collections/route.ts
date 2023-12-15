@@ -28,6 +28,11 @@ export async function GET(request: NextRequest) {
 
         const pipeline: any = [
             {
+                $addFields: {
+                    products: { $map: { input: "$products", as: "product", in: { $toObjectId: "$$product" } } }
+                }
+            },
+            {
                 $lookup: {
                     from: 'products',
                     localField: 'products',

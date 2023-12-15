@@ -178,7 +178,7 @@ export default function CreatePurchaseOrderForm({ suppliers, locations, currenci
               onChange={e => setPurchaseOrder({ ...purchaseOrder, supplier: e.target.value })}
             />
 
-            <BrowseProductsDialog productIds={purchaseOrder.products} setProducts={ps => setProducts(ps)} />
+            <BrowseProductsDialog setProducts={ps => setProducts(ps)} />
 
           </div>
 

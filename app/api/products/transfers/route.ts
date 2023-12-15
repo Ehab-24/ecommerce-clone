@@ -28,6 +28,21 @@ export async function GET(request: NextRequest) {
 
         const pipeline: any = [
             {
+                $addFields: {
+                    origin: { $toObjectId: "$origin" }
+                }
+            },
+            {
+                $addFields: {
+                    destination: { $toObjectId: "$destination" }
+                }
+            },
+            {
+                $addFields: {
+                    products: { $map: { input: "$products", as: "product", in: { $toObjectId: "$$product" } } }
+                }
+            },
+            {
                 $lookup: {
                     from: 'locations',
                     localField: 'origin',
@@ -50,7 +65,7 @@ export async function GET(request: NextRequest) {
                     foreignField: '_id',
                     as: 'products'
                 }
-            },
+            }
         ]
 
         if (fields.length > 0) {
@@ -62,7 +77,8 @@ export async function GET(request: NextRequest) {
         }
 
         const db = await getDb()
-        const transfers = await db.collection("transfers").aggregate(pipeline).limit(limit).skip(page * limit).toArray()
+        const results = await db.collection("transfers").aggregate(pipeline).limit(limit).skip(page * limit).toArray()
+        const transfers = results.map((result) => ({ ...result, origin: result.origin[0], destination: result.destination[0] }))
 
         return NextResponse.json(transfers, { status: 200 })
 

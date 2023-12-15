@@ -12,7 +12,7 @@ import Select from "@/components/Select"
 import { Location } from "@/types/location"
 import StatusText from "@/components/products/StatusText"
 import FilledButtonSmall from "@/components/buttons/FilledButtonSmall"
-import { ApiTransferSchema, Transfer } from "@/types/transfer"
+import { ApiTransfer, ApiTransferSchema, Transfer } from "@/types/transfer"
 import Input from "@/components/Input"
 import { IoIosClose, IoIosSearch } from "react-icons/io"
 import Spinner from "@/components/Spinner"
@@ -20,11 +20,19 @@ import FilledButton from "@/components/buttons/FilledButton"
 import axios from "axios"
 import toast from "react-hot-toast"
 import { ZodError } from "zod"
+import Datatable from "../Datatable"
+import { Product } from "@/types/product"
+import BrowseProductsDialog from "@/components/BrowseProductsDialog"
 
 export default function EditTransferForm({ locations, initialTransfer }: { locations: Location[], initialTransfer: Transfer }) {
 
-  const [transfer, setTransfer] = React.useState<Transfer>(initialTransfer)
+  const [transfer, setTransfer] = React.useState<ApiTransfer>({ ...initialTransfer, products: initialTransfer.products.map(p => p._id), destination: initialTransfer.destination._id, origin: initialTransfer.origin._id })
   const [loading, setLoading] = React.useState(false)
+  const [products, setProducts] = React.useState<Product[]>(initialTransfer.products)
+
+  React.useEffect(() => {
+    setTransfer(t => ({ ...t, products: [...t.products, ...products.map(p => p._id)] }))
+  }, [products])
 
   async function handleSave() {
 
@@ -96,7 +104,7 @@ export default function EditTransferForm({ locations, initialTransfer }: { locat
         <div className="flex flex-col w-full">
           <SectionTitle title="Origin" />
           <div className="w-min">
-            <Select value={transfer.origin._id} onChange={e => setTransfer({ ...transfer, origin: locations.find(l => l._id === e.target.value)! })} options={locations.map(l => ({ label: l.name, value: l._id! }))} />
+            <Select value={transfer.origin} onChange={e => setTransfer({ ...transfer, origin: locations.find(l => l._id === e.target.value)!._id })} options={locations.map(l => ({ label: l.name, value: l._id! }))} />
           </div>
         </div>
 
@@ -105,19 +113,27 @@ export default function EditTransferForm({ locations, initialTransfer }: { locat
         <div className="flex flex-col w-full">
           <SectionTitle title="Destination" />
           <div className="w-min">
-            <Select value={transfer.destination._id} onChange={e => setTransfer({ ...transfer, destination: locations.find(l => l._id === e.target.value)! })} options={locations.map(l => ({ label: l.name, value: l._id! }))} />
+            <Select value={transfer.destination} onChange={e => setTransfer({ ...transfer, destination: locations.find(l => l._id === e.target.value)!._id })} options={locations.map(l => ({ label: l.name, value: l._id! }))} />
           </div>
         </div>
       </Card>
 
       <Card className="p-4">
         <SectionTitle title="Add Products" />
-        <div className=" w-full flex gap-4">
-          <Input icon={<IoIosSearch />} id="add-products" placeholder="Search products" />
-          <OutlinedButtonSmall onClick={() => { }}>
-            Browse
-          </OutlinedButtonSmall>
+        <div className=" w-full flex mb-8 gap-4">
+          {/*TODO: replace with a select popover for suppliers*/}
+          <Input
+            icon={<IoIosSearch />}
+            id="add-products"
+            placeholder="Search products"
+            onChange={() => { }}
+          />
+
+          <BrowseProductsDialog setProducts={ps => setProducts(ps)} />
+
         </div>
+
+        <Datatable products={products} />
       </Card>
 
       <div className="flex gap-4">
@@ -148,7 +164,7 @@ export default function EditTransferForm({ locations, initialTransfer }: { locat
   )
 }
 
-function AdditionalDetails({ transfer, setTransfer }: { transfer: Transfer, setTransfer: React.Dispatch<React.SetStateAction<Transfer>> }) {
+function AdditionalDetails({ transfer, setTransfer }: { transfer: ApiTransfer, setTransfer: React.Dispatch<React.SetStateAction<ApiTransfer>> }) {
 
   return (
     <>

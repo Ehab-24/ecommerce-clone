@@ -46,7 +46,7 @@ export default function Datatable({ collections }: { collections: Collection[] }
                   {c.title}
                 </th>
                 <td className="px-6 py-4">
-                  {c.products}
+                  {c.products.length}
                 </td>
                 <td className="px-6 py-4">
                   <p className="capitalize">

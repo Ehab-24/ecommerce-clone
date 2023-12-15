@@ -26,7 +26,7 @@ type Menu = "Add Products" | "All Products" | "Popular Products" | "Collections"
 type SubMenu = { title: string; params: URLSearchParams } | null;
 type ListMenuItem = { _id: string; title: string };
 
-export default function BrowseProductsDialog({ defaultQuery = "", setProducts }: { defaultQuery?: string, productIds: string[], setProducts: (products: Product[]) => void }) {
+export default function BrowseProductsDialog({ defaultQuery = "", setProducts }: { defaultQuery?: string, setProducts: (products: Product[]) => void }) {
 
   const [open, setOpen] = React.useState(false);
   const [activeMenu, setActiveMenu] = React.useState<Menu>("Add Products");

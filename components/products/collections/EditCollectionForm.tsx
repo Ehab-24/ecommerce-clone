@@ -25,8 +25,13 @@ import Spinner from "@/components/Spinner";
 
 export default function CreateCollectionForm({ initialCollection }: { initialCollection: Collection }) {
 
-  const [collection, setCollection] = React.useState<ApiCollection>(initialCollection)
+  const [collection, setCollection] = React.useState<ApiCollection>({ ...initialCollection, products: initialCollection.products.map(p => p._id) })
   const [loading, setLoading] = React.useState<boolean>(false)
+  const [isSame, setIsSame] = React.useState<boolean>(true)
+
+  React.useEffect(() => {
+    setIsSame(JSON.stringify({ ...initialCollection, products: initialCollection.products.map(p => p._id) }) === JSON.stringify(collection))
+  }, [collection, initialCollection])
 
   async function handleSave() {
 
@@ -53,6 +58,7 @@ export default function CreateCollectionForm({ initialCollection }: { initialCol
       setLoading(false)
     }
   }
+
 
   return (
 
@@ -118,7 +124,7 @@ export default function CreateCollectionForm({ initialCollection }: { initialCol
             loading ? (
               <Spinner />
             ) : (
-              <FilledButton disabled={loading || initialCollection === collection} onClick={handleSave}>Save</FilledButton>
+              <FilledButton disabled={loading || isSame} onClick={handleSave}>Save</FilledButton>
             )
           }
         </div>
