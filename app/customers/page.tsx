@@ -54,7 +54,6 @@ const DraftOrders = () => {
     <div className="p-5">
       <div className="flex items-center justify-between mb-5">
         <Heading className="!pb-0">Customers</Heading>
-
         <div className="flex gap-2">
           <ExportImportButtons />
           <Link href="/customers/new">

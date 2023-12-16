@@ -27,10 +27,10 @@ export default function CreateCollectionForm({ initialCollection }: { initialCol
 
   const [collection, setCollection] = React.useState<ApiCollection>({ ...initialCollection, products: initialCollection.products.map(p => p._id) })
   const [loading, setLoading] = React.useState<boolean>(false)
-  const [shouldSave, setShouldSave] = React.useState<boolean>(true)
+  const [isSame, setIsSame] = React.useState<boolean>(true)
 
   React.useEffect(() => {
-    setShouldSave(JSON.stringify({ ...initialCollection, products: initialCollection.products.map(p => p._id) }) === JSON.stringify(collection))
+    setIsSame(JSON.stringify({ ...initialCollection, products: initialCollection.products.map(p => p._id) }) === JSON.stringify(collection))
   }, [collection, initialCollection])
 
   async function handleSave() {
@@ -124,7 +124,7 @@ export default function CreateCollectionForm({ initialCollection }: { initialCol
             loading ? (
               <Spinner />
             ) : (
-              <FilledButton disabled={loading || shouldSave} onClick={handleSave}>Save</FilledButton>
+              <FilledButton disabled={loading || isSame} onClick={handleSave}>Save</FilledButton>
             )
           }
         </div>

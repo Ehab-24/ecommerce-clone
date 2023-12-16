@@ -4,6 +4,7 @@ import { IoSearchOutline } from "react-icons/io5";
 interface InputSearchProps {
   placeholder: string;
   className?: string;
+  onChange?: any;
 }
 
 const inputSearch: React.FC<InputSearchProps> = ({ ...props }) => {
@@ -21,6 +22,7 @@ const inputSearch: React.FC<InputSearchProps> = ({ ...props }) => {
         outline-gray-500 focus:outline-none focus:ring-2 
         focus:ring-primary-500 
         focus:border-transparent ${props.className}`}
+        onChange={props.onChange}
       />
     </div>
   );
