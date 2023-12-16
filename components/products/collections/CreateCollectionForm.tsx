@@ -89,7 +89,7 @@ export default function CreateCollectionForm() {
           </Card>
         </div>
 
-        <div className="flex 2xl:max-w-xs w-full flex-col gap-6">
+        <div className="flex 2xl:max-w-[280px] w-full flex-col gap-6">
 
           <Card className="p-4">
             <SectionTitle title="Publishing" />

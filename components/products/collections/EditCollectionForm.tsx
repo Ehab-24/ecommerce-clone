@@ -27,10 +27,10 @@ export default function CreateCollectionForm({ initialCollection }: { initialCol
 
   const [collection, setCollection] = React.useState<ApiCollection>({ ...initialCollection, products: initialCollection.products.map(p => p._id) })
   const [loading, setLoading] = React.useState<boolean>(false)
-  const [isSame, setIsSame] = React.useState<boolean>(true)
+  const [shouldSave, setShouldSave] = React.useState<boolean>(true)
 
   React.useEffect(() => {
-    setIsSame(JSON.stringify({ ...initialCollection, products: initialCollection.products.map(p => p._id) }) === JSON.stringify(collection))
+    setShouldSave(JSON.stringify({ ...initialCollection, products: initialCollection.products.map(p => p._id) }) === JSON.stringify(collection))
   }, [collection, initialCollection])
 
   async function handleSave() {
@@ -92,7 +92,7 @@ export default function CreateCollectionForm({ initialCollection }: { initialCol
             </Card>
           </div>
 
-          <div className="flex 2xl:max-w-xs w-full flex-col gap-6">
+          <div className="flex 2xl:max-w-[280px] w-full flex-col gap-6">
 
             <Card className="p-4">
               <SectionTitle title="Publishing" />
@@ -124,7 +124,7 @@ export default function CreateCollectionForm({ initialCollection }: { initialCol
             loading ? (
               <Spinner />
             ) : (
-              <FilledButton disabled={loading || isSame} onClick={handleSave}>Save</FilledButton>
+              <FilledButton disabled={loading || shouldSave} onClick={handleSave}>Save</FilledButton>
             )
           }
         </div>

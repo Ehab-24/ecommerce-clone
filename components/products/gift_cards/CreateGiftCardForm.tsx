@@ -94,7 +94,7 @@ export default function CreateGiftCardForm() {
         </div>
 
 
-        <div className="flex w-full 2xl:max-w-xs flex-col gap-6">
+        <div className="flex w-full 2xl:max-w-[280px] flex-col gap-6">
 
           {/*TODO: change to a select popover and use real customers*/}
           <Card className="flex flex-col p-4">

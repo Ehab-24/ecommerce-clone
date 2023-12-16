@@ -5,7 +5,7 @@ import { toast } from "react-hot-toast";
 import Text from "./Text";
 import Spinner from "./Spinner";
 
-export default function ImageUploader({ onSave }: { onSave: (imageUrl: string) => void }) {
+export default function ImageUploader({ onSave, text = <DefaultText /> }: { onSave: (imageUrl: string) => void, text?: React.ReactNode }) {
   const [loading, setLoading] = useState(false);
   const uploadPreset = "apaz6cpw"
   const cloudName = "db6b8spcx"
@@ -69,9 +69,7 @@ export default function ImageUploader({ onSave }: { onSave: (imageUrl: string) =
       {
         !loading && (
           <div className="flex p-1 flex-col text-center justify-center items-center h-full">
-            <Text >Drag and drop an image here</Text>
-            <Text >or</Text>
-            <Text >Click to select an image</Text>
+            {text}
           </div>
         )
       }
@@ -80,3 +78,13 @@ export default function ImageUploader({ onSave }: { onSave: (imageUrl: string) =
   )
 }
 
+
+function DefaultText() {
+  return (
+    <>
+      <Text>Drag and drop an image here</Text>
+      <Text>or</Text>
+      <Text>Click to select an image</Text>
+    </>
+  )
+}

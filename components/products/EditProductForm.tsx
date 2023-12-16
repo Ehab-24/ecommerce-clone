@@ -4,7 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { ZodError } from "zod";
 import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
-import { ApiProductSchema, Product } from "@/types/product";
+import { ApiProduct, ApiProductSchema, Product, Variant, VariantOption } from "@/types/product";
 import Link from "next/link";
 import Card from "@/components/Card";
 import Checkbox from "@/components/Checkbox";
@@ -16,41 +16,35 @@ import { IoIosClose } from "react-icons/io";
 import { FaArrowLeft } from "react-icons/fa";
 import SectionTitle from "@/components/SectionTitle";
 import countries from "@/data/countries";
-import { RiDeleteBin6Line } from "react-icons/ri";
 import Heading from "@/components/Heading";
-import OutlinedButtonSmall from "@/components/buttons/OutlinedButtonSmall";
 import ImageUploader from "@/components/ImageUploader";
 import Image from "next/image";
 import { useEffect } from "react";
 import React from "react";
-
+import { RxDragHandleDots2 } from "react-icons/rx";
+import TextButton from "../buttons/TextButton";
+import Text from "../Text";
+import OutlinedButton from "../buttons/OutlinedButton";
+import EditVariantDialog from "./variants/EditVariantDialog";
+import EditVariantImagesDialog from "./variants/EditVariantImagesDialog";
 
 export default function EditProductForm({ initialProduct }: { initialProduct: Product }) {
 
-  const router = useRouter();
   const params = useParams();
-  const [product, setProduct] = React.useState<Product>(initialProduct)
+  const router = useRouter();
+  const [product, setProduct] = React.useState<ApiProduct>({ ...initialProduct, vendor: initialProduct.vendor._id })
   const [loading, setLoading] = React.useState(false)
 
   useEffect(() => {
-    async function getProduct() {
-      const { data } = await axios.get(`/api/products/${params.id}`)
-      setProduct(data as Product)
-      setProduct(data as Product)
-    }
-    getProduct()
-  }, [params.id])
-
-  useEffect(() => {
-    if (product && product.price !== 0 && product.costPerItem !== 0) {
-      setProduct({
-        ...product,
-        profit: product.price - product.costPerItem,
+    if (product.price !== 0 && product.costPerItem !== 0) {
+      setProduct(p => ({
+        ...p,
+        profit: (p.price || 0) - (p.costPerItem || 0),
         margin:
           Math.round(
-            ((product.price - product.costPerItem) / product.price) * 10000
+            (((p.price || 0) - (p.costPerItem || 0)) / (p.price || 0)) * 10000
           ) / 100,
-      });
+      }));
     }
   }, [product?.price, product?.costPerItem]);
 
@@ -99,6 +93,29 @@ export default function EditProductForm({ initialProduct }: { initialProduct: Pr
       }
 
     } finally {
+      setLoading(false)
+    }
+  }
+
+  async function handleProductStatusChange(status: string): Promise<void> {
+    setLoading(true)
+    try {
+
+      const res = await axios.put(`/api/products/${params.id}`, { status })
+      if (res.status === 200) {
+        toast.success("Product archived successfully")
+      }
+
+    }
+    catch (error) {
+      if (error instanceof ZodError) {
+        toast.error(error.errors[0].message);
+      } else {
+        toast.error("Something went wrong");
+        console.log(error)
+      }
+    }
+    finally {
       setLoading(false)
     }
   }
@@ -164,13 +181,7 @@ export default function EditProductForm({ initialProduct }: { initialProduct: Pr
               <Shipping product={product} setProduct={setProduct} />
             </Card>
 
-            <Card className=" flex-col flex p-4 gap-4">
-              <SectionTitle title="Variants" />
-              <Variants product={product} setProduct={setProduct} />
-              <div className="flex ">
-                <OutlinedButtonSmall onClick={() => setProduct({ ...product, variants: [...product.variants, { name: "", values: [] }] })}>Add Variant</OutlinedButtonSmall>
-              </div>
-            </Card>
+            <Variants loading={loading} product={product} setProduct={setProduct} />
 
             <Card className="flex p-4 flex-col mb-4 items-stretch">
               <SectionTitle title="Search Engine Listing" />
@@ -181,7 +192,7 @@ export default function EditProductForm({ initialProduct }: { initialProduct: Pr
             </Card>
           </div>
 
-          <div className="flex w-full 2xl:max-w-xs flex-col gap-4">
+          <div className="flex w-full 2xl:max-w-[280px] flex-col gap-4">
             <Card className=" flex-col flex p-4 gap-4">
               <SectionTitle title="Status" />
               <Select
@@ -209,8 +220,16 @@ export default function EditProductForm({ initialProduct }: { initialProduct: Pr
       </div>
 
       <div className="w-full max-w-4xl flex gap-4 justify-end mb-8">
+        {
+          product.status === "archived" ? (
+            <OutlinedButton onClick={() => handleProductStatusChange("active")}>Unarchive Product</OutlinedButton>
+          ) : (
+            <OutlinedButton onClick={() => handleProductStatusChange("archived")}>Archive Product</OutlinedButton>
+          )
+        }
         <FilledButton bgClass="bg-red-500" onClick={handleDelete}>Delete Product</FilledButton>
-        <FilledButton disabled={product === initialProduct} onClick={handleSave}>Save</FilledButton>
+        {/*TODO: add shouldSave logic*/}
+        <FilledButton disabled={false} onClick={handleSave}>Save</FilledButton>
       </div>
 
     </>
@@ -223,7 +242,7 @@ function Pricing({
   product,
   setProduct,
 }: {
-  product: Product;
+  product: ApiProduct;
   setProduct: React.Dispatch<React.SetStateAction<any>>;
 }) {
   return (
@@ -300,7 +319,7 @@ function Inventory({
   product,
   setProduct,
 }: {
-  product: Product;
+  product: ApiProduct;
   setProduct: React.Dispatch<React.SetStateAction<any>>;
 }) {
   return (
@@ -376,77 +395,160 @@ function Inventory({
 }
 
 function Variants({
+  loading,
   product,
   setProduct,
 }: {
-  product: Product;
+  loading: boolean;
+  product: ApiProduct;
   setProduct: React.Dispatch<React.SetStateAction<any>>;
 }) {
+
+  const [selectedVariants, setSelectedVariants] = React.useState<Variant[]>([]);
+
+  function getNextVariant(): string {
+    const vs: string[] = ["color", "size", "material", "style"];
+    for (let i = 0; i < vs.length; i++) {
+      if (!product.variantOptions.map((v) => v.name).includes(vs[i]))
+        return vs[i];
+    }
+    return "color";
+  }
+
+
   return (
-    <>
-      {product.variants?.map((variant, index) => (
-        <div key={index} className="flex flex-col border-b pb-4 border-gray-300">
-          <button onClick={() => setProduct({ ...product, variants: product.variants.filter(v => v !== variant) })} className="p-2 rounded-md hover:bg-black/10 self-end transition-all">
-            <RiDeleteBin6Line className="text-sm text-[#1a1a1a]" />
-          </button>
+    <Card className=" flex-col w-full py-4 flex">
 
-          <Select label="Variant Name" value={variant.name} onChange={e => {
-            const newVariants = [...product.variants];
-            newVariants[index].name = e.target.value;
-            setProduct({ ...product, variants: newVariants })
-          }} options={[
-            { value: "color", label: "Color" },
-            { value: "size", label: "Size" },
-            { value: "material", label: "Material" },
-            { value: "style", label: "Style" },
-          ]} />
+      <div className="px-4">
+        <SectionTitle title="Variants" />
+      </div>
 
-          <div className="w-full mt-4">
-            <Input
-              id="variant-values"
-              label="Variant Values"
-              placeholder="S, M, L"
-              onKeyDown={e => {
-                const value = e.currentTarget.value;
-                if (e.key === "Enter" && value !== "") {
-                  const newVariants = [...product.variants];
-                  newVariants[index].values = [...newVariants[index].values, value];
-                  setProduct({ ...product, variants: newVariants });
-                  e.currentTarget.value = "";
-                }
-              }}
-            />
+      {product.variantOptions.map((variant, index) => (
+        <div
+          key={index}
+          className="flex px-4 flex-col border-b pb-4 border-gray-300"
+        >
+          <EditVariant loading={loading} variantOption={variant} index={index} product={product} setProduct={setProduct} />
+        </div>
+      ))}
 
-            <div className="w-full flex mt-4 gap-1">
+      <div className="flex px-4 mt-4">
+        <TextButton
+          onClick={() =>
+            setProduct({ ...product, variantOptions: [...product.variantOptions, { name: getNextVariant(), values: [] },] })
+          }
+        >
+          {product.variants.length === 0
+            ? "+ Add options like color or size"
+            : "+ Add another option"}
+        </TextButton>
+      </div>
+
+      {
+        product.variants.length > 0 && (
+          <div className="w-full mt-4 flex px-4 pt-4 border-t border-gray-200 gap-2 flex-col">
+            <div className="flex gap-4 w-full">
+              <Text>Select</Text>
+              <TextButton onClick={() => { }}>All</TextButton>
+              <TextButton onClick={() => { }}>None</TextButton>
               {
-                variant.values.map((v, i) => (
-                  <div key={i} className="bg-slate-200 text-gray-900 px-2 py-1 rounded-md text-sm flex items-center gap-1">
-                    {v}
-                    <button onClick={() => {
-                      const newVariants = [...product.variants];
-                      newVariants[index].values = newVariants[index].values.filter(val => val !== v);
-                      setProduct({ ...product, variants: newVariants })
-                    }}>
-                      <IoIosClose size={20} />
-                    </button>
-                  </div>
+                product.variantOptions.map(v => (
+                  <TextButton key={v.name} onClick={() => { }}>
+                    <Text className="text-blue-700 hover:underline capitalize">{v.name}</Text>
+                  </TextButton>
                 ))
               }
             </div>
-
+            <div className="flex gap-4 ml-2 w-full">
+              <Text>Available inventory at:</Text>
+              <TextButton onClick={() => { }}>All locations</TextButton>
+            </div>
           </div>
-        </div>
+        )
+      }
 
-      ))}
-    </>
-  )
+      {
+        product.variants.length > 0 && (
+          <div className="flex mt-4 justify-between border-t border-gray-200 p-4">
+            <Checkbox id="showing-variants" label={`Showing ${product.variants.length} variants`} onChange={e => {
+              e.stopPropagation()
+              if (e.target.checked) {
+                setSelectedVariants(product.variants)
+              } else {
+                setSelectedVariants([])
+              }
+            }} />
+            <OutlinedButton onClick={() => { }}>Edit</OutlinedButton>
+          </div>
+        )
+      }
+
+      {
+        product.variants.length > 0 && (
+          product.variants.map(v => (
+            <div key={v.name} className="flex h-20 border-t border-gray-200 w-full">
+              <div className="h-full grid place-items-center pl-4">
+                <Checkbox id={v.name} checked={selectedVariants.includes(v)} onChange={e => {
+                  e.stopPropagation()
+                  if (e.target.checked) {
+                    setSelectedVariants([...selectedVariants, v])
+                  } else {
+                    setSelectedVariants(selectedVariants.filter(sv => sv !== v))
+                  }
+                }} />
+              </div>
+
+              {
+                v.images && v.images.length > 0 ? (
+                  <div className="rounded-md overflow-hidden mt-8 mr-2" >
+                    <Image src={v.images[0]} alt={product.title} width={0} height={0} sizes="100vw" style={{ width: '100%', height: '100%' }} />
+                  </div>
+                ) : (
+                  <EditVariantImagesDialog onSave={images => setProduct({ ...product, media: [...product.media, ...images.map(url => ({ url, type: "image" }))] })} altText={product.title} />
+                )
+              }
+
+              <EditVariantDialog initialVariant={v} onSave={v => {
+                setProduct({ ...product, variants: product.variants.map(pv => pv.name === v.name ? v : pv) })
+              }} button={
+                <div className="flex py-4 pr-4 pl-2 w-full hover:bg-gray-100 bg-white transition-all justify-between cursor-pointer">
+
+                  <div className="flex flex-col w-full items-start h-full justify-center">
+                    <Text className="font-bold text-gray-800">{v.name}</Text>
+                    <Text className="text-gray-800">{v.sku}</Text>
+                  </div>
+                  <div className="flex flex-col whitespace-nowrap items-end">
+                    <Text className="text-gray-800">$ {v.price}</Text>
+                    <Text className="text-gray-800">33 available at 2 locations</Text>
+                  </div>
+                </div>
+
+              } />
+
+            </div>
+          ))
+        )
+      }
+
+      {
+        product.variants.length > 0 && (
+          <div className="flex border-t border-gray-200 pt-4 px-4 justify-between">
+            <Text className="text-gray-800">Total inventory at all locations</Text>
+            <Text className="text-gray-800">0 available</Text>
+          </div>
+        )
+      }
+
+    </Card>
+  );
 }
+
 
 function Shipping({
   product,
   setProduct,
 }: {
-  product: Product;
+  product: ApiProduct;
   setProduct: React.Dispatch<React.SetStateAction<any>>;
 }) {
   return (
@@ -515,7 +617,7 @@ function ProductOrganization({
   product,
   setProduct,
 }: {
-  product: Product;
+  product: ApiProduct;
   setProduct: React.Dispatch<React.SetStateAction<any>>;
 }) {
   return (
@@ -542,7 +644,7 @@ function ProductOrganization({
       { /*TODO: change to Select*/}
       <Input
         id="vendor"
-        value={product.vendor._id}
+        value={product.vendor}
         label="Vendor"
         onChange={(e) => setProduct({ ...product, vendor: e.target.value })}
       />
@@ -590,4 +692,139 @@ function ProductOrganization({
       </div>
     </>
   );
+}
+
+function EditVariant({ variantOption, index, product, setProduct, loading }: { index: number, product: ApiProduct, setProduct: React.Dispatch<React.SetStateAction<ApiProduct>>, variantOption: VariantOption, loading: boolean }) {
+
+  const [edit, setEdit] = React.useState(false);
+
+  function variantsInclude(name: string): boolean {
+    return product.variantOptions.map((v) => v.name).includes(name);
+  }
+
+  function getPlaceholder(name: string): string {
+    switch (name) {
+      case "color":
+        return "Red, Blue, Green";
+      case "size":
+        return "Small, Medium, Large";
+      case "material":
+        return "Cotton, Polyester";
+      case "style":
+        return "Slim fit, Regular fit";
+      default:
+        return "";
+    }
+  }
+
+  return (
+    <div className="flex pt-4 gap-4 w-full items-start">
+
+      <button disabled={true} className={`${edit ? "mt-7" : ""}`}>
+        <RxDragHandleDots2
+          className="text-sm text-[#1a1a1a]"
+          size={20}
+        />
+      </button>
+
+      {
+        edit ? (
+          <div className="flex-col w-full">
+            <Select
+              disabled={loading}
+              value={variantOption.name}
+              label="Option Name"
+              onChange={(e) => {
+                const newVariants = [...product.variantOptions];
+                newVariants[index].name = e.target.value as string;
+                setProduct({ ...product, variantOptions: newVariants });
+              }}
+              options={[
+                {
+                  value: "color",
+                  label: "Color",
+                  disabled: variantsInclude("color"),
+                },
+                {
+                  value: "size",
+                  label: "Size",
+                  disabled: variantsInclude("size"),
+                },
+                {
+                  value: "material",
+                  label: "Material",
+                  disabled: variantsInclude("material"),
+                },
+                {
+                  value: "style",
+                  label: "Style",
+                  disabled: variantsInclude("style"),
+                },
+              ]}
+            />
+
+            <div className="w-full mt-4">
+              <Input
+                id="variant-values"
+                disabled={loading}
+                label="Option Values"
+                placeholder={getPlaceholder(variantOption.name)}
+                onKeyDown={(e) => {
+                  const value = e.currentTarget.value;
+                  if (e.key === "Enter" && value !== "") {
+                    const newVariants = [...product.variantOptions];
+                    newVariants[index].values = [
+                      ...newVariants[index].values,
+                      value,
+                    ];
+                    setProduct({ ...product, variantOptions: newVariants });
+                    e.currentTarget.value = "";
+                  }
+                }}
+              />
+            </div>
+
+            <div className="w-full flex mt-4 gap-1">
+              {variantOption.values.map((v, i) => (
+                <div
+                  key={i}
+                  className="bg-slate-200 text-gray-900 px-2 py-1 rounded-md text-sm flex items-center gap-1"
+                >
+                  {v}
+                  <button
+                    disabled={loading}
+                    onClick={() => {
+                      const newVariants = [...product.variantOptions];
+                      newVariants[index].values = newVariants[
+                        index
+                      ].values.filter((val) => val !== v);
+                      setProduct({ ...product, variantOptions: newVariants });
+                    }}
+                  >
+                    <IoIosClose size={20} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        ) : (
+
+          <div className="flex flex-col w-full">
+            <Text className="text-gray-900 font-bold">{variantOption.name}</Text>
+            <div className="flex gap-4 mt-2 ml-2">
+              {variantOption.values.map(v => (
+                <Text key={v}>{v}</Text>
+              ))}
+            </div>
+          </div>
+
+        )
+      }
+
+      <div className={`${edit ? "mt-[22px]" : ""}`}>
+        <OutlinedButton onClick={() => setEdit(!edit)}>{edit ? "Done" : "Edit"}</OutlinedButton>
+      </div>
+    </div >
+  )
 }
