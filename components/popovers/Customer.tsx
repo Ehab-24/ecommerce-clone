@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import InputSearch from "@/components/InputSearch";
 import Input from "../Input";
 
 interface Customer {
