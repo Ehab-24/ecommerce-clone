@@ -46,7 +46,7 @@ const Datatable = ({
 
   return (
     <div className="border text-xs rounded-xl shadow-sm shadow-black/40 overflow-hidden">
-      <div className="p-2 flex gap-2 item bg-white border-b">
+      <div className="p-2 flex gap-2 item bg-white">
         <InputSearch
           onChange={(e: any) => {
             const value = e.target.value;
@@ -62,7 +62,7 @@ const Datatable = ({
       </div>
 
       {customersLocal.length === 0 && (
-        <div className="flex flex-col bg-white py-16 justify-center text-neutral-600 items-center">
+        <div className="flex flex-col border-t bg-white py-16 justify-center text-neutral-600 items-center">
           <p className="text-[15px] font-semibold">No customers found</p>
           <p className="text-sm pt-5">Try changing the search terms.</p>
         </div>
@@ -70,7 +70,7 @@ const Datatable = ({
 
       {customersLocal.length > 0 && (
         <>
-          <div className="flex gap-2 p-1.5 border-y bg-neutral-50 text-neutral-600 items-center font-medium">
+          <div className="hidden sm:flex gap-2 p-1.5 border-y bg-neutral-50 text-neutral-600 items-center font-medium">
             <div className="flex-none pl-2">
               <Checkbox
                 id="select-all"
@@ -86,7 +86,7 @@ const Datatable = ({
             <div className="flex-1">Amount Spent</div>
           </div>
 
-          <div className="bg-white">
+          <div className="hidden sm:block bg-white">
             {customersLocal.map((customer) => (
               <>
                 <Link
@@ -108,12 +108,9 @@ const Datatable = ({
                     />
                   </div>
                   <div className="flex-1">
-                    <Link
-                      href={`customers/${customer._id}`}
-                      className="hover:underline"
-                    >
+                    <p className="hover:underline w-min">
                       {customer.firstName}
-                    </Link>
+                    </p>
                   </div>
                   <div className="flex-1">
                     {customer.marketing ? (
@@ -126,8 +123,8 @@ const Datatable = ({
                     <div className="flex-1">{customer.note}</div>
                   )}
                   <div className="flex-1">{customer.address.address}</div>
-                  <div className="flex-1">0</div>
-                  <div className="flex-1">0</div>
+                  <div className="flex-1">1 Order</div>
+                  <div className="flex-1">SAR 11.60</div>
                 </Link>
 
                 {selected.length > 0 && selected.includes(customer) && (
@@ -143,6 +140,29 @@ const Datatable = ({
               </>
             ))}
           </div>
+
+          {/* Responsive, for mobile view */}
+          {customersLocal.map((customer) => (
+            <div
+              key={customer._id}
+              className="sm:hidden flex flex-col border-t gap-1 bg-white text-neutral-600 p-4 font-medium"
+            >
+              <p className="text-sm">
+                {customer.firstName} {customer.lastName}
+              </p>
+
+              <p>
+                {customer.address.city ? customer.address.city : "City"},{" "}
+                {customer.address.country}
+              </p>
+
+              <div className="flex gap-2">
+                <p>1 order</p>
+
+                <p>SAR 11.60</p>
+              </div>
+            </div>
+          ))}
         </>
       )}
     </div>

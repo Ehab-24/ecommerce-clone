@@ -8,7 +8,6 @@ import EmptyPage from "@/components/EmptyPage";
 import DataTable from "@/components/customers/Datatable";
 import Heading from "@/components/Heading";
 import ExportImportButtons from "@/components/products/ExportImportButtons";
-import { apiUrl } from "@/lib/utils";
 import { Customer } from "@/types/customer";
 
 const DraftOrders = () => {

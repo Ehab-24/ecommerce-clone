@@ -25,7 +25,7 @@ const EmptyPage = ({
       <Card className="flex flex-col items-center justify-center py-16">
         <Image src={img} width="250" height="250" alt="No Orders Image" />
         <Title>{title}</Title>
-        <Text className="text-center pb-4 w-96">{text}</Text>
+        <Text className="text-center pb-4 w-52 sm:w-96">{text}</Text>
 
         {children}
       </Card>
