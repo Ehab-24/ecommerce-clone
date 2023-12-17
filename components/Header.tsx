@@ -12,7 +12,7 @@ const ShopifyHeader = () => {
   return (
     <div className="bg-[#1a1a1a] text-white h-12 flex items-center justify-between px-4">
       {/* Logo */}
-      <div className="mr-6 hidden md:flex items-center gap-1">
+      <div className="hidden md:flex items-center gap-1">
         <Image
           src="/shopify-logo.svg"
           width={20}
@@ -27,7 +27,8 @@ const ShopifyHeader = () => {
           className="self-end"
         />
       </div>
-      <button onClick={() => setOpen((v) => !v)}>
+
+      <button className="sm:hidden" onClick={() => setOpen((v) => !v)}>
         {open ? (
           <IoMdClose className="text-2xl md:hidden" />
         ) : (
@@ -36,14 +37,14 @@ const ShopifyHeader = () => {
       </button>
 
       {/* Search */}
-      <div className="flex px-2 border text-sm border-neutral-400 hover:border-white items-center md:w-[500px] w-[75%] gap-2 rounded-lg bg-[#303030]">
-        <AiOutlineSearch className="text-neutral-400" />
+      <div className="flex px-2 border text-sm border-neutral-400 hover:border-white items-center md:w-[500px] w-full mx-4 gap-2 rounded-lg bg-[#303030]">
+        <AiOutlineSearch className="text-neutral-400 text-lg" />
         <input
           type="text"
           placeholder="Search"
-          className="flex-1 py-[4px] placeholder-neutral-400 text-white bg-transparent focus:outline-none"
+          className="py-[4px] w-full placeholder-neutral-400 text-white bg-transparent focus:outline-none"
         />
-        <span className="text-neutral-400">Ctrl K</span>
+        <span className="w-16 text-neutral-400">Ctrl K</span>
       </div>
 
       {/* Alerts & Admin */}

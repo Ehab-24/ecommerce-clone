@@ -227,7 +227,7 @@ export default function EditProductForm({ initialProduct }: { initialProduct: Pr
             <OutlinedButton onClick={() => handleProductStatusChange("archived")}>Archive Product</OutlinedButton>
           )
         }
-        <FilledButton variant="primary" tone="critical" onClick={handleDelete}>Delete Product</FilledButton>
+        <FilledButton bgClass="bg-red-500" onClick={handleDelete}>Delete Product</FilledButton>
         {/*TODO: add shouldSave logic*/}
         <FilledButton disabled={false} onClick={handleSave}>Save</FilledButton>
       </div>

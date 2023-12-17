@@ -8,7 +8,7 @@ const Title = ({
   className?: string;
 }) => {
   return (
-    <h2 className={`text-sm font-bold mb-2 text-neutral-800 ${className}`}>
+    <h2 className={`text-sm font-bold mb-2 text-neutral-600 ${className}`}>
       {children}
     </h2>
   );

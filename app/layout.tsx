@@ -4,7 +4,6 @@ import { Inter } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import { cn } from "@/lib/utils";
 import Dashboard from "@/components/Dashboard";
-import "@shopify/polaris/build/esm/styles.css";
 
 export const metadata: Metadata = {
   title: "Shopify",

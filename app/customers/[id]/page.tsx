@@ -13,6 +13,9 @@ import Title from "@/components/Title";
 import Input from "@/components/Input";
 import { IoIosClose } from "react-icons/io";
 
+import CustomerOptionsPopover from "@/components/customers/CustomerOptionsPopover";
+import SimplePopover from "@/components/popovers/SimplePopover";
+
 const SingleCustomerPage = () => {
   const { id } = useParams();
 
@@ -71,7 +74,12 @@ const SingleCustomerPage = () => {
 
         <Card className="mt-5 p-5">
           <div className="flex flex-col gap-4 text-sm text-gray-500 font-medium">
-            <Title className="!mb-0">Customer</Title>
+            <div className="flex justify-between">
+              {" "}
+              <Title className="!mb-0">Customer</Title>
+              {customer && <CustomerOptionsPopover customer={customer} />}
+            </div>
+
             <div className="flex flex-col">
               <Title>Contact Information</Title>
               <p className="text-blue-500">{customer?.email}</p>
