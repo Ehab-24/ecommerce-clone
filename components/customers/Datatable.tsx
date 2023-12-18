@@ -119,10 +119,10 @@ const Datatable = ({
                       <Pill text="Not subscribed" success={false} />
                     )}
                   </div>
-                  {customer.note && (
+                  {/* {customer.note && (
                     <div className="flex-1">{customer.note}</div>
-                  )}
-                  <div className="flex-1">{customer.address.address}</div>
+                  )} */}
+                  <div className="flex-1">{customer.addresses[0].address}</div>
                   <div className="flex-1">1 Order</div>
                   <div className="flex-1">SAR 11.60</div>
                 </Link>
@@ -143,25 +143,29 @@ const Datatable = ({
 
           {/* Responsive, for mobile view */}
           {customersLocal.map((customer) => (
-            <div
-              key={customer._id}
-              className="sm:hidden flex flex-col border-t gap-1 bg-white text-neutral-600 p-4 font-medium"
-            >
-              <p className="text-sm">
-                {customer.firstName} {customer.lastName}
-              </p>
+            <Link href={`customers/${customer._id}`} key={customer._id}>
+              <div
+                key={customer._id}
+                className="sm:hidden flex flex-col border-t gap-1 bg-white text-neutral-600 p-4 font-medium"
+              >
+                <p className="text-sm">
+                  {customer.firstName} {customer.lastName}
+                </p>
 
-              <p>
-                {customer.address.city ? customer.address.city : "City"},{" "}
-                {customer.address.country}
-              </p>
+                <p>
+                  {customer.addresses[0].city
+                    ? customer.addresses[0].city
+                    : "City"}
+                  , {customer.addresses[0].country}
+                </p>
 
-              <div className="flex gap-2">
-                <p>1 order</p>
+                <div className="flex gap-2">
+                  <p>1 order</p>
 
-                <p>SAR 11.60</p>
+                  <p>SAR 11.60</p>
+                </div>
               </div>
-            </div>
+            </Link>
           ))}
         </>
       )}

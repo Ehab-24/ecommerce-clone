@@ -29,17 +29,19 @@ const defaultCustomer: Customer = {
   marketing: false,
   smsMarketing: false,
 
-  address: {
-    firstName: "",
-    lastName: "",
-    company: "",
-    address: "",
-    apartment: "",
-    city: "",
-    postalCode: "",
-    phone: "",
-    country: "",
-  },
+  addresses: [
+    {
+      firstName: "",
+      lastName: "",
+      company: "",
+      address: "",
+      apartment: "",
+      city: "",
+      postalCode: "",
+      phone: "",
+      country: "",
+    },
+  ],
 
   taxExempt: false,
 
@@ -64,7 +66,7 @@ const NewCustomer = () => {
       if (prevCustomer) {
         return {
           ...prevCustomer,
-          address: { ...prevCustomer.address, [field]: value },
+          addresses: [{ ...prevCustomer.addresses[0], [field]: value }],
         };
       }
       return null;
@@ -89,12 +91,14 @@ const NewCustomer = () => {
     });
   };
 
-  const addCustomer = () => {
+  const addCustomer = async () => {
     try {
-      const response = fetch("/api/customers", {
+      const response = await fetch("/api/customers", {
         method: "POST",
         body: JSON.stringify(customer),
       });
+
+      console.log(response);
 
       toast.success("Customer added successfully!");
       setCustomer(defaultCustomer);
@@ -115,7 +119,7 @@ const NewCustomer = () => {
 
         <Title>Customer Overview</Title>
         <Card className="flex flex-col p-5 gap-4">
-          <div className="flex gap-4">
+          <div className="flex gap-4 flex-col sm:flex-row">
             <Input
               onChange={(e) => {
                 handleFieldChange("firstName", e.target.value);
@@ -123,6 +127,7 @@ const NewCustomer = () => {
               label="First Name"
               id="firstName"
               placeholder=""
+              value={customer?.firstName}
             />
             <Input
               onChange={(e) => {
@@ -131,6 +136,7 @@ const NewCustomer = () => {
               label="Last Name"
               id="lastName"
               placeholder=""
+              value={customer?.lastName}
             />
           </div>
 
@@ -204,8 +210,9 @@ const NewCustomer = () => {
             onChange={(e) => {
               handleAddressFieldChange("country", e.target.value);
             }}
+            value={customer?.addresses[0].country}
           />
-          <div className="flex gap-4">
+          <div className="flex gap-4 flex-col sm:flex-row">
             <Input
               onChange={(e) => {
                 handleAddressFieldChange("firstName", e.target.value);
@@ -213,6 +220,7 @@ const NewCustomer = () => {
               label="First Name"
               id="firstName"
               placeholder=""
+              value={customer?.addresses[0].firstName}
             />
             <Input
               onChange={(e) => {
@@ -221,16 +229,19 @@ const NewCustomer = () => {
               label="Last Name"
               id="lastName"
               placeholder=""
+              value={customer?.addresses[0].lastName}
             />
           </div>
           <Input
             onChange={(e) => {
               handleAddressFieldChange("company", e.target.value);
             }}
-            label="Phone"
-            id="phone"
+            label="Company"
+            id="company"
             placeholder=""
+            value={customer?.addresses[0].company}
           />
+
           <Input
             onChange={(e) => {
               handleAddressFieldChange("address", e.target.value);
@@ -238,6 +249,7 @@ const NewCustomer = () => {
             label="Address"
             id="address"
             placeholder=""
+            value={customer?.addresses[0].address}
           />
           <Input
             onChange={(e) => {
@@ -246,14 +258,39 @@ const NewCustomer = () => {
             label="Apartment, suite, etc."
             id="apartment"
             placeholder=""
+            value={customer?.addresses[0].apartment}
           />
 
-          <div className="flex gap-4">
-            <Input label="City" id="city" placeholder="" />
-            <Input label="Postal Code" id="postalCode" placeholder="" />
+          <div className="flex gap-4 flex-col sm:flex-row">
+            <Input
+              onChange={(e) => {
+                handleAddressFieldChange("city", e.target.value);
+              }}
+              label="City"
+              id="city"
+              placeholder=""
+              value={customer?.addresses[0].city}
+            />
+            <Input
+              onChange={(e) => {
+                handleAddressFieldChange("postalCode", e.target.value);
+              }}
+              label="Postal Code"
+              id="postalCode"
+              placeholder=""
+              value={customer?.addresses[0].postalCode}
+            />
           </div>
 
-          <Input label="Company" id="company" placeholder="" />
+          <Input
+            onChange={(e) => {
+              handleAddressFieldChange("phone", e.target.value);
+            }}
+            label="Phone"
+            id="phone"
+            placeholder=""
+            value={customer?.addresses[0].phone}
+          />
 
           <p className="text-xs text-neutral-600 pb-2 pt-4">
             You can add multiple addresses for a customer. For example, you can

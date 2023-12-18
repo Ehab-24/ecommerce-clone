@@ -14,7 +14,7 @@ import Input from "@/components/Input";
 import { IoIosClose } from "react-icons/io";
 
 import CustomerOptionsPopover from "@/components/customers/CustomerOptionsPopover";
-import SimplePopover from "@/components/popovers/SimplePopover";
+import OutlinedButton from "@/components/buttons/OutlinedButton";
 
 const SingleCustomerPage = () => {
   const { id } = useParams();
@@ -67,12 +67,23 @@ const SingleCustomerPage = () => {
           <div>
             <Heading>{customer?.firstName}</Heading>
             <p className="text-xs text-neutral-500">
-              {customer?.address.city}, {customer?.address.country}
+              {customer?.addresses[0].city}, {customer?.addresses[0].country}
             </p>
           </div>
         </div>
 
         <Card className="mt-5 p-5">
+          <Title>Last order placed</Title>
+          <p className="text-sm text-gray-500 font-medium">
+            This customer has not placed any orders yet
+          </p>
+
+          <OutlinedButton className="mt-2">
+            <Link href={`/orders/new`}>Create order</Link>
+          </OutlinedButton>
+        </Card>
+
+        <Card className="p-5">
           <div className="flex flex-col gap-4 text-sm text-gray-500 font-medium">
             <div className="flex justify-between">
               {" "}
@@ -88,29 +99,43 @@ const SingleCustomerPage = () => {
             </div>
 
             <div className="flex flex-col">
-              <Title>Default Address</Title>
-              <p>{customer?.address.address}</p>
+              <Title>Default Addresses</Title>
+              <p>{customer?.addresses[0].address}</p>
               <p>
-                {customer?.address.firstName} {customer?.address.lastName}
+                {customer?.addresses[0].firstName}{" "}
+                {customer?.addresses[0].lastName}
               </p>
               <p>
-                {customer?.address.city} {customer?.address.postalCode}
+                {customer?.addresses[0].city}{" "}
+                {customer?.addresses[0].postalCode}
               </p>
-              <p>{customer?.address.country}</p>
+              <p>{customer?.addresses[0].country}</p>
             </div>
 
             <div className="flex flex-col">
               <Title>Marketing</Title>
               {customer?.marketing ? (
-                <p>Email Subscribed</p>
+                <div className="flex gap-2 items-center">
+                  <span className="bg-green-500 w-3 h-3 rounded-full" />
+                  <p>Email Subscribed</p>
+                </div>
               ) : (
-                <p>Email Unsubscribed</p>
+                <div className="flex gap-2 items-center">
+                  <span className="bg-red-500 w-3 h-3 rounded-full" />
+                  <p>Email Unsubscribed</p>
+                </div>
               )}
 
               {customer?.smsMarketing ? (
-                <p>SMS Subscribed</p>
+                <div className="flex gap-2 items-center">
+                  <span className="bg-green-500 w-3 h-3 rounded-full" />
+                  <p>SMS Subscribed</p>
+                </div>
               ) : (
-                <p>SMS Unsubscribed</p>
+                <div className="flex gap-2 items-center">
+                  <span className="bg-red-500 w-3 h-3 rounded-full" />
+                  <p>SMS Unsubscribed</p>
+                </div>
               )}
             </div>
 

@@ -914,6 +914,7 @@ function VariantOptionPopover({ option, variants, selectedVariants, setSelectedV
 }
 
 const defaultProduct: ApiProduct = {
+  locations: [],
   title: "",
   chargeTaxes: false,
   quantity: 0,

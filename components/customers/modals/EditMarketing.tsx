@@ -16,6 +16,7 @@ import { Customer } from "@/types/customer";
 
 import Checkbox from "@/components/Checkbox";
 import FilledButton from "@/components/buttons/FilledButton";
+import OutlinedButton from "@/components/buttons/OutlinedButton";
 
 const EditMarketing = ({ customer }: { customer: Customer }) => {
   const [marketing, setMarketing] = useState(customer.marketing);
@@ -59,15 +60,22 @@ const EditMarketing = ({ customer }: { customer: Customer }) => {
             label="Customer agreed to receive SMS marketing text messages."
           />
 
-          <p className="mt-2">
+          <p className="mt-2 text-sm">
             You should ask your customers for permission before you subscribe
             them to your marketing emails or SMS.
           </p>
         </div>
 
         <DialogFooter>
-          <DialogClose className="btn btn-md btn-default">Cancel</DialogClose>
-          <FilledButton onClick={handleEditMarketing}>Save</FilledButton>
+          <div className="flex gap-2">
+            <DialogClose>
+              <OutlinedButton>Cancel</OutlinedButton>
+            </DialogClose>
+
+            <DialogClose>
+              <FilledButton>Save</FilledButton>
+            </DialogClose>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>

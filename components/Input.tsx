@@ -65,7 +65,7 @@ export default function Input({
             onKeyDown={onKeyDown}
             onFocus={() => setIsFocus(true)}
             onBlur={() => setIsFocus(false)}
-            className={`pl-3 text-xs w-full border border-gray-200 rounded-lg py-1 outline outline-1 outline-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent ${className}`}
+            className={`pl-3 text-sm sm:text-xs w-full border border-gray-200 rounded-lg py-1 outline outline-1 outline-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent ${className}`}
             placeholder={placeholder}
             required
           />

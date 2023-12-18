@@ -16,6 +16,7 @@ import Checkbox from "@/components/Checkbox";
 
 import { Customer } from "@/types/customer";
 import FilledButton from "@/components/buttons/FilledButton";
+import OutlinedButton from "@/components/buttons/OutlinedButton";
 
 const ManageTax = ({ customer }: { customer: Customer }) => {
   const [tax, setTax] = useState(customer.taxExempt);
@@ -51,8 +52,15 @@ const ManageTax = ({ customer }: { customer: Customer }) => {
         </div>
 
         <DialogFooter>
-          <DialogClose className="btn btn-md btn-default">Cancel</DialogClose>
-          <FilledButton onClick={handleEditTax}>Save</FilledButton>
+          <div className="flex gap-2">
+            <DialogClose>
+              <OutlinedButton>Cancel</OutlinedButton>
+            </DialogClose>
+
+            <DialogClose>
+              <FilledButton>Save</FilledButton>
+            </DialogClose>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>

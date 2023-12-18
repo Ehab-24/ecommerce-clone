@@ -80,7 +80,7 @@ const DialogFooter = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      "flex flex-row row-reverse border-t border-neutral-200 p-4 sm:justify-end sm:space-x-2",
+      "flex border-t items-center justify-end border-neutral-200 p-4",
       className
     )}
     {...props}
@@ -88,7 +88,7 @@ const DialogFooter = ({
 );
 DialogFooter.displayName = "DialogFooter";
 
-const DialogTitle = React.forwardRef<
+const DialogTitle: any = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Title>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
 >(({ className, ...props }, ref) => (

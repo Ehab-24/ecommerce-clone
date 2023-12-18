@@ -171,7 +171,7 @@ export default function EditPurchaseOrderForm({ initialOrder, currencies }: { cu
 
           <div className="flex justify-between items-center w-full mt-4">
             <h3 className="text-xs font-bold mb-2 text-neutral-800">Total</h3>
-            <p className="text-xs text-neutral-800" >$ {initialOrder.products.reduce((acc, p) => acc + p.price + p.tax, 0).toFixed(2)}</p>
+            <p className="text-xs text-neutral-800" >$ {initialOrder.products.reduce((acc, p) => acc + (p.price || 10) + p.tax, 0).toFixed(2)}</p>
           </div>
         </Card>
       </div>

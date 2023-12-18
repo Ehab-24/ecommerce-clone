@@ -18,9 +18,10 @@ import countries from "@/data/countries";
 
 import { Customer } from "@/types/customer";
 import FilledButton from "@/components/buttons/FilledButton";
+import OutlinedButton from "@/components/buttons/OutlinedButton";
 
 const ManageAddress = ({ customer }: { customer: Customer }) => {
-  const [address, setAddress] = useState(customer.address);
+  const [address, setAddress] = useState(customer.addresses[0]);
 
   const handleEditAddress = () => {
     console.log("Edit Address");
@@ -32,13 +33,13 @@ const ManageAddress = ({ customer }: { customer: Customer }) => {
 
   return (
     <Dialog>
-      <DialogTrigger className="text-xs align-top p-2 rounded-lg hover:bg-neutral-200 text-neutral-600">
-        Manage addresses
+      <DialogTrigger className="text-xs align-top border py-1 shadow-sm shadow-black/50 p-2 rounded-lg hover:bg-neutral-200 text-neutral-600">
+        Add new address
       </DialogTrigger>
 
       <DialogContent className="w-[100%]">
         <DialogHeader>
-          <DialogTitle>Edit Address</DialogTitle>
+          <DialogTitle>Add new address</DialogTitle>
         </DialogHeader>
 
         <div className="flex flex-col gap-3 p-4">
@@ -49,7 +50,7 @@ const ManageAddress = ({ customer }: { customer: Customer }) => {
               handleAddressFieldChange("country", e.target.value);
             }}
           />
-          <div className="flex gap-4">
+          <div className="flex gap-4 flex-col sm:flex-row">
             <Input
               onChange={(e) => {
                 handleAddressFieldChange("firstName", e.target.value);
@@ -92,7 +93,7 @@ const ManageAddress = ({ customer }: { customer: Customer }) => {
             placeholder=""
           />
 
-          <div className="flex gap-4">
+          <div className="flex gap-4 flex-col sm:flex-row">
             <Input label="City" id="city" placeholder="" />
             <Input label="Postal Code" id="postalCode" placeholder="" />
           </div>
@@ -101,8 +102,17 @@ const ManageAddress = ({ customer }: { customer: Customer }) => {
         </div>
 
         <DialogFooter>
-          <DialogClose className="btn btn-md btn-default">Cancel</DialogClose>
-          <FilledButton onClick={handleEditAddress}>Save</FilledButton>
+          <div className="flex gap-2">
+            <DialogClose>
+              <OutlinedButton onClick={handleEditAddress}>
+                Cancel
+              </OutlinedButton>
+            </DialogClose>
+
+            <DialogClose>
+              <FilledButton onClick={handleEditAddress}>Save</FilledButton>
+            </DialogClose>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>

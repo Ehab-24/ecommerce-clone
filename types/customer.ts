@@ -12,7 +12,7 @@ const CustomerSchema = z.object({
   marketing: z.boolean(),
   smsMarketing: z.boolean(),
 
-  address: AddressSchema,
+  addresses: z.array(AddressSchema),
 
   taxExempt: z.boolean(),
 
