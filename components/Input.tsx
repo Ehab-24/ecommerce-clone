@@ -27,18 +27,18 @@ export default function Input({
   const [isFocus, setIsFocus] = React.useState(false)
 
   return (
-    <div className="relative flex-1 text-sm w-full">
+    <div className="relative flex-1 text-xs w-full">
       {label && (
         <label
           htmlFor={id}
-          className="block w-full pb-1 text-sm font-medium text-gray-700"
+          className="block w-full pb-1 text-xs font-medium text-gray-700"
         >
           {label}
         </label>
       )}
       {
         icon ? (
-          <div className={`flex items-center gap-2 w-full py-1.5 px-2.5 ring-0 rounded-lg ${isFocus ? "border-2 border-gray-500" : "border border-gray-200"}`}>
+          <div className={`flex items-center gap-2 w-full py-1.5 px-2.5 ring-0 rounded-lg ${isFocus ? "border-2 border-gray-500" : "border border-gray-500"}`}>
             {icon}
             <input
               disabled={disabled}

@@ -1,11 +1,15 @@
 import { z } from "zod";
 import { Vendor } from "./vendor";
+import { ApiLocationSchema } from "./location";
 
 const VariantOptionSchema = z.object({ name: z.string(), values: z.array(z.string()) })
 
 const VariantSchema = z.object({
   name: z.string(),
+  values: z.record(z.string()),
   price: z.number().gt(0, "Variant Price must be greater than 0").optional(),
+  quantity: z.number().optional(),
+  country: z.string().optional(),
   costPerItem: z.number().gt(0, "Variant Cost per item must be greater than 0").optional(),
   profit: z.number().optional(),
   margin: z.number().optional(),
@@ -18,7 +22,7 @@ const VariantSchema = z.object({
 const ApiProductSchema = z.object({
   title: z.string().min(1, "Product title is required"),
   description: z.string().optional(),
-  price: z.number().gt(0, "Price must be greater than 0"),
+  price: z.number().gte(0, "Price must be greater than 0").optional(),
   compareAtPrice: z.number().gt(0, "Compare at price must be greater than 0").optional(),
   chargeTaxes: z.boolean(),
   taxRate: z.number(),
@@ -43,6 +47,7 @@ const ApiProductSchema = z.object({
   collection: z.string(),
   tags: z.array(z.string().min(1)),
   variants: z.array(VariantSchema),
+  locations: z.array(ApiLocationSchema),
   variantOptions: z.array(VariantOptionSchema),
   media: z.array(
     z.object({
@@ -61,9 +66,10 @@ const ApiProductSchema = z.object({
 type ApiProduct = z.infer<typeof ApiProductSchema>;
 type Variant = z.infer<typeof VariantSchema>;
 
+type VariantValue = z.infer<typeof VariantSchema>["values"];
 type VariantOption = z.infer<typeof VariantOptionSchema>;
 
 type Product = Omit<Omit<Omit<ApiProduct, "createdAt">, "updatedAt">, "vendor">
   & { _id: string; createdAt: string; updatedAt: string; vendor: Vendor };
 
-export { type Product, type VariantOption, ApiProductSchema, type ApiProduct, type Variant };
+export { type Product, type VariantOption, ApiProductSchema, type VariantValue, type ApiProduct, type Variant };
