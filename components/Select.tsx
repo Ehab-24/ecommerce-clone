@@ -22,7 +22,7 @@ export default function Select({
 
   return (
     <div className="w-full min-w-[200px]">
-      <label className="block pb-1 text-sm font-medium text-gray-700">
+      <label className="block pb-1 text-xs font-medium text-gray-700">
         {label}
       </label>
       <select
@@ -30,7 +30,7 @@ export default function Select({
         disabled={disabled}
         value={value}
         onChange={onChange}
-        className="pl-3 w-full border border-gray-200 rounded-lg py-1 text-sm outline outline-1 outline-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+        className="pl-3 w-full border border-gray-200 rounded-lg py-1 text-xs outline outline-1 outline-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
       >
         {options.map((option) => (
           <option

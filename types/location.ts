@@ -20,7 +20,6 @@ const ApiLocationSchema = z.object({
 });
 
 type ApiLocation = z.infer<typeof ApiLocationSchema>;
-
 type Location = Omit<Omit<ApiLocation, "createdAt">, "updatedAt"> & {
   _id: string; createdAt: string; updatedAt: string;
 };

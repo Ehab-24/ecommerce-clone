@@ -1,14 +1,17 @@
 export default function OutlinedButton({
   children,
   onClick,
+  disabled = false,
   props,
 }: {
   children: React.ReactNode;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  disabled?: boolean;
   props?: any;
 }) {
   return (
     <button
+      disabled={disabled}
       onClick={onClick}
       className="select-none rounded-lg border-2 border-neutral-200 py-1
       hover:bg-neutral-200 shadow-sm shadow-neutral-500/10
