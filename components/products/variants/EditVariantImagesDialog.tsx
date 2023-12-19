@@ -48,7 +48,7 @@ export default function EditVariantImagesDialog({ onSave, altText, text = "Updat
 
         </div>
 
-        <DialogFooter>
+        <DialogFooter className="flex gap-2">
           <OutlinedButton onClick={() => setOpen(false)}>Cancel</OutlinedButton>
           <FilledButton onClick={() => {
             onSave(images)

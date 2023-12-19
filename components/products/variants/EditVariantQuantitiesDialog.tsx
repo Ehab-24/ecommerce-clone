@@ -39,7 +39,7 @@ export default function EditVariantsQuantitiesDialog({ initialVariants, location
           currentLocation === undefined ? (
             <ChooseLocation locations={locations} setCurrentLocation={setCurrentLocation} />
           ) : (
-            <div className="flex flex-col">
+            <div className="flex max-h-[70vh] overflow-y-scroll flex-col">
               <Text className="text-gray-800 px-4 pt-4">Editing quantities at <span className="font-bold">{currentLocation.name}.</span></Text>
               <div className="flex gap-1 px-4 my-4 items-end w-full">
                 <Input id="edit-all-quantity" label="Apply a quantity to all variants" icon={<Text>$</Text>} placeholder="0.00" value={quantityForAll} onChange={e => setQuantityForAll(Number(e.target.value))} />
@@ -79,7 +79,7 @@ export default function EditVariantsQuantitiesDialog({ initialVariants, location
           )
         }
 
-        <DialogFooter>
+        <DialogFooter className="flex gap-2">
           <OutlinedButton onClick={() => setOpen(false)}>Cancel</OutlinedButton>
           <FilledButton onClick={() => {
             onSave(variants)

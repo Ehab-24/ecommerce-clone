@@ -1,25 +1,20 @@
-
-import { FaCheck } from "react-icons/fa6";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
 import Card from "@/components/Card";
 import React from "react";
 import EditVariantDialog from "@/components/products/variants/EditVariantDialog";
 import EditVariantsPopover from "@/components/products/EditVariantsPopover";
 import { RxDragHandleDots2 } from "react-icons/rx";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { ApiProduct, Variant, VariantOption } from "@/types/product";
+import { ApiProduct, Variant } from "@/types/product";
 import SectionTitle from "@/components/SectionTitle";
 import Select from "@/components/Select";
 import Input from "@/components/Input";
-import { IoIosArrowDown, IoIosClose } from "react-icons/io";
+import { IoIosClose } from "react-icons/io";
 import TextButton from "@/components/buttons/TextButton";
 import Text from "@/components/Text";
 import Checkbox from "@/components/Checkbox";
 import { Location } from "@/types/location";
+import AllLocationsPopover from "./AllLocationsPopover";
+import VariantOptionPopover from "./VariantOptionPopover";
 
 export default function VariantsCard({
   loading,
@@ -30,7 +25,7 @@ export default function VariantsCard({
   loading: boolean;
   locations: Location[];
   product: ApiProduct;
-  setProduct: React.Dispatch<React.SetStateAction<any>>;
+  setProduct: React.Dispatch<React.SetStateAction<ApiProduct>>;
 }) {
 
   const [selectedVariants, setSelectedVariants] = React.useState<Variant[]>([]);
@@ -284,95 +279,4 @@ export default function VariantsCard({
   );
 }
 
-function VariantOptionPopover({ option, variants, selectedVariants, setSelectedVariants }: { option: VariantOption, variants: Variant[], selectedVariants: Variant[], setSelectedVariants: React.Dispatch<React.SetStateAction<Variant[]>> }) {
 
-  function handleChange(checked: boolean, val: string) {
-    if (checked) {
-      const newVariants: Variant[] = [...selectedVariants, ...variants.filter(v => v.values[option.name] === val)]
-      const uniqueVariants: Variant[] = newVariants.filter((v, i, a) => a.findIndex(t => (t.name === v.name)) === i)
-      setSelectedVariants(uniqueVariants)
-    } else {
-      setSelectedVariants(selectedVariants.filter(v => v.values[option.name] !== val))
-    }
-  }
-
-  function isChecked(val: string) {
-    return selectedVariants.filter(v => v.values[option.name] === val).length === variants.filter(v => v.values[option.name] === val).length
-  }
-
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <button className="flex items-center gap-1 text-blue-700 hover:underline" onClick={() => { }}>
-          <Text className="capitalize">{option.name}</Text>
-          <IoIosArrowDown size={14} />
-        </button>
-      </PopoverTrigger>
-      <PopoverContent className="w-min p-3 rounded-xl">
-        <div className="flex flex-col gap-2">
-          {option.values.map((val) => (
-            <Checkbox key={val} id={option.name + val} checked={isChecked(val)} onChange={e => handleChange(e.target.checked, val)} label={val} />
-          ))}
-        </div>
-      </PopoverContent>
-    </Popover>
-  )
-}
-
-function AllLocationsPopover({ locations, selectedLocation, setSelectedLocation }: { locations: Location[], selectedLocation: Location | null, setSelectedLocation: React.Dispatch<React.SetStateAction<Location | null>> }) {
-
-  const [open, setOpen] = React.useState(false)
-
-  function ListItem({ location }: { location: Location | null }) {
-
-    function isChecked(): boolean {
-      return selectedLocation === location
-    }
-
-    function handleClick() {
-      setSelectedLocation(location)
-      setOpen(false)
-    }
-
-    return (
-      <div className={`w-full flex cursor-pointer items-center px-3 py-2 justify-between rounded-md ${isChecked() ? "bg-gray-200/80 text-neutral-800 font-bold" : "hover:bg-gray-200/40 text-neutral-800"}`} onClick={handleClick}>
-        {
-          location === null ? (
-            <>
-              <Text className={`text-gray-800 ${isChecked() ? "font-bold" : ""}`}>All locations</Text>
-              {
-                isChecked() && <FaCheck size={14} />
-              }
-            </>
-          ) : (
-            <>
-              <Text className={`text-gray-800 ${isChecked() ? "font-bold" : ""}`}>{location.name}</Text>
-              {
-                isChecked() && <FaCheck size={14} />
-              }
-            </>
-          )
-        }
-      </div >
-    )
-  }
-
-  return (
-    <Popover onOpenChange={setOpen} open={open}>
-      <PopoverTrigger asChild>
-        <button className="flex items-center gap-1 text-blue-700 hover:underline" onClick={() => { }}>
-          <Text className="text-blue-700">{selectedLocation === null ? "All locations" : selectedLocation.name}</Text>
-          <IoIosArrowDown size={14} />
-        </button>
-      </PopoverTrigger>
-      <PopoverContent className=" p-2 min-w-[256px] rounded-xl">
-        <ListItem location={null} />
-        {
-          locations.map(l => (
-            <ListItem key={l._id} location={l} />
-          ))
-        }
-      </PopoverContent>
-    </Popover>
-  )
-}

@@ -28,7 +28,7 @@ export default function EditVariantsBarcodesDialog({ initialVariants, onSave }: 
           <DialogTitle>Edit barcodes</DialogTitle>
         </DialogHeader>
 
-        <div className="flex flex-col">
+        <div className="flex max-h-[70vh] overflow-y-scroll flex-col">
           {
             variants.map(v => (
               <div key={v.name} className="flex w-full justify-between p-4 bg-white border-t border-gray-200 items-center">
@@ -45,7 +45,7 @@ export default function EditVariantsBarcodesDialog({ initialVariants, onSave }: 
           }
         </div>
 
-        <DialogFooter>
+        <DialogFooter className="flex gap-2">
           <OutlinedButton onClick={() => setOpen(false)}>Cancel</OutlinedButton>
           <FilledButton onClick={() => {
             onSave(variants)

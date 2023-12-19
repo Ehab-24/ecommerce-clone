@@ -1,19 +1,22 @@
 import React from "react";
 import EditProductForm from "@/components/products/EditProductForm";
 import { apiUrl } from "@/lib/utils";
-import { Product } from "@/types/product";
 
 export default async function ProductPage({ params }: { params: { id: string } }) {
 
-  const res = await fetch(apiUrl(`/api/products/${params.id}`), { cache: "no-cache" })
-  if (!res.ok) {
-    throw new Error("Failed to load product")
-  }
-  const product: Product = await res.json()
+  const requests = [
+    fetch(apiUrl(`/api/products/${params.id}`), { cache: "no-cache" }),
+    fetch(apiUrl("/api/settings/locations"), { cache: "no-cache" }),
+  ]
+  const [productRes, locationsRes] = await Promise.all(requests)
+  if (!productRes.ok) throw new Error("Failed to load product")
+  if (!locationsRes.ok) throw new Error("Failed to load locations")
+
+  const [product, locations] = await Promise.all([productRes.json(), locationsRes.json()])
 
   return (
     <div className=" w-full bg-gray-100 items-center flex flex-col">
-      <EditProductForm initialProduct={product} />
+      <EditProductForm locations={locations} initialProduct={product} />
     </div>
   )
 }

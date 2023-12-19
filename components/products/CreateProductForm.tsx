@@ -30,7 +30,7 @@ export default function CreateProductForm({ locations }: { locations: Location[]
   useEffect(() => {
     setProduct(p => ({
       ...p, variants: multiplyArrays(p.variantOptions.map(v => v.name), ...p.variantOptions.map(v => v.values))
-        .map(obj => ({ name: Object.values(obj).join(" / "), values: obj, price: p.price, costPerItem: p.costPerItem, profit: p.profit, margin: p.margin }))
+        .map((obj, i) => ({ _id: i.toString(), name: Object.values(obj).join(" / "), values: obj, trackQuantity: false, continueSellingWhenOutOfStock: false }))
     }))
   }, [product.variantOptions])
 
@@ -490,31 +490,33 @@ function ProductOrganization({
         disabled={loading}
         label="Product category"
         placeholder="Apparel & Accessories"
+        value={product.category}
         onChange={(e) =>
-          setProduct({ ...product, productCategory: e.target.value })
+          setProduct({ ...product, cateogry: e.target.value })
         }
       />
       <Input
         id="product-type"
         disabled={loading}
         label="Product Type"
+        value={product.type}
         onChange={(e) =>
-          setProduct({ ...product, productType: e.target.value })
+          setProduct({ ...product, type: e.target.value })
         }
       />
       <Input
         id="vendor"
         label="Vendor"
         disabled={loading}
+        value={product.vendor}
         onChange={(e) => setProduct({ ...product, vendor: e.target.value })}
       />
       <Input
         id="collections"
         label="Collections"
         disabled={loading}
-        onChange={(e) =>
-          setProduct({ ...product, collections: e.target.value })
-        }
+        // TODO:
+        onChange={(e) => { }}
       />
 
       <Input
@@ -611,7 +613,6 @@ function SearchEngineListing({
 
 
 const defaultProduct: ApiProduct = {
-  locations: [],
   title: "",
   chargeTaxes: false,
   locations: [],

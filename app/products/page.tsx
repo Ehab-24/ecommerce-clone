@@ -9,7 +9,7 @@ import React from "react";
 export const runtime = "edge";
 
 export default async function ProductsPage() {
-  const res = await fetch(apiUrl("/api/products"), {
+  const res = await fetch(apiUrl("/api/products?fields=title,status,createdAt,updatedAt,vendor,category"), {
     cache: "no-cache",
     headers: {
       "Content-Type": "application/json",
@@ -27,7 +27,7 @@ export default async function ProductsPage() {
         <div className=" flex gap-4">
           <ExportImportButtons />
           <FilledButton>
-            <Link href="/products/new">Create Product</Link>
+            <Link href="/products/new">Add Product</Link>
           </FilledButton>
         </div>
       </div>

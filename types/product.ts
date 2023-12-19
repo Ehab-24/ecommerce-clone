@@ -5,20 +5,22 @@ import { Location } from "./location";
 const VariantOptionSchema = z.object({ name: z.string(), values: z.array(z.string()) })
 
 const VariantSchema = z.object({
+  _id: z.string(),
   name: z.string(),
-  values: z.record(z.string()),
+  values: z.record(z.string().min(1, "Variant option must have a value")),
   weight: z.number().optional(),
   weightUnit: z.enum(["kg", "lb", "oz", "g"]).optional(),
   isPhysicalProduct: z.boolean().optional(),
-  price: z.number().gt(0, "Variant Price must be greater than 0").optional(),
-  compareAtPrice: z.number().gt(0, "Variant Compare at price must be greater than 0").optional(),
+  price: z.number().gte(0, "Variant Price must be greater than 0").optional(),
+  compareAtPrice: z.number().gte(0, "Variant Compare at price must be greater than 0").optional(),
   chargeTaxes: z.boolean().optional(),
   quantity: z.number().optional(),
   countryOfOrigin: z.string().optional(),
-  costPerItem: z.number().gt(0, "Variant Cost per item must be greater than 0").optional(),
+  costPerItem: z.number().gte(0, "Variant Cost per item must be greater than 0").optional(),
   profit: z.number().optional(),
   margin: z.number().optional(),
   sku: z.string().optional(),
+  hasSku: z.boolean().optional(),
   barcode: z.string().optional(),
   hsCode: z.string().optional(),
   image: z.string().optional(),
@@ -30,11 +32,11 @@ const ApiProductSchema = z.object({
   title: z.string().min(1, "Product title is required"),
   description: z.string().optional(),
   price: z.number().gte(0, "Price must be greater than 0").optional(),
-  compareAtPrice: z.number().gt(0, "Compare at price must be greater than 0").optional(),
+  compareAtPrice: z.number().gte(0, "Compare at price must be greater than 0").optional(),
   chargeTaxes: z.boolean(),
   taxRate: z.number(),
   tax: z.number(),
-  costPerItem: z.number().gt(0, "Cost per item must be greater than 0").optional(),
+  costPerItem: z.number().gte(0, "Cost per item must be greater than 0").optional(),
   profit: z.number().optional(),
   margin: z.number().optional(),
   quantity: z.number().gte(0),
@@ -48,8 +50,8 @@ const ApiProductSchema = z.object({
   weightUnit: z.enum(["kg", "lb", "oz", "g"]),
   countryOfOrigin: z.string(),
   status: z.enum(["active", "draft", "archived"]),
-  productCategory: z.string().optional(),
-  productType: z.string().optional(),
+  category: z.string().optional(),
+  type: z.string().optional(),
   vendor: z.string(),
   collection: z.string(),
   tags: z.array(z.string().min(1)),
@@ -80,4 +82,4 @@ type VariantOption = z.infer<typeof VariantOptionSchema>;
 type Product = Omit<Omit<Omit<Omit<ApiProduct, "createdAt">, "updatedAt">, "vendor">, "locations">
   & { _id: string; createdAt: string; updatedAt: string; vendor: Vendor; locations: Location[] };
 
-export { type Product, type VariantOption, ApiProductSchema, type VariantValue, type ApiProduct, type Variant };
+export { type Product, type VariantOption, ApiProductSchema, VariantSchema, type VariantValue, type ApiProduct, type Variant };

@@ -12,7 +12,6 @@ import OutlinedButton from "../../buttons/OutlinedButton";
 import FilledButton from "../../buttons/FilledButton";
 import { Variant } from "@/types/product";
 import Text from "@/components/Text";
-import Input from "@/components/Input";
 import Select from "@/components/Select";
 import countries from "@/data/countries";
 
@@ -32,14 +31,14 @@ export default function EditVariantsRegionsDialog({ initialVariants, onSave }: {
           <DialogTitle>Edit country/region of origin</DialogTitle>
         </DialogHeader>
 
-        <div className="flex flex-col">
+        <div className="flex max-h-[70vh] overflow-y-scroll flex-col">
 
           <div className="flex gap-1 px-4 my-4 items-end w-full">
             <Select onChange={e => setCountry(e.target.value)} value={country} options={countries} label="Country/Region of origin" />
             <div className="h-8 flex items-stretch">
               <OutlinedButton disabled={country === undefined} onClick={() => {
                 const newVariants: Variant[] = [...variants]
-                newVariants.forEach(v => v.country = country!)
+                newVariants.forEach(v => v.countryOfOrigin = country!)
                 setVariants(newVariants)
               }}>
                 <p className="whitespace-nowrap">
@@ -56,7 +55,7 @@ export default function EditVariantsRegionsDialog({ initialVariants, onSave }: {
                 <div className="w-60">
                   <Select onChange={e => {
                     const newVariants: Variant[] = [...variants]
-                    newVariants.find(v => v.name === e.target.id)!.country = e.target.value
+                    newVariants.find(v => v.name === e.target.id)!.countryOfOrigin = e.target.value
                     setVariants(newVariants)
                   }} value={country} options={countries} label="Country/Region of origin" />
                 </div>
@@ -65,7 +64,7 @@ export default function EditVariantsRegionsDialog({ initialVariants, onSave }: {
           }
         </div>
 
-        <DialogFooter>
+        <DialogFooter className="flex gap-2">
           <OutlinedButton onClick={() => setOpen(false)}>Cancel</OutlinedButton>
           <FilledButton onClick={() => {
             onSave(variants)

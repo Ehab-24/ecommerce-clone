@@ -1,7 +1,7 @@
 'use client'
 
-import React from "react";
-import { Product, VariantSchema } from "@/types/product";
+import React, { useEffect } from "react";
+import { Product, Variant, VariantSchema } from "@/types/product";
 import Card from "@/components/Card";
 import SectionTitle from "@/components/SectionTitle";
 import Input from "@/components/Input";
@@ -11,21 +11,33 @@ import OutlinedButton from "@/components/buttons/OutlinedButton";
 import TextButton from "@/components/buttons/TextButton";
 import FilledButton from "@/components/buttons/FilledButton";
 import { ZodError } from "zod";
+import toast from "react-hot-toast";
 import axios from "axios";
-import { toast } from "react-hot-toast";
-import { useRouter } from "next/navigation";
-import Spinner from "@/components/Spinner";
-import Shipping from "./form/Shipping";
-import Inventory from "./form/Inventory";
-import Pricing from "./form/Pricing";
 import { Location } from "@/types/location";
+import Spinner from "@/components/Spinner";
+import { useRouter } from "next/navigation";
+import Inventory from "./form/Inventory";
+import Shipping from "./form/Shipping";
+import Pricing from "./form/Pricing";
 
-export default function EditVariantForm({ initialProduct, vi, locations }: { locations: Location[], initialProduct: Product, vi: number }) {
+export default function CerateVariantForm({ product, locations }: { product: Product, locations: Location[] }) {
 
-  const [loading, setLoading] = React.useState(false)
-  const [product, setProduct] = React.useState(initialProduct)
-  const [variant, setVariant] = React.useState(initialProduct.variants[vi])
+  const defaultVariant: Variant = {
+    _id: product.variants.length.toString(),
+    name: "",
+    values: product.variantOptions.reduce((acc, vo) => ({ ...acc, [vo.name]: "" }), {}),
+    price: product.price,
+    continueSellingWhenOutOfStock: product.continueSellingWhenOutOfStock,
+    trackQuantity: product.trackQuantity,
+  }
+
   const router = useRouter()
+  const [variant, setVariant] = React.useState(defaultVariant)
+  const [loading, setLoading] = React.useState(false)
+
+  useEffect(() => {
+    setVariant(v => ({ ...v, name: Object.values(v.values).join(" / ") }))
+  }, [variant.values])
 
   function capitalize(str: string): string {
     return str.charAt(0).toUpperCase() + str.slice(1);
@@ -37,7 +49,7 @@ export default function EditVariantForm({ initialProduct, vi, locations }: { loc
     try {
 
       VariantSchema.parse(variant)
-      const { status } = await axios.put(`/api/products/${product._id}/variants/${vi}`, variant)
+      const { status } = await axios.post(`/api/products/${product._id}/variants`, variant)
       if (status === 200) {
         toast.success("Variant created")
         router.push(`/products/${product._id}/variants/${product.variants.length}`)
@@ -60,28 +72,6 @@ export default function EditVariantForm({ initialProduct, vi, locations }: { loc
     }
   }
 
-  async function handleDelete() {
-    setLoading(true)
-    try {
-      const { status } = await axios.delete(`/api/products/${product._id}/variants/${vi}`)
-      if (status === 200) {
-        toast.success("Variant deleted")
-        router.push(`/products/${product._id}`)
-      } else {
-        toast.error("Failed to delete variant")
-      }
-    }
-    catch (error) {
-      if (error instanceof ZodError) {
-        toast.error(error.issues[0].message)
-      } else {
-        toast.error("Something went wrong")
-      }
-      console.log(error)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   return (
     <div className="flex flex-col gap-6 w-full">
@@ -90,7 +80,7 @@ export default function EditVariantForm({ initialProduct, vi, locations }: { loc
         <SectionTitle title="Options" />
         {
           product.variantOptions.map(vo => (
-            <Input key={vo.name} id={product.title + vo} label={capitalize(vo.name)} value={variant.values[vo.name]} />
+            <Input key={vo.name} id={product.title + vo} label={capitalize(vo.name)} value={variant.values[vo.name]} onChange={e => setVariant({ ...variant, values: { ...variant.values, [vo.name]: e.target.value } })} />
           ))
         }
 
@@ -117,21 +107,23 @@ export default function EditVariantForm({ initialProduct, vi, locations }: { loc
 
       <Pricing loading={false} variant={variant} setVariant={setVariant} />
 
-      <Inventory loading={false} variant={variant} locations={locations} setVariant={setVariant} />
+      <Inventory loading={false} variant={variant} setVariant={setVariant} locations={locations} />
 
       <Shipping loading={false} variant={variant} setVariant={setVariant} />
 
-      {
-        loading ? (
-          <Spinner />
-        ) : (
-          <div className="flex gap-2 self-end">
-            <FilledButton bgClass="bg-red-500 hover:bg-red-700" onClick={handleDelete}>Delete variant</FilledButton>
+      <div className="flex gap-2 self-end">
+        {
+          loading ? (
+            <Spinner />
+          ) : (
             <FilledButton onClick={handleSave}>Save</FilledButton>
-          </div>
-        )
-      }
+          )
+        }
+      </div>
 
     </div>
   )
 }
+
+
+

@@ -29,7 +29,7 @@ export default function EditVariantsLocationsDialog({ onSave, allLocations }: { 
           <DialogTitle>Edit locations</DialogTitle>
         </DialogHeader>
 
-        <div className="flex gap-4 px-4 my-4 flex-col">
+        <div className="flex max-h-[70vh] overflow-y-scroll gap-4 px-4 my-4 flex-col">
 
           <Text className="text-gray-800">Select locations that stock the selected variants.</Text>
 
@@ -65,7 +65,7 @@ export default function EditVariantsLocationsDialog({ onSave, allLocations }: { 
           </div>
         </div>
 
-        <DialogFooter>
+        <DialogFooter className="flex gap-2">
           <OutlinedButton onClick={() => setOpen(false)}>Cancel</OutlinedButton>
           <FilledButton onClick={() => {
             onSave(locations)
