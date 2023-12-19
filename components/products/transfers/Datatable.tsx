@@ -82,43 +82,50 @@ export default function Datatable({ transfers }: { transfers: Transfer[] }) {
   //   </div>
   // )
   return (
-    <div className="border text-xs rounded-xl shadow-sm shadow-black/40 overflow-hidden">
-      <CardTopBar />
-      <div className="hidden sm:flex gap-2 p-1.5 border-b bg-neutral-50 text-neutral-600 items-center font-medium">
-        <div className="flex-none pl-2">
-          <Checkbox
-            id="select-all"
-            label=""
-          // checked={selected.length === transfers.length}
-          // onChange={toggleSelectAll}
-          />
-        </div>
-        <div className="flex-1">Transfer</div>
-        <div className="flex-1">Origin</div>
-        <div className="flex-1">Destination</div>
-        <div className="flex-1">Status</div>
-        <div className="flex-1">Received</div>
-        <div className="flex-1">Excepeted arrival</div>
-      </div>
-      <div>
-        {transfers.map((t, i) => (
-          <div className="hidden sm:flex gap-2 p-1.5 border-b bg-neutral-50 text-neutral-600 items-center font-medium hover:cursor-pointer  " key={i} onClick={()=>router.push(`/products/transfers/${t._id}`)}>
-            <div className="flex-1"><Checkbox id={"select-" + t._id} checked={selectedProducts[i]} label="" onChange={e => {
-              const newSelectProducts = [...selectedProducts]
-              newSelectProducts[i] = e.target.checked
-              setSelectedProducts(newSelectProducts)
-            }} /></div>
-            <div className="flex-1">{t.referenceNumber}</div>
-            <div className="flex-1">{t.origin.name}</div>
-            <div className="flex-1">{t.destination.name}</div>
-            <div className="flex-1"><StatusText status={t.status} /></div>
-            <div className="flex-1">0 of 0</div>
-            <div className="flex-1">{t.shipping.arrivalDate ? (new Date(t.shipping.arrivalDate)).toISOString().slice(0, 10) : ""}</div>
-
+    <>
+      <div className="border text-xs rounded-xl shadow-sm shadow-black/40 overflow-hidden">
+        <CardTopBar className="bg-white" >
+          <button className="w-auto h-7 py-1 px-3  rounded-md text-xs font-semibold text-gray-900 hover:bg-gray-200 transition">Draft</button>
+          <button className="w-auto h-7 py-1 px-3  rounded-md text-xs font-semibold text-gray-900 hover:bg-gray-200 transition">Pending</button>
+          <button className="w-auto h-7 py-1 px-3  rounded-md text-xs font-semibold text-gray-900 hover:bg-gray-200 transition">Partial</button>
+          <button className="w-auto h-7 py-1 px-3  rounded-md text-xs font-semibold text-gray-900 hover:bg-gray-200 transition">Received</button>
+        </CardTopBar>
+        <div className="hidden sm:flex gap-2 p-1.5 border-b text-neutral-600 items-center font-medium">
+          <div className="flex-none pl-2">
+            <Checkbox
+              id="select-all"
+              label=""
+            // checked={selected.length === transfers.length}
+            // onChange={toggleSelectAll}
+            />
           </div>
-        ))}
+          <div className="flex-1">Transfer</div>
+          <div className="flex-1">Origin</div>
+          <div className="flex-1">Destination</div>
+          <div className="flex-1">Status</div>
+          <div className="flex-1">Received</div>
+          <div className="flex-1">Excepeted arrival</div>
+        </div>
+        <div>
+          {transfers.map((t, i) => (
+            <div className="hidden sm:flex gap-2 p-1.5 border-b bg-white hover:bg-neutral-100 text-neutral-600 items-center font-medium hover:cursor-pointer  " key={i} onClick={() => router.push(`/products/transfers/${t._id}`)}>
+              <div className="flex-none pl-2"><Checkbox id={"select-" + t._id} checked={selectedProducts[i]} label="" onChange={e => {
+                const newSelectProducts = [...selectedProducts]
+                newSelectProducts[i] = e.target.checked
+                setSelectedProducts(newSelectProducts)
+              }} /></div>
+              <div className="flex-1">{t.referenceNumber}</div>
+              <div className="flex-1">{t.origin.name}</div>
+              <div className="flex-1">{t.destination.name}</div>
+              <div className="flex-1"><StatusText status={t.status} /></div>
+              <div className="flex-1">0 of 0</div>
+              <div className="flex-1">{t.shipping.arrivalDate ? (new Date(t.shipping.arrivalDate)).toISOString().slice(0, 10) : ""}</div>
+
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   )
 
 }
