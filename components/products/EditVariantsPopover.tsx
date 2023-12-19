@@ -14,21 +14,32 @@ import EditVariantsLocationsDialog from "./variants/EditVariantsLocationsDialog"
 import { IoIosArrowDown } from "react-icons/io"
 import { Location } from "@/types/location"
 
-export default function EditVariantsPopover({ product, locations, setProduct }: { product: ApiProduct, locations: Location[], setProduct: React.Dispatch<React.SetStateAction<ApiProduct>> }) {
+export default function EditVariantsPopover({ product, variant = "default", locations, setProduct }: { product: ApiProduct, variant?: string, locations: Location[], setProduct: React.Dispatch<React.SetStateAction<ApiProduct>> }) {
+
+  let text: React.ReactNode = "Edit";
+  let id: string = ""
+  let className = `
+      select-none flex gap-1 items-center rounded-lg border-2 border-neutral-200 py-1
+      hover:bg-neutral-200 shadow-sm shadow-neutral-500/10
+      hover:shadow-lg hover:shadow-neutral-900/20
+      px-2 text-center align-middle font-sans text-xs font-bold 
+      text-neutral-900 transition-all focus:ring 
+      focus:ring-neutral-300 active:opacity-[0.85] disabled:pointer-events-none 
+      disabled:opacity-50 disabled:shadow-none bg-neutral-50
+    `
+  if (variant === "sticky") {
+    text = "Actions"
+    id = "edit-variants-action-button"
+    className = "bg-neutral-200 hover:bg-neutral-300 transition-all py-1 flex gap-1 px-2 text-xs text-gray-800 items-center rounded-md"
+  }
 
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <button onClick={() => { }}
-          className="select-none flex gap-1 items-center rounded-lg border-2 border-neutral-200 py-1
-            hover:bg-neutral-200 shadow-sm shadow-neutral-500/10
-            hover:shadow-lg hover:shadow-neutral-900/20
-            px-2 text-center align-middle font-sans text-xs font-bold 
-            text-neutral-900 transition-all focus:ring 
-            focus:ring-neutral-300 active:opacity-[0.85] disabled:pointer-events-none 
-            disabled:opacity-50 disabled:shadow-none bg-neutral-50"
+        <button id={id} onClick={() => { }}
+          className={className}
         >
-          Edit
+          {text}
           <IoIosArrowDown />
         </button>
       </PopoverTrigger>
@@ -68,7 +79,7 @@ export default function EditVariantsPopover({ product, locations, setProduct }: 
 
           <EditVariantsLocationsDialog
             allLocations={locations}
-            onSave={(locations) => setProduct({ ...product, locations })}
+            onSave={(ls) => setProduct({ ...product, locations: ls.map(l => l._id) })}
           />
 
         </div>
@@ -76,4 +87,24 @@ export default function EditVariantsPopover({ product, locations, setProduct }: 
     </Popover>
   )
 }
+
+function isInViewport(element: HTMLElement) {
+  const rect = element.getBoundingClientRect();
+  return (
+    rect.top >= 0 &&
+    rect.left >= 0 &&
+    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+  );
+}
+
+window.addEventListener('scroll', function() {
+  const el = document.getElementById('edit-variants-action-button');
+  if (!el) return;
+  const isVisibile = isInViewport(el);
+
+  const isAbove = el.getBoundingClientRect().top < 0;
+
+  console.log(isVisibile, isAbove)
+});
 

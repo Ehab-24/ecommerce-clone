@@ -1,10 +1,8 @@
 'use client'
 
 import React, { useEffect } from "react";
-import { RxDragHandleDots2 } from "react-icons/rx";
-import { RiDeleteBin6Line } from "react-icons/ri";
 import { ZodError } from "zod";
-import { ApiProductSchema, Variant, ApiProduct, VariantValue, VariantOption } from "@/types/product";
+import { ApiProductSchema, ApiProduct, VariantValue } from "@/types/product";
 import Card from "@/components/Card";
 import Checkbox from "@/components/Checkbox";
 import Input from "@/components/Input";
@@ -12,7 +10,7 @@ import Select from "@/components/Select";
 import TextArea from "@/components/TextArea";
 import FilledButton from "@/components/buttons/FilledButton";
 import { toast } from "react-hot-toast";
-import { IoIosArrowDown, IoIosClose } from "react-icons/io";
+import { IoIosClose } from "react-icons/io";
 import SectionTitle from "@/components/SectionTitle";
 import countries from "@/data/countries";
 import ImageUploader from "@/components/ImageUploader";
@@ -21,14 +19,8 @@ import Spinner from "@/components/Spinner";
 import TextButton from "@/components/buttons/TextButton";
 import axios from "axios";
 import Text from "@/components/Text";
-import EditVariantDialog from "@/components/products/variants/EditVariantDialog";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import EditVariantsPopover from "@/components/products/EditVariantsPopover";
 import { Location } from "@/types/location";
+import VariantsCard from "./variants/VariantsCard";
 
 export default function CreateProductForm({ locations }: { locations: Location[] }) {
 
@@ -172,35 +164,25 @@ export default function CreateProductForm({ locations }: { locations: Location[]
             </div>
           </Card>
 
-          <Card className="flex p-4 flex-col gap-4 items-stretch">
-            <SectionTitle title="Pricing" />
-            <Pricing
-              loading={loading}
-              product={product}
-              setProduct={setProduct}
-            />
-          </Card>
+          <Pricing
+            loading={loading}
+            product={product}
+            setProduct={setProduct}
+          />
 
-          <Card className=" flex-col flex p-4 gap-4">
-            <SectionTitle title="Inventory" />
-            <Inventory
-              loading={loading}
-              product={product}
-              setProduct={setProduct}
-            />
-          </Card>
+          <Inventory
+            loading={loading}
+            product={product}
+            setProduct={setProduct}
+          />
 
-          <Variants loading={loading} locations={locations} product={product} setProduct={setProduct} />
+          <VariantsCard loading={loading} locations={locations} product={product} setProduct={setProduct} />
 
-          <Card className=" flex-col flex p-4 gap-4">
-            <SectionTitle title="Shipping" />
-            <Shipping
-              loading={loading}
-              product={product}
-              setProduct={setProduct}
-            />
-          </Card>
-
+          <Shipping
+            loading={loading}
+            product={product}
+            setProduct={setProduct}
+          />
 
           <SearchEngineListing
             product={product}
@@ -228,14 +210,11 @@ export default function CreateProductForm({ locations }: { locations: Location[]
             />
           </Card>
 
-          <Card className=" flex-col flex p-4 gap-4">
-            <SectionTitle title="Product Organization" />
-            <ProductOrganization
-              loading={loading}
-              product={product}
-              setProduct={setProduct}
-            />
-          </Card>
+          <ProductOrganization
+            loading={loading}
+            product={product}
+            setProduct={setProduct}
+          />
         </div>
       </div>
 
@@ -261,7 +240,8 @@ function Pricing({
   setProduct: React.Dispatch<React.SetStateAction<any>>;
 }) {
   return (
-    <>
+    <Card className="flex p-4 flex-col gap-4 items-stretch">
+      <SectionTitle title="Pricing" />
       <div className="flex gap-4 mt-4">
         <Input
           id="price"
@@ -335,7 +315,7 @@ function Pricing({
           icon={<Text>% </Text>}
         />
       </div>
-    </>
+    </Card>
   );
 }
 
@@ -349,7 +329,8 @@ function Inventory({
   setProduct: React.Dispatch<React.SetStateAction<any>>;
 }) {
   return (
-    <>
+    <Card className=" flex-col flex p-4 gap-4">
+      <SectionTitle title="Inventory" />
       <Checkbox
         id="tarck-quantity"
         disabled={loading}
@@ -415,263 +396,10 @@ function Inventory({
           />
         </div>
       )}
-    </>
-  );
-}
-
-function Variants({
-  loading,
-  locations,
-  product,
-  setProduct,
-}: {
-  loading: boolean;
-  locations: Location[];
-  product: ApiProduct;
-  setProduct: React.Dispatch<React.SetStateAction<any>>;
-}) {
-
-  const [selectedVariants, setSelectedVariants] = React.useState<Variant[]>([]);
-
-  function variantsInclude(name: string): boolean {
-    return product.variantOptions.map((v) => v.name).includes(name);
-  }
-
-  function getPlaceholder(name: string): string {
-    switch (name) {
-      case "color":
-        return "Red, Blue, Green";
-      case "size":
-        return "Small, Medium, Large";
-      case "material":
-        return "Cotton, Polyester";
-      case "style":
-        return "Slim fit, Regular fit";
-      default:
-        return "";
-    }
-  }
-
-  function getNextVariant(): string {
-    const vs: string[] = ["color", "size", "material", "style"];
-    for (let i = 0; i < vs.length; i++) {
-      if (!product.variantOptions.map((v) => v.name).includes(vs[i]))
-        return vs[i];
-    }
-    return "color";
-  }
-
-
-  return (
-    <Card className=" flex-col w-full py-4 flex">
-
-      <div className="px-4">
-        <SectionTitle title="Variants" />
-      </div>
-
-      {product.variantOptions.map((variant, index) => (
-        <div
-          key={index}
-          className="flex px-4 flex-col border-b pb-4 border-gray-300"
-        >
-          <div className="flex pt-4 gap-4 w-full items-start">
-            <button disabled={true}>
-              <RxDragHandleDots2
-                className="text-sm text-[#1a1a1a] mt-7"
-                size={20}
-              />
-            </button>
-
-            <div className="flex-col w-full">
-              <Select
-                disabled={loading}
-                value={variant.name}
-                label="Option Name"
-                onChange={(e) => {
-                  const newVariants = [...product.variantOptions];
-                  newVariants[index].name = e.target.value as string;
-                  setProduct({ ...product, variantOptions: newVariants });
-                }}
-                options={[
-                  {
-                    value: "color",
-                    label: "Color",
-                    disabled: variantsInclude("color"),
-                  },
-                  {
-                    value: "size",
-                    label: "Size",
-                    disabled: variantsInclude("size"),
-                  },
-                  {
-                    value: "material",
-                    label: "Material",
-                    disabled: variantsInclude("material"),
-                  },
-                  {
-                    value: "style",
-                    label: "Style",
-                    disabled: variantsInclude("style"),
-                  },
-                ]}
-              />
-
-              <div className="w-full mt-4">
-                <Input
-                  id="variant-values"
-                  disabled={loading}
-                  label="Option Values"
-                  placeholder={getPlaceholder(variant.name)}
-                  onKeyDown={(e) => {
-                    const value = e.currentTarget.value;
-                    if (e.key === "Enter" && value !== "") {
-                      const newVariants = [...product.variantOptions];
-                      newVariants[index].values = [
-                        ...newVariants[index].values,
-                        value,
-                      ];
-                      setProduct({ ...product, variantOptions: newVariants });
-                      e.currentTarget.value = "";
-                    }
-                  }}
-                />
-              </div>
-
-              <div className="w-full flex mt-4 gap-1">
-                {variant.values.map((v, i) => (
-                  <div
-                    key={i}
-                    className="bg-slate-200 text-gray-900 px-2 py-1 rounded-md text-sm flex items-center gap-1"
-                  >
-                    {v}
-                    <button
-                      disabled={loading}
-                      onClick={() => {
-                        const newVariants = [...product.variantOptions];
-                        newVariants[index].values = newVariants[
-                          index
-                        ].values.filter((val) => val !== v);
-                        setProduct({ ...product, variantOptions: newVariants });
-                      }}
-                    >
-                      <IoIosClose size={20} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <button
-              disabled={loading}
-              onClick={() => setProduct({ ...product, variantOptions: product.variantOptions.filter((v) => v !== variant) })}
-              className="p-2 rounded-md self-start mt-[22px] hover:bg-black/10 transition-all"
-            >
-              <RiDeleteBin6Line className="text-sm text-[#1a1a1a]" />
-            </button>
-          </div>
-        </div>
-      ))}
-
-      <div className="flex px-4 mt-4">
-        <TextButton
-          onClick={() =>
-            setProduct({ ...product, variantOptions: [...product.variantOptions, { name: getNextVariant(), values: [] }] })
-          }
-        >
-          {product.variants.length === 0
-            ? "+ Add options like color or size"
-            : "+ Add another option"}
-        </TextButton>
-      </div>
-
-      {
-        product.variants.length > 0 && (
-          <div className="w-full mt-4 flex px-4 pt-4 border-t border-gray-200 gap-2 flex-col">
-            <div className="flex gap-4 w-full">
-              <Text>Select</Text>
-              <TextButton onClick={() => setSelectedVariants(product.variants)}>All</TextButton>
-              <TextButton onClick={() => setSelectedVariants([])}>None</TextButton>
-              {
-                product.variantOptions.map(v => (
-                  <VariantOptionPopover key={v.name} option={v} variants={product.variants} selectedVariants={selectedVariants} setSelectedVariants={setSelectedVariants} />
-                ))
-              }
-            </div>
-            <div className="flex gap-4 ml-2 w-full">
-              <Text>Available inventory at:</Text>
-              <TextButton onClick={() => { }}>All locations</TextButton>
-            </div>
-          </div>
-        )
-      }
-
-      {
-        product.variants.length > 0 && (
-          <div className="flex mt-4 justify-between border-t border-gray-200 p-4">
-            <Checkbox id="showing-variants" checked={selectedVariants.length === product.variants.length} label={selectedVariants.length > 0 ? `${selectedVariants.length} selected` : `Showing ${product.variants.length} variants`} onChange={e => {
-              e.stopPropagation()
-              if (e.target.checked) {
-                setSelectedVariants(product.variants)
-              } else {
-                setSelectedVariants([])
-              }
-            }} />
-
-            {
-              selectedVariants.length === 0 && <EditVariantsPopover locations={locations} product={product} setProduct={setProduct} />
-            }
-
-          </div>
-        )
-      }
-
-      {
-        product.variants.length > 0 && (
-          product.variants.map(v => (
-            <div key={v.name} className="flex h-full border-t border-gray-200 w-full">
-              <div className="h-full mt-6 grid place-items-center pl-4">
-                <Checkbox id={v.name} checked={selectedVariants.includes(v)} onChange={e => {
-                  e.stopPropagation()
-                  if (e.target.checked) {
-                    setSelectedVariants([...selectedVariants, v])
-                  } else {
-                    setSelectedVariants(selectedVariants.filter(sv => sv !== v))
-                  }
-                }} />
-              </div>
-
-              <EditVariantDialog initialVariant={v} onSave={v => {
-                setProduct({ ...product, variants: product.variants.map(pv => pv.name === v.name ? v : pv) })
-              }} button={
-                <div className="flex p-4 w-full hover:bg-gray-100 bg-white transition-all justify-between cursor-pointer">
-                  <div className="flex flex-col w-full items-start h-full justify-center">
-                    <Text className="font-bold text-gray-800">{v.name}</Text>
-                    <Text className="text-gray-800">{v.sku}</Text>
-                  </div>
-                  <div className="flex flex-col whitespace-nowrap items-end">
-                    <Text className="text-gray-800">$ {v.price}</Text>
-                    <Text className="text-gray-800">33 available at 2 locations</Text>
-                  </div>
-                </div>
-
-              } />
-            </div>
-          ))
-        )
-      }
-
-      {
-        product.variants.length > 0 && (
-          <div className="flex border-t border-gray-200 pt-4 px-4 justify-between">
-            <Text className="text-gray-800">Total inventory at all locations</Text>
-            <Text className="text-gray-800">0 available</Text>
-          </div>
-        )
-      }
-
     </Card>
   );
 }
+
 
 function Shipping({
   loading,
@@ -683,7 +411,8 @@ function Shipping({
   setProduct: React.Dispatch<React.SetStateAction<any>>;
 }) {
   return (
-    <>
+    <Card className=" flex-col flex p-4 gap-4">
+      <SectionTitle title="Shipping" />
       <Checkbox
         id="physical-product"
         disabled={loading}
@@ -740,7 +469,7 @@ function Shipping({
       ) : (
         <p>Customers won’t enter shipping details at checkout.</p>
       )}
-    </>
+    </Card>
   );
 }
 
@@ -754,7 +483,8 @@ function ProductOrganization({
   setProduct: React.Dispatch<React.SetStateAction<any>>;
 }) {
   return (
-    <>
+    <Card className=" flex-col flex p-4 gap-4">
+      <SectionTitle title="Product Organization" />
       <Input
         id="product-category"
         disabled={loading}
@@ -820,7 +550,7 @@ function ProductOrganization({
           </div>
         ))}
       </div>
-    </>
+    </Card>
   );
 }
 
@@ -878,45 +608,13 @@ function SearchEngineListing({
   );
 }
 
-function VariantOptionPopover({ option, variants, selectedVariants, setSelectedVariants }: { option: VariantOption, variants: Variant[], selectedVariants: Variant[], setSelectedVariants: React.Dispatch<React.SetStateAction<Variant[]>> }) {
 
-  function handleChange(checked: boolean, val: string) {
-    if (checked) {
-      const newVariants: Variant[] = [...selectedVariants, ...variants.filter(v => v.values[option.name] === val)]
-      const uniqueVariants: Variant[] = newVariants.filter((v, i, a) => a.findIndex(t => (t.name === v.name)) === i)
-      setSelectedVariants(uniqueVariants)
-    } else {
-      setSelectedVariants(selectedVariants.filter(v => v.values[option.name] !== val))
-    }
-  }
-
-  function isChecked(val: string) {
-    return selectedVariants.filter(v => v.values[option.name] === val).length === variants.filter(v => v.values[option.name] === val).length
-  }
-
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <button className="flex items-center gap-1 text-blue-700 hover:underline" onClick={() => { }}>
-          <Text className="capitalize">{option.name}</Text>
-          <IoIosArrowDown size={14} />
-        </button>
-      </PopoverTrigger>
-      <PopoverContent className="w-min p-3 rounded-xl">
-        <div className="flex flex-col gap-2">
-          {option.values.map((val) => (
-            <Checkbox key={val} id={option.name + val} checked={isChecked(val)} onChange={e => handleChange(e.target.checked, val)} label={val} />
-          ))}
-        </div>
-      </PopoverContent>
-    </Popover>
-  )
-}
 
 const defaultProduct: ApiProduct = {
   locations: [],
   title: "",
   chargeTaxes: false,
+  locations: [],
   quantity: 0,
   tax: 0,
   taxRate: 0,
