@@ -25,14 +25,13 @@ import { RxDragHandleDots2 } from "react-icons/rx";
 import TextButton from "../buttons/TextButton";
 import Text from "../Text";
 import OutlinedButton from "../buttons/OutlinedButton";
-import EditVariantDialog from "./variants/EditVariantDialog";
 import EditVariantImagesDialog from "./variants/EditVariantImagesDialog";
 
 export default function EditProductForm({ initialProduct }: { initialProduct: Product }) {
 
   const params = useParams();
   const router = useRouter();
-  const [product, setProduct] = React.useState<ApiProduct>({ ...initialProduct, vendor: initialProduct.vendor._id })
+  const [product, setProduct] = React.useState<ApiProduct>({ ...initialProduct, vendor: initialProduct.vendor._id, locations: initialProduct.locations.map(l => l._id) })
   const [loading, setLoading] = React.useState(false)
 
   useEffect(() => {
@@ -181,7 +180,7 @@ export default function EditProductForm({ initialProduct }: { initialProduct: Pr
               <Shipping product={product} setProduct={setProduct} />
             </Card>
 
-            <Variants loading={loading} product={product} setProduct={setProduct} />
+            <Variants loading={loading} initialProduct={initialProduct} product={product} setProduct={setProduct} />
 
             <Card className="flex p-4 flex-col mb-4 items-stretch">
               <SectionTitle title="Search Engine Listing" />
@@ -397,10 +396,12 @@ function Inventory({
 function Variants({
   loading,
   product,
+  initialProduct,
   setProduct,
 }: {
   loading: boolean;
   product: ApiProduct;
+  initialProduct: Product,
   setProduct: React.Dispatch<React.SetStateAction<any>>;
 }) {
 
@@ -485,7 +486,7 @@ function Variants({
 
       {
         product.variants.length > 0 && (
-          product.variants.map(v => (
+          product.variants.map((v, i) => (
             <div key={v.name} className="flex h-20 border-t border-gray-200 w-full">
               <div className="h-full grid place-items-center pl-4">
                 <Checkbox id={v.name} checked={selectedVariants.includes(v)} onChange={e => {
@@ -499,31 +500,26 @@ function Variants({
               </div>
 
               {
-                v.images && v.images.length > 0 ? (
+                v.image ? (
                   <div className="rounded-md overflow-hidden mt-8 mr-2" >
-                    <Image src={v.images[0]} alt={product.title} width={0} height={0} sizes="100vw" style={{ width: '100%', height: '100%' }} />
+                    <Image src={v.image} alt={product.title} width={0} height={0} sizes="100vw" style={{ width: '100%', height: '100%' }} />
                   </div>
                 ) : (
                   <EditVariantImagesDialog onSave={images => setProduct({ ...product, media: [...product.media, ...images.map(url => ({ url, type: "image" }))] })} altText={product.title} />
                 )
               }
 
-              <EditVariantDialog initialVariant={v} onSave={v => {
-                setProduct({ ...product, variants: product.variants.map(pv => pv.name === v.name ? v : pv) })
-              }} button={
-                <div className="flex py-4 pr-4 pl-2 w-full hover:bg-gray-100 bg-white transition-all justify-between cursor-pointer">
+              <Link href={`/products/${initialProduct._id}/variants/${i}`} className="flex py-4 pr-4 pl-2 w-full hover:bg-gray-100 bg-white transition-all justify-between cursor-pointer">
 
-                  <div className="flex flex-col w-full items-start h-full justify-center">
-                    <Text className="font-bold text-gray-800">{v.name}</Text>
-                    <Text className="text-gray-800">{v.sku}</Text>
-                  </div>
-                  <div className="flex flex-col whitespace-nowrap items-end">
-                    <Text className="text-gray-800">$ {v.price}</Text>
-                    <Text className="text-gray-800">33 available at 2 locations</Text>
-                  </div>
+                <div className="flex flex-col w-full items-start h-full justify-center">
+                  <Text className="font-bold text-gray-800">{v.name}</Text>
+                  <Text className="text-gray-800">{v.sku}</Text>
                 </div>
-
-              } />
+                <div className="flex flex-col whitespace-nowrap items-end">
+                  <Text className="text-gray-800">$ {v.price}</Text>
+                  <Text className="text-gray-800">33 available at 2 locations</Text>
+                </div>
+              </Link>
 
             </div>
           ))

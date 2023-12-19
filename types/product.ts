@@ -7,16 +7,23 @@ const VariantOptionSchema = z.object({ name: z.string(), values: z.array(z.strin
 const VariantSchema = z.object({
   name: z.string(),
   values: z.record(z.string()),
+  weight: z.number().optional(),
+  weightUnit: z.enum(["kg", "lb", "oz", "g"]).optional(),
+  isPhysicalProduct: z.boolean().optional(),
   price: z.number().gt(0, "Variant Price must be greater than 0").optional(),
+  compareAtPrice: z.number().gt(0, "Variant Compare at price must be greater than 0").optional(),
+  chargeTaxes: z.boolean().optional(),
   quantity: z.number().optional(),
-  country: z.string().optional(),
+  countryOfOrigin: z.string().optional(),
   costPerItem: z.number().gt(0, "Variant Cost per item must be greater than 0").optional(),
   profit: z.number().optional(),
   margin: z.number().optional(),
   sku: z.string().optional(),
   barcode: z.string().optional(),
   hsCode: z.string().optional(),
-  images: z.array(z.string()).optional(),
+  image: z.string().optional(),
+  trackQuantity: z.boolean(),
+  continueSellingWhenOutOfStock: z.boolean(),
 })
 
 const ApiProductSchema = z.object({
@@ -30,8 +37,8 @@ const ApiProductSchema = z.object({
   costPerItem: z.number().gt(0, "Cost per item must be greater than 0").optional(),
   profit: z.number().optional(),
   margin: z.number().optional(),
-  trackQuantity: z.boolean(),
   quantity: z.number().gte(0),
+  trackQuantity: z.boolean(),
   continueSellingWhenOutOfStock: z.boolean(),
   hasSku: z.boolean(),
   sku: z.optional(z.string()),
@@ -49,6 +56,7 @@ const ApiProductSchema = z.object({
   variants: z.array(VariantSchema),
   locations: z.array(z.string()),
   variantOptions: z.array(VariantOptionSchema),
+  variantImages: z.array(z.string()),
   media: z.array(
     z.object({
       url: z.string(),

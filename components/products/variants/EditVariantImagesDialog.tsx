@@ -14,7 +14,7 @@ import ImageUploader from "@/components/ImageUploader";
 import Image from "next/image";
 import { PiImagesSquareThin } from "react-icons/pi";
 
-export default function EditVariantImagesDialog({ onSave, altText }: { altText: string, onSave: (imageUrls: string[]) => void }) {
+export default function EditVariantImagesDialog({ onSave, altText, text = "Update variant image", button = < DefaultButton /> }: { button?: React.ReactNode, text?: string, altText: string, onSave: (imageUrls: string[]) => void }) {
 
   const [images, setImages] = React.useState<string[]>([])
   const [open, setOpen] = React.useState(false);
@@ -22,13 +22,11 @@ export default function EditVariantImagesDialog({ onSave, altText }: { altText: 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <button onClick={() => { }} className="rounded-md overflow-hidden grid mt-4 mr-2 hover:bg-gray-100 transition-all hover:border-gray-500 hover:text-gray-800 text-gray-300 place-items-center bg-white border-2 border-gray-300 border-dashed h-12 w-12 min-w-[48px]" >
-          <PiImagesSquareThin size={20} />
-        </button>
+        {button}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Update variant image</DialogTitle>
+          <DialogTitle>{text}</DialogTitle>
         </DialogHeader>
 
         <div className=" flex flex-col px-4 gap-4 my-4">
@@ -42,7 +40,7 @@ export default function EditVariantImagesDialog({ onSave, altText }: { altText: 
             {
               images.map(url => (
                 <div key={url} className="h-full aspect-square bg-gray-100">
-                  <Image src={url} alt={"variant-image"} width={0} height={0} sizes="100vw" style={{ width: '100%', height: '100%' }} />
+                  <Image src={url} alt={altText} width={0} height={0} sizes="100vw" style={{ width: '100%', height: '100%' }} />
                 </div>
               ))
             }
@@ -60,4 +58,13 @@ export default function EditVariantImagesDialog({ onSave, altText }: { altText: 
       </DialogContent>
     </Dialog>
   );
+}
+
+function DefaultButton() {
+  return (
+
+    <button onClick={() => { }} className="rounded-md overflow-hidden grid mt-4 mr-2 hover:bg-gray-100 transition-all hover:border-gray-500 hover:text-gray-800 text-gray-300 place-items-center bg-white border-2 border-gray-300 border-dashed h-12 w-12 min-w-[48px]" >
+      <PiImagesSquareThin size={20} />
+    </button>
+  )
 }

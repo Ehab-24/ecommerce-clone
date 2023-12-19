@@ -242,7 +242,7 @@ function Pricing({
   return (
     <Card className="flex p-4 flex-col gap-4 items-stretch">
       <SectionTitle title="Pricing" />
-      <div className="flex gap-4 mt-4">
+      <div className="flex gap-4">
         <Input
           id="price"
           disabled={loading}
@@ -630,6 +630,7 @@ const defaultProduct: ApiProduct = {
   collection: "",
   variants: [],
   variantOptions: [],
+  variantImages: [],
   media: [],
   seo: {
     title: "",
