@@ -24,6 +24,7 @@ import React from "react";
 import OutlinedButton from "../buttons/OutlinedButton";
 import { Location } from "@/types/location";
 import VariantsCardEditPage from '@/components/products/variants/VariantsCardEditPage';
+import StatusText from "./StatusText";
 
 export default function EditProductForm({ initialProduct, locations }: { locations: Location[], initialProduct: Product }) {
 
@@ -119,12 +120,15 @@ export default function EditProductForm({ initialProduct, locations }: { locatio
 
   return (
     <>
-      <div className="flex-col max-w-4xl w-full flex gap-6 p-8 ">
-        <div className="flex gap-3 items-start ">
+      <div className="flex-col max-w-4xl w-full flex gap-4 md:p-8 ">
+        <div className="flex flex-col md:flex-row px-4 md:px-0 gap-3 mt-4 md:mt-0 items-start">
           <Link href="/products" className="p-2 rounded-md hover:bg-black/10 transition-all">
             <FaArrowLeft className="text-sm text-[#1a1a1a]" />
           </Link>
-          <Heading>{product.title}</Heading>
+          <div className="flex  items-center gap-2">
+            <Heading>{product.title}</Heading>
+            <StatusText status={product.status} />
+          </div>
         </div>
 
         <div className="w-full flex flex-col 2xl:flex-row justify-center gap-4">
@@ -178,7 +182,7 @@ export default function EditProductForm({ initialProduct, locations }: { locatio
               <Shipping product={product} setProduct={setProduct} />
             </Card>
 
-            <VariantsCardEditPage loading={loading} locations={locations} initialProduct={initialProduct} product={product} setProduct={setProduct} />
+            <VariantsCardEditPage loading={loading} productId={initialProduct._id} locations={locations} initialProduct={initialProduct} product={product} setProduct={setProduct} />
 
             <Card className="flex p-4 flex-col mb-4 items-stretch">
               <SectionTitle title="Search Engine Listing" />
@@ -216,7 +220,7 @@ export default function EditProductForm({ initialProduct, locations }: { locatio
         </div>
       </div>
 
-      <div className="w-full max-w-4xl flex gap-4 justify-end mb-8">
+      <div className="w-full max-w-4xl flex gap-4 justify-end mb-8 px-4 md:px-0">
         {
           product.status === "archived" ? (
             <OutlinedButton onClick={() => handleProductStatusChange("active")}>Unarchive Product</OutlinedButton>

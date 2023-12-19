@@ -36,7 +36,7 @@ export default async function CreateVariantPage({ params }: { params: { id: stri
 
                 <Taskbar title="Add Variant" />
 
-                <div className="flex gap-4 w-full">
+                <div className="flex flex-col md:flex-row gap-4 w-full">
                     <VariantsList product={product} />
                     <CreateVariantForm product={product} locations={locations} />
                 </div>
@@ -50,7 +50,7 @@ export function Taskbar({ title, product, vi }: { title: string, product?: Produ
     return (
 
         <div className="flex w-full justify-between">
-            <div className="flex gap-3 items-start ">
+            <div className="flex flex-col md:flex-row px-4 md:px-0 gap-3 items-start ">
                 <Link
                     href="/products"
                     className="p-2 rounded-md hover:bg-black/10 transition-all"
@@ -70,14 +70,14 @@ export function Taskbar({ title, product, vi }: { title: string, product?: Produ
 
                 {
                     vi !== undefined && (
-                        <>
+                        <div className=" hidden md:block">
                             <Link href={`/products/${product!._id}/variants/${vi - 1}`} aria-disabled={vi === 0} className={`${vi === 0 ? "pointer-events-none text-gray-400" : "hover:bg-gray-300 "} border border-gray-300 bg-gray-200 py-1 px-2 grid place-items-center rounded-tl-md rounded-bl-md transition-all`}>
                                 <IoIosArrowBack size={14} />
                             </Link>
                             <Link href={`/products/${product!._id}/variants/${vi + 1}`} aria-disabled={product!.variants.length === vi + 1} className={`${product!.variants.length === vi + 1 ? "pointer-events-none text-gray-400" : "hover:bg-gray-300 "} border-t border-b border-r border-gray-300 bg-gray-200 px-2 py-1 grid place-items-center rounded-tr-md rounded-br-md transition-all`}>
                                 <IoIosArrowForward size={14} />
                             </Link>
-                        </>
+                        </div>
                     )
                 }
             </div>
@@ -89,7 +89,7 @@ export function Taskbar({ title, product, vi }: { title: string, product?: Produ
 export function VariantsList({ product }: { product: Product }) {
     return (
 
-        <div className="max-w-[280px] w-full flex flex-col gap-4">
+        <div className="md:max-w-[280px] w-full flex flex-col gap-4">
 
             <Card className="p-4">
                 <div className="flex w-full gap-4">

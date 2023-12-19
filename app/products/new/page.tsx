@@ -14,9 +14,9 @@ export default async function NewProductPage() {
   const locations: Location[] = await res.json()
 
   return (
-    <div className=" w-full bg-gray-100 items-center flex flex-col">
-      <div className="flex-col max-w-4xl w-full flex gap-6 p-8 ">
-        <div className="flex gap-3 items-start ">
+    <div className=" w-full bg-gray-100 items-center mt-6 md:mt-0 flex flex-col">
+      <div className="flex-col max-w-4xl w-full flex gap-6 md:p-8 ">
+        <div className="flex flex-col md:flex-row gap-3 items-start  px-4 md:px-0">
           <Link
             href="/products"
             className="p-2 rounded-md hover:bg-black/10 transition-all"

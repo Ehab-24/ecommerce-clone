@@ -24,11 +24,11 @@ export default async function EditVariantPage({ params }: { params: { id: string
 
     return (
         <div className="flex justify-center w-full py-6 bg-gray-100 min-h-screen ">
-            <div className="max-w-4xl w-full flex gap-4 flex-col">
+            <div className="md:max-w-4xl w-full flex gap-4 flex-col">
 
                 <Taskbar title={variant.name} product={product} vi={vi} />
 
-                <div className="flex gap-4 w-full">
+                <div className="flex flex-col md:flex-row gap-4 w-full">
                     <VariantsList product={product} />
                     <EditVariantForm initialProduct={product} vi={vi} locations={locations} />
                 </div>

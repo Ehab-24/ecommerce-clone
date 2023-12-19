@@ -86,7 +86,7 @@ export default function Datatable({ products }: { products: Product[] }) {
                   -
                 </td>
                 <td className="px-6 py-4">
-                  {p.productCategory}
+                  {p.category}
                 </td>
                 <td className="px-6 py-4">
                   {p.vendor?.name}

@@ -218,7 +218,7 @@ export default function CreateProductForm({ locations }: { locations: Location[]
         </div>
       </div>
 
-      <div className="w-full max-w-4xl flex justify-end mb-8">
+      <div className="w-full max-w-4xl flex justify-end mb-8 px-4 md:px-0">
         {loading ? (
           <Spinner />
         ) : (

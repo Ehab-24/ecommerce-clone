@@ -125,7 +125,7 @@ export default function EditVariantForm({ initialProduct, vi, locations }: { loc
         loading ? (
           <Spinner />
         ) : (
-          <div className="flex gap-2 self-end">
+          <div className="flex gap-2 self-end px-4 md:px-0">
             <FilledButton bgClass="bg-red-500 hover:bg-red-700" onClick={handleDelete}>Delete variant</FilledButton>
             <FilledButton onClick={handleSave}>Save</FilledButton>
           </div>

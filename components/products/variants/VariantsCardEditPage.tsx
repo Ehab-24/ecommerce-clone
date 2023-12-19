@@ -17,6 +17,7 @@ import EditVariantImagesDialog from "./EditVariantImagesDialog";
 import Link from "next/link";
 import VariantOptionPopover from "./VariantOptionPopover";
 import AllLocationsPopover from "./AllLocationsPopover";
+import { RiDeleteBin6Line } from "react-icons/ri";
 
 export default function VariantsCardEditPage({
   locations,
@@ -24,7 +25,9 @@ export default function VariantsCardEditPage({
   product,
   initialProduct,
   setProduct,
+  productId
 }: {
+  productId: string,
   locations: Location[],
   loading: boolean;
   product: ApiProduct;
@@ -52,12 +55,12 @@ export default function VariantsCardEditPage({
         <SectionTitle title="Variants" />
       </div>
 
-      {product.variantOptions.map((variant, index) => (
+      {product.variantOptions.map((vo, index) => (
         <div
           key={index}
           className="flex px-4 flex-col border-b pb-4 border-gray-300"
         >
-          <EditVariant loading={loading} variantOption={variant} index={index} product={product} setProduct={setProduct} />
+          <EditVariant loading={loading} variantOption={vo} index={index} product={product} setProduct={setProduct} />
         </div>
       ))}
 
@@ -76,15 +79,24 @@ export default function VariantsCardEditPage({
       {
         product.variants.length > 0 && (
           <div className="w-full mt-4 flex px-4 pt-4 border-t border-gray-200 gap-2 flex-col">
-            <div className="flex gap-4 w-full">
-              <Text>Select</Text>
-              <TextButton onClick={() => setSelectedVariants(product.variants)}>All</TextButton>
-              <TextButton onClick={() => setSelectedVariants([])}>None</TextButton>
-              {
-                product.variantOptions.map(v => (
-                  <VariantOptionPopover key={v.name} option={v} variants={product.variants} selectedVariants={selectedVariants} setSelectedVariants={setSelectedVariants} />
-                ))
-              }
+            <div className="flex justify-between gap-4 w-full">
+              <div className="flex gap-4 w-full">
+                <Text>Select</Text>
+                <TextButton onClick={() => setSelectedVariants(product.variants)}>All</TextButton>
+                <TextButton onClick={() => setSelectedVariants([])}>None</TextButton>
+                {
+                  product.variantOptions.map(v => (
+                    <VariantOptionPopover key={v.name} option={v} variants={product.variants} selectedVariants={selectedVariants} setSelectedVariants={setSelectedVariants} />
+                  ))
+                }
+              </div>
+              <div className="w-max md:whitespace-nowrap">
+                <TextButton>
+                  <Link href={`/products/${productId}/variants/new`}>
+                    Add variant
+                  </Link>
+                </TextButton>
+              </div>
             </div>
             <div className="flex gap-4 ml-2 w-full">
               <Text>Available inventory at:</Text>
@@ -204,114 +216,133 @@ function EditVariant({ variantOption, index, product, setProduct, loading }: { i
   }
 
   return (
-    <div className="flex pt-4 gap-4 w-full items-start">
+    <>
+      <div className="flex pt-4 gap-4 w-full items-start">
 
-      <button disabled={true} className={`${edit ? "mt-7" : ""}`}>
-        <RxDragHandleDots2
-          className="text-sm text-[#1a1a1a]"
-          size={20}
-        />
-      </button>
+        <button disabled={true} className={`${edit ? "mt-7" : ""}`}>
+          <RxDragHandleDots2
+            className="text-sm text-[#1a1a1a]"
+            size={20}
+          />
+        </button>
 
-      {
-        edit ? (
-          <div className="flex-col w-full">
-            <Select
-              disabled={loading}
-              value={variantOption.name}
-              label="Option Name"
-              onChange={(e) => {
-                const newVariants = [...product.variantOptions];
-                newVariants[index].name = e.target.value as string;
-                setProduct({ ...product, variantOptions: newVariants });
-              }}
-              options={[
-                {
-                  value: "color",
-                  label: "Color",
-                  disabled: variantsInclude("color"),
-                },
-                {
-                  value: "size",
-                  label: "Size",
-                  disabled: variantsInclude("size"),
-                },
-                {
-                  value: "material",
-                  label: "Material",
-                  disabled: variantsInclude("material"),
-                },
-                {
-                  value: "style",
-                  label: "Style",
-                  disabled: variantsInclude("style"),
-                },
-              ]}
-            />
-
-            <div className="w-full mt-4">
-              <Input
-                id="variant-values"
+        {
+          edit ? (
+            <div className="flex-col w-full">
+              <Select
                 disabled={loading}
-                label="Option Values"
-                placeholder={getPlaceholder(variantOption.name)}
-                onKeyDown={(e) => {
-                  const value = e.currentTarget.value;
-                  if (e.key === "Enter" && value !== "") {
-                    const newVariants = [...product.variantOptions];
-                    newVariants[index].values = [
-                      ...newVariants[index].values,
-                      value,
-                    ];
-                    setProduct({ ...product, variantOptions: newVariants });
-                    e.currentTarget.value = "";
-                  }
+                value={variantOption.name}
+                label="Option Name"
+                onChange={(e) => {
+                  const newVariants = [...product.variantOptions];
+                  newVariants[index].name = e.target.value as string;
+                  setProduct({ ...product, variantOptions: newVariants });
                 }}
+                options={[
+                  {
+                    value: "color",
+                    label: "Color",
+                    disabled: variantsInclude("color"),
+                  },
+                  {
+                    value: "size",
+                    label: "Size",
+                    disabled: variantsInclude("size"),
+                  },
+                  {
+                    value: "material",
+                    label: "Material",
+                    disabled: variantsInclude("material"),
+                  },
+                  {
+                    value: "style",
+                    label: "Style",
+                    disabled: variantsInclude("style"),
+                  },
+                ]}
               />
-            </div>
 
-            <div className="w-full flex mt-4 gap-1">
-              {variantOption.values.map((v, i) => (
-                <div
-                  key={i}
-                  className="bg-slate-200 text-gray-900 px-2 py-1 rounded-md text-sm flex items-center gap-1"
-                >
-                  {v}
-                  <button
-                    disabled={loading}
-                    onClick={() => {
+              <div className="w-full mt-4">
+                <Input
+                  id="variant-values"
+                  disabled={loading}
+                  label="Option Values"
+                  placeholder={getPlaceholder(variantOption.name)}
+                  onKeyDown={(e) => {
+                    const value = e.currentTarget.value;
+                    if (e.key === "Enter" && value !== "") {
                       const newVariants = [...product.variantOptions];
-                      newVariants[index].values = newVariants[
-                        index
-                      ].values.filter((val) => val !== v);
+                      newVariants[index].values = [
+                        ...newVariants[index].values,
+                        value,
+                      ];
                       setProduct({ ...product, variantOptions: newVariants });
-                    }}
+                      e.currentTarget.value = "";
+                    }
+                  }}
+                />
+              </div>
+
+              <div className="w-full flex mt-4 gap-1">
+                {variantOption.values.map((v, i) => (
+                  <div
+                    key={i}
+                    className="bg-slate-200 text-gray-900 px-2 py-1 rounded-md text-sm flex items-center gap-1"
                   >
-                    <IoIosClose size={20} />
-                  </button>
+                    {v}
+                    <button
+                      disabled={loading}
+                      onClick={() => {
+                        const newVariants = [...product.variantOptions];
+                        newVariants[index].values = newVariants[
+                          index
+                        ].values.filter((val) => val !== v);
+                        setProduct({ ...product, variantOptions: newVariants });
+                      }}
+                    >
+                      <IoIosClose size={20} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+              {
+                edit && <div className="mt-4 w-min">
+                  <OutlinedButton onClick={() => setEdit(false)}>Done</OutlinedButton>
                 </div>
-              ))}
+              }
             </div>
-          </div>
 
-        ) : (
+          ) : (
 
-          <div className="flex flex-col w-full">
-            <Text className="text-gray-900 font-bold">{variantOption.name}</Text>
-            <div className="flex gap-4 mt-2 ml-2">
-              {variantOption.values.map(v => (
-                <Text key={v}>{v}</Text>
-              ))}
+            <div className="flex flex-col w-full">
+              <Text className="text-gray-900 font-bold">{variantOption.name}</Text>
+              <div className="flex gap-4 mt-2 ml-2">
+                {variantOption.values.map(v => (
+                  <Text key={v}>{v}</Text>
+                ))}
+              </div>
             </div>
-          </div>
 
-        )
-      }
+          )
+        }
 
-      <div className={`${edit ? "mt-[22px]" : ""}`}>
-        <OutlinedButton onClick={() => setEdit(!edit)}>{edit ? "Done" : "Edit"}</OutlinedButton>
+        <div>
+          {
+            edit ? (
+              <button
+                disabled={loading}
+                onClick={() => setProduct({ ...product, variantOptions: product.variantOptions.filter((v) => v !== product.variantOptions[index]) })}
+                className="p-2 rounded-md self-start mt-[22px] hover:bg-black/10 transition-all"
+              >
+                <RiDeleteBin6Line className="text-sm text-[#1a1a1a]" />
+              </button>
+            ) : (
+              <OutlinedButton onClick={() => setEdit(true)}>Edit</OutlinedButton>
+            )
+          }
+        </div>
       </div>
-    </div >
+    </>
   )
 }
 
