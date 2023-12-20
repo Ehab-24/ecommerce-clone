@@ -7,7 +7,6 @@ import {
 import { Customer } from "@/types/customer";
 
 import EditMarketing from "./modals/EditMarketing";
-import ManageAddress from "./modals/ManageAddress";
 import ManageTax from "./modals/ManageTax";
 import EditContact from "./modals/EditContact";
 

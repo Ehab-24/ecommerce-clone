@@ -1,53 +1,36 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Button, InlineStack, ActionList, Popover } from '@shopify/polaris';
-import { MobileHorizontalDotsMajor } from '@shopify/polaris-icons';
-import enTranslations from '@shopify/polaris/locales/en.json';
-import { AppProvider } from '@shopify/polaris';
+import { MobileHorizontalDotsMajor } from "@shopify/polaris-icons";
+
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import OutlinedButton from "../buttons/OutlinedButton";
+
+import PopoverButton from "../buttons/PopoverButton";
 
 export default function ExportImportButtons() {
-  const [popoverActive, setPopoverActive] = useState(false);
-
-  const exportAction = () => {
-    // Logic for Export action
-  };
-
-  const importAction = () => {
-    // Logic for Import action
-  };
-
-  const togglePopover = () => {
-    setPopoverActive(!popoverActive);
-  };
-
-  const closePopover = () => {
-    setPopoverActive(false);
-  };
-
   return (
-    <AppProvider i18n={enTranslations}>
-      <div className="hidden sm:block">
-        <InlineStack gap="100">
-          <Button onClick={exportAction}>Export</Button>
-          <Button onClick={importAction}>Import</Button>
-        </InlineStack>
+    <>
+      <div className="hidden sm:flex gap-2">
+        <OutlinedButton>Export</OutlinedButton>
+        <OutlinedButton>Import</OutlinedButton>
       </div>
 
-      <div className="sm:hidden">
-        <Popover
-          active={popoverActive}
-          activator={<Button icon={MobileHorizontalDotsMajor} onClick={togglePopover} />}
-          onClose={closePopover}
-        >
-          <ActionList
-            items={[
-              { content: 'Export', onAction: exportAction },
-              { content: 'Import', onAction: importAction },
-            ]}
-          />
-        </Popover>
-      </div>
-    </AppProvider>
+      <Popover>
+        <PopoverTrigger className="sm:hidden">
+          <MobileHorizontalDotsMajor className="w-7 bg-neutral-200 p-1.5 sm:hidden hover:bg-neutral-200 rounded-lg" />
+        </PopoverTrigger>
+
+        <PopoverContent className="w-[100%] p-1.5 rounded-xl">
+          <div className="flex flex-col p-0">
+            <PopoverButton>Export</PopoverButton>
+            <PopoverButton>Import</PopoverButton>
+          </div>
+        </PopoverContent>
+      </Popover>
+    </>
   );
 }

@@ -5,7 +5,7 @@ import EditVariantForm from "@/components/products/variants/EditVariantForm"
 import { Location } from "@/types/location"
 import { Taskbar, VariantsList } from "../new/page"
 
-export const runtime = "edge"
+// export const runtime = "edge"
 
 export default async function EditVariantPage({ params }: { params: { id: string, variant: string } }) {
 

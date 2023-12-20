@@ -8,7 +8,7 @@ import { Button } from './ui/button';
 import Image from 'next/image'
 import { set } from 'date-fns';
 
-const CardTopBar = ({ children,className }: { children: React.ReactNode , className:string}) => {
+const CardTopBar = ({ children,className }: { children?: React.ReactNode , className?:string}) => {
 
     const [searchclicked, setSearchClicked] = React.useState(true)
 

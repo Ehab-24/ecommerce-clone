@@ -87,12 +87,14 @@ const Datatable = ({
           </div>
 
           <div className="hidden sm:block bg-white">
-            {customersLocal.map((customer) => (
+            {customersLocal.map((customer, idx) => (
               <>
                 <Link
                   href={`customers/${customer._id}`}
                   key={customer._id}
-                  className="flex items-center gap-2 p-1.5 hover:bg-neutral-50"
+                  className={`flex items-center gap-2 p-1.5 ${
+                    idx === customersLocal.length - 1 ? "" : "border-b"
+                  } hover:bg-neutral-50`}
                 >
                   <div
                     onClick={(e) => {

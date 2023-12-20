@@ -33,7 +33,7 @@ const ManageAddress = ({ customer }: { customer: Customer }) => {
 
   return (
     <Dialog>
-      <DialogTrigger className="text-xs align-top border py-1 shadow-sm shadow-black/50 p-2 rounded-lg hover:bg-neutral-200 text-neutral-600">
+      <DialogTrigger className="text-xs text-left align-top border py-1 shadow-sm shadow-black/50 p-2 rounded-lg hover:bg-neutral-200 text-neutral-600">
         Add new address
       </DialogTrigger>
 

@@ -6,3 +6,24 @@
   position: fixed;
   top: 0;
 }
+
+::-webkit-scrollbar {
+  height: 5px;
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: white; /* Light gray Shopify background color */
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #c4c7cc; /* Shopify scrollbar color */
+  border-radius: 8px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #a0a4a8; /* Darker Shopify scrollbar color on hover */
+}

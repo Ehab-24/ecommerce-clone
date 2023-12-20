@@ -54,7 +54,7 @@ const Addresses = ({ customer }: { customer: Customer }) => {
 
   return (
     <Dialog>
-      <DialogTrigger className="text-xs align-top p-2 rounded-lg hover:bg-neutral-200 text-neutral-600">
+      <DialogTrigger className="text-xs text-left align-top p-2 rounded-lg hover:bg-neutral-200 text-neutral-600">
         Manage addresses
       </DialogTrigger>
 
