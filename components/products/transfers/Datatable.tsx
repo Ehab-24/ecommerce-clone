@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation"
 import { Transfer } from "@/types/transfer"
 import CardTopBar from "@/components/CardTopBar"
 import { Link } from "lucide-react"
+import CardBarButton from "@/components/CardBarButton"
 
 export default function Datatable({ transfers }: { transfers: Transfer[] }) {
 
@@ -20,10 +21,10 @@ export default function Datatable({ transfers }: { transfers: Transfer[] }) {
 
         {transfers.length > 0 && (<>
           <CardTopBar className="bg-white" >
-            <button className="w-auto h-7 py-1 px-3  rounded-md text-xs font-semibold text-gray-900 hover:bg-gray-200 transition">Draft</button>
-            <button className="w-auto h-7 py-1 px-3  rounded-md text-xs font-semibold text-gray-900 hover:bg-gray-200 transition">Pending</button>
-            <button className="w-auto h-7 py-1 px-3  rounded-md text-xs font-semibold text-gray-900 hover:bg-gray-200 transition">Partial</button>
-            <button className="w-auto h-7 py-1 px-3  rounded-md text-xs font-semibold text-gray-900 hover:bg-gray-200 transition">Received</button>
+            <CardBarButton className="">Draft</CardBarButton>
+            <CardBarButton className="">Pending</CardBarButton>
+            <CardBarButton className="">Partial</CardBarButton>
+            <CardBarButton className="">Received</CardBarButton>
           </CardTopBar>
           <div className="hidden sm:flex gap-2 p-1.5 border-b text-neutral-600 items-center font-medium">
             <div className="flex-none pl-2">
@@ -67,12 +68,12 @@ export default function Datatable({ transfers }: { transfers: Transfer[] }) {
 
             <div className="sm:hidden flex flex-col border-t gap-1 bg-white text-neutral-600 p-4 font-medium cursor-pointer" key={i} onClick={() => router.push(`/products/transfers/${t._id}`)}>
               <div className="flex justify-between items-center">
-                <div className="text-md font-medium text-neutral-700">{t.referenceNumber}</div>
-                <div className="text-md font-medium text-neutral-700"><StatusText status={t.status} /></div>
+                <div className="text-lg font-medium text-neutral-900">{t.referenceNumber}</div>
+                <div className="text-sm font-medium text-neutral-600"><StatusText status={t.status} /></div>
               </div>
               <div className="flex justify-between items-center">
                 <div className="text-sm font-medium text-neutral-700">{t.destination.name}</div>
-                <div className="text-sm font-medium text-neutral-700">{t.origin.name}</div>
+                <div className="text-sm font-medium text-neutral-700">1 of 1</div>
               </div>
             </div>
           ))}

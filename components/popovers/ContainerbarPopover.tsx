@@ -12,7 +12,7 @@ export function SortPopover() {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <button className="py-1 px-2 border rounded-md shadow-sm shadow-neutral-200">
+        <button className="w-10 py-1 px-2 border rounded-md shadow-sm shadow-neutral-200">
           <Image
             src="/BothArrows.svg"
             alt="Plus button Image"
