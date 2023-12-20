@@ -108,16 +108,16 @@ const NewCustomer = () => {
   };
 
   return (
-    <div className="min-h-screen p-5 md:w-[100%] lg:px-[20%]">
+    <div className="min-h-screen p-0 mb-5 sm:p-5 md:w-[100%] lg:px-[20%]">
       <div className="flex flex-col gap-4">
-        <div className="flex items-center gap-2 mb-2">
+        <div className="flex items-center gap-2 mb-2 p-5 pb-0 sm:p-0">
           <Link href="/customers">
             <FaArrowLeft className="text-sm text-neutral-800" />
           </Link>
           <Heading className="!pb-1">New Customer</Heading>
         </div>
 
-        <Title>Customer Overview</Title>
+        <Title className="pl-2 sm:pl-0">Customer Overview</Title>
         <Card className="flex flex-col p-5 gap-4">
           <div className="flex gap-4 flex-col sm:flex-row">
             <Input
@@ -198,8 +198,8 @@ const NewCustomer = () => {
         </Card>
 
         <div className="py-4">
-          <Title>Address</Title>
-          <p className="text-sm text-neutral-600">
+          <Title className="pl-2 sm:pl-0">Address</Title>
+          <p className="text-sm text-neutral-600 pl-2 sm:pl-0">
             The primary address of this customer
           </p>
         </div>
@@ -299,7 +299,7 @@ const NewCustomer = () => {
         </Card>
 
         <div className="py-4">
-          <Title>Tax Exemptions</Title>
+          <Title className="pl-2 sm:pl-0">Tax Exemptions</Title>
         </div>
         <Card className="p-5">
           <Checkbox
@@ -313,8 +313,8 @@ const NewCustomer = () => {
         </Card>
 
         <div className="py-4">
-          <Title>Notes</Title>
-          <p className="text-sm text-neutral-600">
+          <Title className="pl-2 sm:pl-0">Notes</Title>
+          <p className="text-sm text-neutral-600 pl-2 sm:pl-0">
             Tags can be used to categorize customers into groups.
           </p>
         </div>
@@ -331,8 +331,8 @@ const NewCustomer = () => {
         </Card>
 
         <div className="py-4">
-          <Title>Tags</Title>
-          <p className="text-sm text-neutral-600">
+          <Title className="pl-2 sm:pl-0">Tags</Title>
+          <p className="text-sm text-neutral-600 pl-2 sm:pl-0">
             Tags can be used to categorize customers into groups.
           </p>
         </div>
