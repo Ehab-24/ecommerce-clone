@@ -32,8 +32,6 @@ export async function GET(request: NextRequest) {
         const page = Number(searchParams.get('page') || 0)
         const q = searchParams.get('q')
 
-        console.log(fields)
-
         const pipeline: any = [
             {
                 $skip: limit * page

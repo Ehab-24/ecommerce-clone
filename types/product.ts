@@ -23,7 +23,7 @@ const VariantSchema = z.object({
   hasSku: z.boolean().optional(),
   barcode: z.string().optional(),
   hsCode: z.string().optional(),
-  image: z.string().optional(),
+  image: z.string().nullable().optional(),
   trackQuantity: z.boolean(),
   continueSellingWhenOutOfStock: z.boolean(),
 })
@@ -52,7 +52,7 @@ const ApiProductSchema = z.object({
   status: z.enum(["active", "draft", "archived"]),
   category: z.string().optional(),
   type: z.string().optional(),
-  vendor: z.string(),
+  vendor: z.string().optional(),
   collection: z.string(),
   tags: z.array(z.string().min(1)),
   variants: z.array(VariantSchema),
