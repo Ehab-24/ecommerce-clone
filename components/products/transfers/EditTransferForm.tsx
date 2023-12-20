@@ -3,7 +3,6 @@
 
 import React from "react"
 import Link from "next/link"
-import { FaArrowLeft } from "react-icons/fa"
 import Card from "@/components/Card"
 import SectionTitle from "@/components/SectionTitle"
 import DatePicker from "@/components/DatePicker"
@@ -14,7 +13,7 @@ import StatusText from "@/components/products/StatusText"
 import FilledButtonSmall from "@/components/buttons/FilledButtonSmall"
 import { ApiTransfer, ApiTransferSchema, Transfer } from "@/types/transfer"
 import Input from "@/components/Input"
-import { IoIosClose, IoIosSearch } from "react-icons/io"
+import { IoIosArrowRoundBack, IoIosClose, IoIosSearch } from "react-icons/io"
 import Spinner from "@/components/Spinner"
 import FilledButton from "@/components/buttons/FilledButton"
 import axios from "axios"
@@ -68,7 +67,7 @@ export default function EditTransferForm({ locations, initialTransfer }: { locat
 
         <div className="flex gap-4 items-start">
           <Link href="/products/transfers" className="p-2 rounded-md hover:bg-black/10 transition-all">
-            <FaArrowLeft className="text-sm text-[#1a1a1a]" />
+            <IoIosArrowRoundBack className="text-sm text-[#1a1a1a]" />
           </Link>
           <h1 className="text-xl font-bold text-neutral-800 flex gap-2 items-center">
             #{transfer.referenceNumber}

@@ -1,4 +1,4 @@
-import { FaArrowLeft } from "react-icons/fa";
+import { IoIosArrowRoundBack } from "react-icons/io";
 import Link from "next/link";
 import Heading from "@/components/Heading";
 import CreateProductForm from "@/components/products/CreateProductForm";
@@ -19,9 +19,9 @@ export default async function NewProductPage() {
         <div className="flex flex-col md:flex-row gap-3 items-start  px-4 md:px-0">
           <Link
             href="/products"
-            className="p-2 rounded-md hover:bg-black/10 transition-all"
+            className="p-0.5 rounded-md hover:bg-black/10 transition-all"
           >
-            <FaArrowLeft className="text-sm text-[#1a1a1a]" />
+            <IoIosArrowRoundBack size={24} className="text-black" />
           </Link>
           <Heading>Add Product</Heading>
         </div>

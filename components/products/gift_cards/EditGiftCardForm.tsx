@@ -2,8 +2,7 @@
 
 import React from "react";
 import Link from "next/link"
-import { FaArrowLeft } from "react-icons/fa"
-import { IoIosSearch } from "react-icons/io";
+import { IoIosArrowRoundBack, IoIosSearch } from "react-icons/io";
 import { CiEdit } from "react-icons/ci";
 import StatusText from "@/components/products/StatusText"
 import Card from "@/components/Card"
@@ -52,7 +51,7 @@ export default function EditGiftCardForm({ initialGiftCard }: { initialGiftCard:
     <div className="flex px-4 my-8 flex-col gap-6 w-full max-w-4xl">
       <div className="flex gap-3 items-center ">
         <Link href="/products/gift_cards" className="p-2 rounded-md hover:bg-black/10 transition-all">
-          <FaArrowLeft className="text-sm text-[#1a1a1a]" />
+          <IoIosArrowRoundBack className="text-sm text-[#1a1a1a]" />
         </Link>
         <h1 className="text-xl font-bold text-neutral-800 flex gap-2 items-center">
           {card.code.substring(card.code.length - 4)}

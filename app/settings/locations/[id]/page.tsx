@@ -3,7 +3,6 @@
 import Card from "@/components/Card"
 import SectionTitle from "@/components/SectionTitle"
 import Link from "next/link"
-import { FaArrowLeft } from "react-icons/fa"
 import Text from "@/components/Text"
 import Input from "@/components/Input"
 import Select from "@/components/Select"
@@ -14,6 +13,7 @@ import FilledButton from "@/components/buttons/FilledButtonSmall"
 import { ApiLocation } from "@/types/location"
 import { useState } from "react"
 import Heading from "@/components/Heading"
+import { IoIosArrowRoundBack } from "react-icons/io"
 
 export default function CreateLocationPage() {
 
@@ -46,7 +46,7 @@ export default function CreateLocationPage() {
             href="/settings/locations"
             className="p-2 rounded-md hover:bg-black/10 transition-all"
           >
-            <FaArrowLeft className="text-sm text-[#1a1a1a]" />
+            <IoIosArrowRoundBack className="text-sm text-[#1a1a1a]" />
           </Link>
 
           <div className="flex gap-4 items-center">

@@ -9,11 +9,10 @@ import {
 import SupplierDialog from "@/components/products/purchase_orders/SupplierDialog"
 import { Supplier } from "@/types/supplier";
 import Input from "@/components/Input";
-import { IoIosClose, IoIosSearch } from "react-icons/io";
+import { IoIosArrowRoundBack, IoIosClose, IoIosSearch } from "react-icons/io";
 import Text from "@/components/Text";
 import React from "react";
 import Link from "next/link";
-import { FaArrowLeft } from "react-icons/fa";
 import Card from "@/components/Card";
 import SectionTitle from "@/components/SectionTitle";
 import Select from "@/components/Select";
@@ -48,7 +47,7 @@ export default function EditPurchaseOrderForm({ initialOrder, currencies }: { cu
       <div className="flex justify-between items-center ">
         <div className="flex gap-4 items-center">
           <Link href="/products/purchase_orders" className="p-2 rounded-md hover:bg-black/10 transition-all">
-            <FaArrowLeft className="text-sm text-[#1a1a1a]" />
+            <IoIosArrowRoundBack className="text-sm text-[#1a1a1a]" />
           </Link>
           <h1 className="text-xl font-bold text-neutral-800 flex gap-2 items-center">
             #{purchaseOrder.referenceNumber}

@@ -1,6 +1,6 @@
 import Link from "next/link"
-import { FaArrowLeft } from "react-icons/fa"
 import CreateLocationForm from "@/components/settings/locations/CreateLocationForm"
+import { IoIosArrowRoundBack } from "react-icons/io"
 
 export default function CreateLocationPage() {
 
@@ -14,7 +14,7 @@ export default function CreateLocationPage() {
             href="/settings/locations"
             className="p-2 rounded-md hover:bg-black/10 transition-all"
           >
-            <FaArrowLeft className="text-sm text-[#1a1a1a]" />
+            <IoIosArrowRoundBack className="text-sm text-[#1a1a1a]" />
           </Link>
           <h1 className="text-xl font-bold text-[#1a1a1a]">
             Add location

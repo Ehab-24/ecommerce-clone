@@ -12,8 +12,7 @@ import Input from "@/components/Input";
 import Select from "@/components/Select";
 import TextArea from "@/components/TextArea";
 import FilledButton from "@/components/buttons/FilledButton";
-import { IoIosClose } from "react-icons/io";
-import { FaArrowLeft } from "react-icons/fa";
+import { IoIosArrowRoundBack, IoIosClose } from "react-icons/io";
 import SectionTitle from "@/components/SectionTitle";
 import countries from "@/data/countries";
 import Heading from "@/components/Heading";
@@ -25,6 +24,8 @@ import OutlinedButton from "../buttons/OutlinedButton";
 import { Location } from "@/types/location";
 import VariantsCardEditPage from '@/components/products/variants/VariantsCardEditPage';
 import StatusText from "./StatusText";
+import Text from "@/components/Text";
+import TextButton from "../buttons/TextButton";
 
 export default function EditProductForm({ initialProduct, locations }: { locations: Location[], initialProduct: Product }) {
 
@@ -122,8 +123,10 @@ export default function EditProductForm({ initialProduct, locations }: { locatio
     <>
       <div className="flex-col max-w-4xl w-full flex gap-4 md:p-8 ">
         <div className="flex flex-col md:flex-row px-4 md:px-0 gap-3 mt-4 md:mt-0 items-start">
-          <Link href="/products" className="p-2 rounded-md hover:bg-black/10 transition-all">
-            <FaArrowLeft className="text-sm text-[#1a1a1a]" />
+          <Link href="/products"
+            className="p-0.5 rounded-md hover:bg-black/10 transition-all"
+          >
+            <IoIosArrowRoundBack size={24} className="text-black" />
           </Link>
           <div className="flex  items-center gap-2">
             <Heading>{product.title}</Heading>
@@ -132,7 +135,7 @@ export default function EditProductForm({ initialProduct, locations }: { locatio
         </div>
 
         <div className="w-full flex flex-col 2xl:flex-row justify-center gap-4">
-          <div className=" flex flex-col w-full self-center gap-4 mb-8">
+          <div className=" flex flex-col w-full self-center gap-4 ">
             <Card className="flex p-4 flex-col gap-4 items-stretch">
               <Input
                 id="title"
@@ -184,13 +187,7 @@ export default function EditProductForm({ initialProduct, locations }: { locatio
 
             <VariantsCardEditPage loading={loading} productId={initialProduct._id} locations={locations} initialProduct={initialProduct} product={product} setProduct={setProduct} />
 
-            <Card className="flex p-4 flex-col mb-4 items-stretch">
-              <SectionTitle title="Search Engine Listing" />
-              <p className=" text-xs text-gray-900 mb-8">Add a title and description to see how this collection might appear in a search engine listing</p>
-              <Input id="seo-title" onChange={e => setProduct({ ...product, seo: { ...product.seo, title: e.target.value } })} label="SEO Title" placeholder="" />
-              <div className="h-4" />
-              <TextArea label="SEO Description" onChange={e => setProduct({ ...product, seo: { ...product.seo, description: e.target.value } })} />
-            </Card>
+            <SearchEngineListings product={product} setProduct={setProduct} />
           </div>
 
           <div className="flex w-full 2xl:max-w-[280px] flex-col gap-4">
@@ -220,7 +217,7 @@ export default function EditProductForm({ initialProduct, locations }: { locatio
         </div>
       </div>
 
-      <div className="w-full max-w-4xl flex gap-4 justify-end mb-8 px-4 md:px-0">
+      <div className="w-full max-w-4xl flex gap-4 justify-end mb-8 mt-8 md:mt-0 px-4 md:px-0">
         {
           product.status === "archived" ? (
             <OutlinedButton onClick={() => handleProductStatusChange("active")}>Unarchive Product</OutlinedButton>
@@ -244,7 +241,7 @@ function Pricing({
   setProduct,
 }: {
   product: ApiProduct;
-  setProduct: React.Dispatch<React.SetStateAction<any>>;
+  setProduct: React.Dispatch<React.SetStateAction<ApiProduct>>;
 }) {
   return (
     <>
@@ -321,7 +318,7 @@ function Inventory({
   setProduct,
 }: {
   product: ApiProduct;
-  setProduct: React.Dispatch<React.SetStateAction<any>>;
+  setProduct: React.Dispatch<React.SetStateAction<ApiProduct>>;
 }) {
   return (
     <>
@@ -402,7 +399,7 @@ function Shipping({
   setProduct,
 }: {
   product: ApiProduct;
-  setProduct: React.Dispatch<React.SetStateAction<any>>;
+  setProduct: React.Dispatch<React.SetStateAction<ApiProduct>>;
 }) {
   return (
     <>
@@ -443,7 +440,7 @@ function Shipping({
                   { value: "oz", label: "oz" },
                 ]}
                 onChange={(e) =>
-                  setProduct({ ...product, weightUnit: e.target.value })
+                  setProduct({ ...product, weightUnit: e.target.value as "kg" | "g" | "lb" | "oz" })
                 }
               />
             </div>
@@ -471,7 +468,7 @@ function ProductOrganization({
   setProduct,
 }: {
   product: ApiProduct;
-  setProduct: React.Dispatch<React.SetStateAction<any>>;
+  setProduct: React.Dispatch<React.SetStateAction<ApiProduct>>;
 }) {
   return (
     <>
@@ -506,12 +503,10 @@ function ProductOrganization({
         value={product.collection}
         label="Collections"
         placeholder=""
-        onChange={(e) =>
-          setProduct({ ...product, collections: e.target.value })
-        }
+        onChange={(e) => {/*TODO */ }}
       />
 
-      <Input
+      < Input
         id="tags"
         label="Tags"
         placeholder=""
@@ -547,3 +542,39 @@ function ProductOrganization({
   );
 }
 
+
+function SearchEngineListings({ product, setProduct }: { product: ApiProduct, setProduct: React.Dispatch<React.SetStateAction<ApiProduct>> }) {
+
+  const [edit, setEdit] = React.useState(false)
+
+  return (
+    <Card className="flex p-4 flex-col mb-4 items-stretch">
+      {
+        edit ? (
+
+          <>
+            <SectionTitle title="Search Engine Listing" />
+            <p className=" text-xs text-gray-900 mb-8">Add a title and description to see how this collection might appear in a search engine listing</p>
+            <Input id="seo-title" value={product.seo.title} onChange={e => setProduct({ ...product, seo: { ...product.seo, title: e.target.value } })} label="SEO Title" />
+            <div className="h-4" />
+            <TextArea label="SEO Description" value={product.seo.description} onChange={e => setProduct({ ...product, seo: { ...product.seo, description: e.target.value } })} />
+          </>
+
+        ) : (
+
+          <>
+            <div className="flex w-full justify-between">
+              <SectionTitle title="Search Engine Listing" />
+              <TextButton onClick={() => setEdit(true)}>
+                Edit
+              </TextButton>
+            </div>
+            <Text className="text-gray-800 text-xl md:text-xl">{product.seo.title || product.title}</Text>
+            <Text>{product.seo.description || product.description}</Text>
+          </>
+
+        )
+      }
+    </Card>
+  )
+}

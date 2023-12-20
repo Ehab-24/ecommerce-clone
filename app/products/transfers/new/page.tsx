@@ -1,9 +1,9 @@
 import React from "react";
 import Link from "next/link";
-import { FaArrowLeft } from "react-icons/fa";
 import CreateTransferForm from "@/components/products/transfers/CreateTransferForm";
 import { apiUrl } from "@/lib/utils";
 import { Location } from "@/types/location";
+import { IoIosArrowRoundBack } from "react-icons/io";
 
 export const runtime = "edge";
 
@@ -22,7 +22,7 @@ export default async function CreateTransferPage() {
             href="/products/transfers"
             className="p-2 rounded-md hover:bg-black/10 transition-all"
           >
-            <FaArrowLeft className="text-sm text-[#1a1a1a]" />
+            <IoIosArrowRoundBack className="text-sm text-[#1a1a1a]" />
           </Link>
           <h1 className="text-xl font-bold text-[#1a1a1a]">Create Transfer</h1>
         </div>

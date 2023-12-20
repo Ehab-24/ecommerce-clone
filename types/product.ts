@@ -66,7 +66,7 @@ const ApiProductSchema = z.object({
     })
   ),
   seo: z.object({
-    title: z.string(),
+    title: z.string().max(70, "SEO title must be less than 70 characters"),
     description: z.string(),
   }),
   createdAt: z.optional(z.union([z.string(), z.date()])),

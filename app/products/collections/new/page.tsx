@@ -1,8 +1,8 @@
 import React from "react";
 import Link from "next/link";
-import { FaArrowLeft } from "react-icons/fa";
 import Heading from "@/components/Heading";
 import CreateCollectionForm from "@/components/products/collections/CreateCollectionForm";
+import { IoIosArrowRoundBack } from "react-icons/io";
 
 export default function NewCollectionPage() {
   return (
@@ -13,7 +13,7 @@ export default function NewCollectionPage() {
             href="/products"
             className="p-2 rounded-md hover:bg-black/10 transition-all"
           >
-            <FaArrowLeft className="text-sm text-[#1a1a1a]" />
+            <IoIosArrowRoundBack className="text-sm text-[#1a1a1a]" />
           </Link>
           <Heading>Create collection</Heading>
         </div>

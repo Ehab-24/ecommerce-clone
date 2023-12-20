@@ -6,14 +6,13 @@ import { apiUrl } from "@/lib/utils"
 import { Product } from "@/types/product"
 import Link from "next/link"
 import React from "react"
-import { FaArrowLeft } from "react-icons/fa"
 import Text from "@/components/Text"
 import Image from "next/image"
 import SectionTitle from "@/components/SectionTitle"
 import { PiImageThin } from "react-icons/pi";
 import CreateVariantForm from "@/components/products/variants/CreateVariantForm"
 import { Location } from "@/types/location"
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io"
+import { IoIosArrowBack, IoIosArrowForward, IoIosArrowRoundBack } from "react-icons/io"
 
 export const runtime = "edge"
 
@@ -55,12 +54,12 @@ export function Taskbar({ title, product, vi }: { title: string, product?: Produ
                     href="/products"
                     className="p-2 rounded-md hover:bg-black/10 transition-all"
                 >
-                    <FaArrowLeft className="text-sm text-[#1a1a1a]" />
+                    <IoIosArrowRoundBack className="text-sm text-[#1a1a1a]" />
                 </Link>
                 <Heading>{title}</Heading>
             </div>
 
-            <div className="flex items-center">
+            <div className="flex w-max items-center">
 
                 <OutlinedButton>
                     Duplicate
@@ -70,7 +69,7 @@ export function Taskbar({ title, product, vi }: { title: string, product?: Produ
 
                 {
                     vi !== undefined && (
-                        <div className=" hidden md:block">
+                        <div className=" hidden  md:flex">
                             <Link href={`/products/${product!._id}/variants/${vi - 1}`} aria-disabled={vi === 0} className={`${vi === 0 ? "pointer-events-none text-gray-400" : "hover:bg-gray-300 "} border border-gray-300 bg-gray-200 py-1 px-2 grid place-items-center rounded-tl-md rounded-bl-md transition-all`}>
                                 <IoIosArrowBack size={14} />
                             </Link>

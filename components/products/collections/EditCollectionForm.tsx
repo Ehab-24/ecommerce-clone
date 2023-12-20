@@ -1,8 +1,7 @@
 'use client'
 
-import { IoIosClose } from "react-icons/io";
+import { IoIosArrowRoundBack, IoIosClose } from "react-icons/io";
 import Link from "next/link"
-import { FaArrowLeft } from "react-icons/fa"
 import Heading from "@/components/Heading"
 import Card from "@/components/Card"
 import Input from "@/components/Input"
@@ -65,7 +64,7 @@ export default function CreateCollectionForm({ initialCollection }: { initialCol
     <div className="flex-col max-w-4xl w-full flex gap-6 p-8 ">
       <div className="flex gap-3 items-center ">
         <Link href="/products/collections" className="p-2 rounded-md hover:bg-black/10 transition-all">
-          <FaArrowLeft className="text-sm text-[#1a1a1a]" />
+          <IoIosArrowRoundBack className="text-sm text-[#1a1a1a]" />
         </Link>
         <Heading>{collection.title}</Heading>
       </div>

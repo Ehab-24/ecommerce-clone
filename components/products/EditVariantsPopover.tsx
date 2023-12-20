@@ -88,23 +88,23 @@ export default function EditVariantsPopover({ product, variant = "default", loca
   )
 }
 
-function isInViewport(element: HTMLElement) {
-  const rect = element.getBoundingClientRect();
-  return (
-    rect.top >= 0 &&
-    rect.left >= 0 &&
-    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-  );
-}
-
-window.addEventListener('scroll', function() {
-  const el = document.getElementById('edit-variants-action-button');
-  if (!el) return;
-  const isVisibile = isInViewport(el);
-
-  const isAbove = el.getBoundingClientRect().top < 0;
-
-  console.log(isVisibile, isAbove)
-});
-
+// function isInViewport(element: HTMLElement) {
+//   const rect = element.getBoundingClientRect();
+//   return (
+//     rect.top >= 0 &&
+//     rect.left >= 0 &&
+//     rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+//     rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+//   );
+// }
+//
+// window.addEventListener('scroll', function() {
+//   const el = document.getElementById('edit-variants-action-button');
+//   if (!el) return;
+//   const isVisibile = isInViewport(el);
+//
+//   const isAbove = el.getBoundingClientRect().top < 0;
+//
+//   console.log(isVisibile, isAbove)
+// });
+//
