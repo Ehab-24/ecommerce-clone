@@ -23,7 +23,7 @@ import { Location } from "@/types/location";
 export default function EditVariantForm({ initialProduct, vi, locations }: { locations: Location[], initialProduct: Product, vi: number }) {
 
   const [loading, setLoading] = React.useState(false)
-  const [product, setProduct] = React.useState(initialProduct)
+  const [newImages, setNewImages] = React.useState<string[]>([])
   const [variant, setVariant] = React.useState(initialProduct.variants[vi])
   const router = useRouter()
 
@@ -37,13 +37,24 @@ export default function EditVariantForm({ initialProduct, vi, locations }: { loc
     try {
 
       VariantSchema.parse(variant)
-      const { status } = await axios.put(`/api/products/${product._id}/variants/${vi}`, variant)
-      if (status === 200) {
-        toast.success("Variant created")
-        router.push(`/products/${product._id}/variants/${product.variants.length}`)
-      } else {
-        toast.error("Failed to create variant")
+      const requests = [
+        axios.put(`/api/products/${initialProduct._id}/variants/${vi}`, variant),
+      ]
+      if (newImages.length > 0) {
+        requests.push(axios.post(`/api/products/${initialProduct._id}/variants/images`, { images: newImages }))
       }
+
+      const responses = await Promise.all(requests)
+      for (const response of responses) {
+        if (response.status !== 200) {
+          toast.error("Failed to create variant")
+          console.log(response)
+          return
+        }
+      }
+
+      toast.success("Variant created")
+      router.push(`/products/${initialProduct._id}/variants/${initialProduct.variants.length}`)
 
     }
     catch (error) {
@@ -63,10 +74,10 @@ export default function EditVariantForm({ initialProduct, vi, locations }: { loc
   async function handleDelete() {
     setLoading(true)
     try {
-      const { status } = await axios.delete(`/api/products/${product._id}/variants/${vi}`)
+      const { status } = await axios.delete(`/api/products/${initialProduct._id}/variants/${vi}`)
       if (status === 200) {
         toast.success("Variant deleted")
-        router.push(`/products/${product._id}`)
+        router.push(`/products/${initialProduct._id}`)
       } else {
         toast.error("Failed to delete variant")
       }
@@ -89,19 +100,25 @@ export default function EditVariantForm({ initialProduct, vi, locations }: { loc
       <Card className="p-4 flex flex-col gap-4">
         <SectionTitle title="Options" />
         {
-          product.variantOptions.map(vo => (
-            <Input key={vo.name} id={product.title + vo} label={capitalize(vo.name)} value={variant.values[vo.name]} />
+          initialProduct.variantOptions.map(vo => (
+            <Input key={vo.name} id={initialProduct.title + vo} label={capitalize(vo.name)} value={variant.values[vo.name]} />
           ))
         }
 
         {
           variant.image ? (
             <div className="flex flex-col gap-2">
-              <Image alt={product.title} src={variant.image} width={16} height={16} />
-              <EditVariantImagesDialog altText={product.title} onSave={() => { }} />
+              <Image alt={initialProduct.title} src={variant.image} width={16} height={16} />
+              <EditVariantImagesDialog altText={initialProduct.title} initialImages={initialProduct.variantImages} onSave={(selectedImage, _newImages) => {
+                setVariant({ ...variant, image: selectedImage })
+                setNewImages([...newImages, ..._newImages])
+              }} />
             </div>
           ) : (
-            <EditVariantImagesDialog altText={product.title} onSave={() => { }}
+            <EditVariantImagesDialog altText={initialProduct.title} initialImages={initialProduct.variantImages} onSave={(selectedImage, _newImages) => {
+              setVariant({ ...variant, image: selectedImage })
+              setNewImages([...newImages, ..._newImages])
+            }}
               text="Select variant image"
               button={
                 <div className="w-full flex gap-4 items-center justify-center border border-gray-400 border-dashed hover:border-gray-500 hover:bg-gray-50 transition-all h-40 rounded-md cursor-pointer">

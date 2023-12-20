@@ -34,6 +34,7 @@ export default function CerateVariantForm({ product, locations }: { product: Pro
   const router = useRouter()
   const [variant, setVariant] = React.useState(defaultVariant)
   const [loading, setLoading] = React.useState(false)
+  const [newImages, setNewImages] = React.useState<string[]>([])
 
   useEffect(() => {
     setVariant(v => ({ ...v, name: Object.values(v.values).join(" / ") }))
@@ -49,13 +50,22 @@ export default function CerateVariantForm({ product, locations }: { product: Pro
     try {
 
       VariantSchema.parse(variant)
-      const { status } = await axios.post(`/api/products/${product._id}/variants`, variant)
-      if (status === 200) {
-        toast.success("Variant created")
-        router.push(`/products/${product._id}/variants/${product.variants.length}`)
-      } else {
-        toast.error("Failed to create variant")
+      const requests = [
+        axios.post(`/api/products/${product._id}/variants`, variant),
+        axios.post(`/api/products/${product._id}/variants/images`, { images: newImages })
+      ]
+
+      const responses = await Promise.all(requests)
+      for (const response of responses) {
+        if (response.status !== 200) {
+          toast.error("Failed to create variant")
+          console.log(response)
+          return
+        }
       }
+
+      toast.success("Variant created")
+      router.push(`/products/${product._id}/variants/${product.variants.length}`)
 
     }
     catch (error) {
@@ -88,10 +98,16 @@ export default function CerateVariantForm({ product, locations }: { product: Pro
           variant.image ? (
             <div className="flex flex-col gap-2">
               <Image alt={product.title} src={variant.image} width={16} height={16} />
-              <EditVariantImagesDialog altText={product.title} onSave={() => { }} />
+              <EditVariantImagesDialog altText={product.title} initialImages={product.variantImages} onSave={(selectedImage, _newImages) => {
+                setVariant({ ...variant, image: selectedImage })
+                setNewImages([...newImages, ..._newImages])
+              }} />
             </div>
           ) : (
-            <EditVariantImagesDialog altText={product.title} onSave={() => { }}
+            <EditVariantImagesDialog altText={product.title} initialImages={product.variantImages} onSave={(selectedImage, _newImages) => {
+              setVariant({ ...variant, image: selectedImage })
+              setNewImages([...newImages, ..._newImages])
+            }}
               text="Select variant image"
               button={
                 <div className="w-full flex gap-4 items-center justify-center border border-gray-400 border-dashed hover:border-gray-500 hover:bg-gray-50 transition-all h-40 rounded-md cursor-pointer">

@@ -3,7 +3,8 @@ import { Product } from "@/types/product"
 import React from "react"
 import EditVariantForm from "@/components/products/variants/EditVariantForm"
 import { Location } from "@/types/location"
-import { Taskbar, VariantsList } from "../new/page"
+import { Taskbar } from "@/components/products/variants/Taskbar"
+import { VariantsList } from "@/components/products/variants/VariantsList"
 
 // export const runtime = "edge"
 

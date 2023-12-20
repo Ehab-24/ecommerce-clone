@@ -29,7 +29,7 @@ export default function EditVariantsPricesDialog({ initialVariants, onSave }: { 
           <DialogTitle>Edit prices</DialogTitle>
         </DialogHeader>
 
-        <div className="flex max-h-[70vh] overflow-y-scroll flex-col">
+        <div className="flex md:max-h-[70vh] overflow-y-scroll flex-col">
 
           <div className="flex gap-1 px-4 my-4 items-end w-full">
             <Input id="edit-all-prices" label="Apply a price to all variants" icon={<Text>$</Text>} placeholder="0.00" value={priceForAll} onChange={e => setPriceForAll(Number(e.target.value))} />

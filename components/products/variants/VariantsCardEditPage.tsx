@@ -6,7 +6,6 @@ import { ApiProduct, Product, Variant, VariantOption } from "@/types/product";
 import React from "react";
 import EditVariantsPopover from "../EditVariantsPopover";
 import Checkbox from "@/components/Checkbox";
-import Image from "next/image";
 import { RxDragHandleDots2 } from "react-icons/rx";
 import Select from "@/components/Select";
 import Input from "@/components/Input";
@@ -46,7 +45,6 @@ export default function VariantsCardEditPage({
     }
     return "color";
   }
-
 
   return (
     <Card className=" flex-col w-full py-4 flex">
@@ -128,46 +126,38 @@ export default function VariantsCardEditPage({
 
       {
         product.variants.length > 0 && (
-          product.variants.map((v, i) => {
-            console.log(v)
-            return (
-              <div key={v.name} className="flex h-20 border-t border-gray-200 w-full">
-                <div className="h-full grid place-items-center pl-4">
-                  <Checkbox id={v.name} checked={selectedVariants.includes(v)} onChange={e => {
-                    e.stopPropagation()
-                    if (e.target.checked) {
-                      setSelectedVariants([...selectedVariants, v])
-                    } else {
-                      setSelectedVariants(selectedVariants.filter(sv => sv !== v))
-                    }
-                  }} />
-                </div>
-
-                {
-                  v.image ? (
-                    <div className="rounded-md overflow-hidden mt-8 mr-2" >
-                      <Image src={v.image} alt={product.title} width={0} height={0} sizes="100vw" style={{ width: '100%', height: '100%' }} />
-                    </div>
-                  ) : (
-                    <EditVariantImagesDialog onSave={images => setProduct({ ...product, media: [...product.media, ...images.map(url => ({ url, type: "image" }))] })} altText={product.title} />
-                  )
-                }
-
-                <Link href={`/products/${initialProduct._id}/variants/${i}`} className="flex py-4 pr-4 pl-2 w-full hover:bg-gray-100 bg-white transition-all justify-between cursor-pointer">
-
-                  <div className="flex flex-col w-full items-start h-full justify-center">
-                    <Text className="font-bold text-gray-800">{v.name}</Text>
-                    <Text className="text-gray-800">{v.sku}</Text>
-                  </div>
-                  <div className="flex flex-col whitespace-nowrap items-end">
-                    <Text className="text-gray-800">$ {v.price}</Text>
-                    <Text className="text-gray-800">33 available at 2 locations</Text>
-                  </div>
-                </Link>
-
+          product.variants.map((v, i) => (
+            <div key={v.name} className="flex h-20 border-t border-gray-200 w-full">
+              <div className="h-full grid place-items-center pl-4">
+                <Checkbox id={v.name} checked={selectedVariants.includes(v)} onChange={e => {
+                  e.stopPropagation()
+                  if (e.target.checked) {
+                    setSelectedVariants([...selectedVariants, v])
+                  } else {
+                    setSelectedVariants(selectedVariants.filter(sv => sv !== v))
+                  }
+                }} />
               </div>
-            )
-          })
+
+              <EditVariantImagesDialog altText={product.title} image={v.image} initialImages={product.variantImages} onSave={(selectedImage, newImages) => {
+                console.log("select & new:", selectedImage, newImages)
+                setProduct({ ...product, variantImages: [...product.variantImages, ...newImages], variants: product.variants.map((variant, index) => index === i ? { ...variant, image: selectedImage } : variant) })
+              }} />
+
+              <Link href={`/products/${initialProduct._id}/variants/${i}`} className="flex py-4 pr-4 pl-2 w-full hover:bg-gray-100 bg-white transition-all justify-between cursor-pointer">
+
+                <div className="flex flex-col w-full items-start h-full justify-center">
+                  <Text className="font-bold text-gray-800">{v.name}</Text>
+                  <Text className="text-gray-800">{v.sku}</Text>
+                </div>
+                <div className="flex flex-col whitespace-nowrap items-end">
+                  <Text className="text-gray-800">$ {v.price}</Text>
+                  <Text className="text-gray-800">33 available at 2 locations</Text>
+                </div>
+              </Link>
+
+            </div>
+          ))
         )
       }
 

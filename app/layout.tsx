@@ -28,8 +28,8 @@ export default function RootLayout({
       >
         {
           <>
-              <Toaster />
-              <Dashboard>{children}</Dashboard>
+            <Toaster />
+            <Dashboard>{children}</Dashboard>
           </>
         }
       </body>

@@ -26,6 +26,7 @@ import VariantsCardEditPage from '@/components/products/variants/VariantsCardEdi
 import StatusText from "./StatusText";
 import Text from "@/components/Text";
 import TextButton from "../buttons/TextButton";
+import { ToastAction } from "@radix-ui/react-toast";
 
 export default function EditProductForm({ initialProduct, locations }: { locations: Location[], initialProduct: Product }) {
 
@@ -48,6 +49,7 @@ export default function EditProductForm({ initialProduct, locations }: { locatio
   }, [product?.price, product?.costPerItem]);
 
   async function handleSave() {
+    setLoading(true)
     try {
 
       ApiProductSchema.parse(product)
@@ -62,19 +64,18 @@ export default function EditProductForm({ initialProduct, locations }: { locatio
         toast.error((error as ZodError).errors[0].message);
       } else if (error instanceof AxiosError) {
         toast.error(error.message);
-        console.log(error)
       } else {
         toast.error("Something went wrong");
-        console.log(error)
       }
+      console.log(error)
 
+    } finally {
+      setLoading(false)
     }
   }
 
   async function handleDelete() {
-
     setLoading(true)
-
     try {
 
       const { status } = await axios.delete(`/api/products/${params.id}`)
