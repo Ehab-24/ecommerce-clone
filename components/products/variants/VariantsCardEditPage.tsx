@@ -17,6 +17,7 @@ import Link from "next/link";
 import VariantOptionPopover from "./VariantOptionPopover";
 import AllLocationsPopover from "./AllLocationsPopover";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import DraggableList from "./DraggableList";
 
 export default function VariantsCardEditPage({
   locations,
@@ -53,14 +54,7 @@ export default function VariantsCardEditPage({
         <SectionTitle title="Variants" />
       </div>
 
-      {product.variantOptions.map((vo, index) => (
-        <div
-          key={index}
-          className="flex px-4 flex-col border-b pb-4 border-gray-300"
-        >
-          <EditVariant loading={loading} variantOption={vo} index={index} product={product} setProduct={setProduct} />
-        </div>
-      ))}
+      <DraggableList product={product} setProduct={setProduct} loading={loading} />
 
       <div className="flex px-4 mt-4">
         <TextButton
@@ -127,7 +121,7 @@ export default function VariantsCardEditPage({
       {
         product.variants.length > 0 && (
           product.variants.map((v, i) => (
-            <div key={v.name} className="flex h-20 border-t border-gray-200 w-full">
+            <div key={v.name} className="flex h-20 hover:bg-gray-100 border-t border-gray-200 w-full transition-all">
               <div className="h-full grid place-items-center pl-4">
                 <Checkbox id={v.name} checked={selectedVariants.includes(v)} onChange={e => {
                   e.stopPropagation()
@@ -144,7 +138,7 @@ export default function VariantsCardEditPage({
                 setProduct({ ...product, variantImages: [...product.variantImages, ...newImages], variants: product.variants.map((variant, index) => index === i ? { ...variant, image: selectedImage } : variant) })
               }} />
 
-              <Link href={`/products/${initialProduct._id}/variants/${i}`} className="flex py-4 pr-4 pl-2 w-full hover:bg-gray-100 bg-white transition-all justify-between cursor-pointer">
+              <Link href={`/products/${initialProduct._id}/variants/${i}`} className="flex py-4 pr-4 pl-2 w-full transition-all justify-between cursor-pointer">
 
                 <div className="flex flex-col w-full items-start h-full justify-center">
                   <Text className="font-bold text-gray-800">{v.name}</Text>
@@ -181,158 +175,3 @@ export default function VariantsCardEditPage({
     </Card>
   );
 }
-
-function EditVariant({ variantOption, index, product, setProduct, loading }: { index: number, product: ApiProduct, setProduct: React.Dispatch<React.SetStateAction<ApiProduct>>, variantOption: VariantOption, loading: boolean }) {
-
-  const [edit, setEdit] = React.useState(false);
-
-  function variantsInclude(name: string): boolean {
-    return product.variantOptions.map((v) => v.name).includes(name);
-  }
-
-  function getPlaceholder(name: string): string {
-    switch (name) {
-      case "color":
-        return "Red, Blue, Green";
-      case "size":
-        return "Small, Medium, Large";
-      case "material":
-        return "Cotton, Polyester";
-      case "style":
-        return "Slim fit, Regular fit";
-      default:
-        return "";
-    }
-  }
-
-  return (
-    <>
-      <div className="flex pt-4 gap-4 w-full items-start">
-
-        <button disabled={true} className={`${edit ? "mt-7" : ""}`}>
-          <RxDragHandleDots2
-            className="text-sm text-[#1a1a1a]"
-            size={20}
-          />
-        </button>
-
-        {
-          edit ? (
-            <div className="flex-col w-full">
-              <Select
-                disabled={loading}
-                value={variantOption.name}
-                label="Option Name"
-                onChange={(e) => {
-                  const newVariants = [...product.variantOptions];
-                  newVariants[index].name = e.target.value as string;
-                  setProduct({ ...product, variantOptions: newVariants });
-                }}
-                options={[
-                  {
-                    value: "color",
-                    label: "Color",
-                    disabled: variantsInclude("color"),
-                  },
-                  {
-                    value: "size",
-                    label: "Size",
-                    disabled: variantsInclude("size"),
-                  },
-                  {
-                    value: "material",
-                    label: "Material",
-                    disabled: variantsInclude("material"),
-                  },
-                  {
-                    value: "style",
-                    label: "Style",
-                    disabled: variantsInclude("style"),
-                  },
-                ]}
-              />
-
-              <div className="w-full mt-4">
-                <Input
-                  id="variant-values"
-                  disabled={loading}
-                  label="Option Values"
-                  placeholder={getPlaceholder(variantOption.name)}
-                  onKeyDown={(e) => {
-                    const value = e.currentTarget.value;
-                    if (e.key === "Enter" && value !== "") {
-                      const newVariants = [...product.variantOptions];
-                      newVariants[index].values = [
-                        ...newVariants[index].values,
-                        value,
-                      ];
-                      setProduct({ ...product, variantOptions: newVariants });
-                      e.currentTarget.value = "";
-                    }
-                  }}
-                />
-              </div>
-
-              <div className="w-full flex mt-4 gap-1">
-                {variantOption.values.map((v, i) => (
-                  <div
-                    key={i}
-                    className="bg-slate-200 text-gray-900 px-2 py-1 rounded-md text-sm flex items-center gap-1"
-                  >
-                    {v}
-                    <button
-                      disabled={loading}
-                      onClick={() => {
-                        const newVariants = [...product.variantOptions];
-                        newVariants[index].values = newVariants[
-                          index
-                        ].values.filter((val) => val !== v);
-                        setProduct({ ...product, variantOptions: newVariants });
-                      }}
-                    >
-                      <IoIosClose size={20} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-              {
-                edit && <div className="mt-4 w-min">
-                  <OutlinedButton onClick={() => setEdit(false)}>Done</OutlinedButton>
-                </div>
-              }
-            </div>
-
-          ) : (
-
-            <div className="flex flex-col w-full">
-              <Text className="text-gray-900 font-bold">{variantOption.name}</Text>
-              <div className="flex gap-4 mt-2 ml-2">
-                {variantOption.values.map(v => (
-                  <Text key={v}>{v}</Text>
-                ))}
-              </div>
-            </div>
-
-          )
-        }
-
-        <div>
-          {
-            edit ? (
-              <button
-                disabled={loading}
-                onClick={() => setProduct({ ...product, variantOptions: product.variantOptions.filter((v) => v !== product.variantOptions[index]) })}
-                className="p-2 rounded-md self-start mt-[22px] hover:bg-black/10 transition-all"
-              >
-                <RiDeleteBin6Line className="text-sm text-[#1a1a1a]" />
-              </button>
-            ) : (
-              <OutlinedButton onClick={() => setEdit(true)}>Edit</OutlinedButton>
-            )
-          }
-        </div>
-      </div>
-    </>
-  )
-}
-

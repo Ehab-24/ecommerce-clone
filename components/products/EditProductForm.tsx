@@ -26,7 +26,6 @@ import VariantsCardEditPage from '@/components/products/variants/VariantsCardEdi
 import StatusText from "./StatusText";
 import Text from "@/components/Text";
 import TextButton from "../buttons/TextButton";
-import { ToastAction } from "@radix-ui/react-toast";
 
 export default function EditProductForm({ initialProduct, locations }: { locations: Location[], initialProduct: Product }) {
 

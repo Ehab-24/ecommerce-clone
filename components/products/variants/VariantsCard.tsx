@@ -15,6 +15,7 @@ import Checkbox from "@/components/Checkbox";
 import { Location } from "@/types/location";
 import AllLocationsPopover from "./AllLocationsPopover";
 import VariantOptionPopover from "./VariantOptionPopover";
+import DraggableList from "./DraggableList";
 
 export default function VariantsCard({
   loading,
@@ -67,108 +68,7 @@ export default function VariantsCard({
         <SectionTitle title="Variants" />
       </div>
 
-      {product.variantOptions.map((variant, index) => (
-        <div
-          key={index}
-          className="flex px-4 flex-col border-b pb-4 border-gray-300"
-        >
-          <div className="flex pt-4 gap-4 w-full items-start">
-            <button disabled={true}>
-              <RxDragHandleDots2
-                className="text-sm text-[#1a1a1a] mt-7"
-                size={20}
-              />
-            </button>
-
-            <div className="flex-col w-full">
-              <Select
-                disabled={loading}
-                value={variant.name}
-                label="Option Name"
-                onChange={(e) => {
-                  const newVariants = [...product.variantOptions];
-                  newVariants[index].name = e.target.value as string;
-                  setProduct({ ...product, variantOptions: newVariants });
-                }}
-                options={[
-                  {
-                    value: "color",
-                    label: "Color",
-                    disabled: variantsInclude("color"),
-                  },
-                  {
-                    value: "size",
-                    label: "Size",
-                    disabled: variantsInclude("size"),
-                  },
-                  {
-                    value: "material",
-                    label: "Material",
-                    disabled: variantsInclude("material"),
-                  },
-                  {
-                    value: "style",
-                    label: "Style",
-                    disabled: variantsInclude("style"),
-                  },
-                ]}
-              />
-
-              <div className="w-full mt-4">
-                <Input
-                  id="variant-values"
-                  disabled={loading}
-                  label="Option Values"
-                  placeholder={getPlaceholder(variant.name)}
-                  onKeyDown={(e) => {
-                    const value = e.currentTarget.value;
-                    if (e.key === "Enter" && value !== "") {
-                      const newVariants = [...product.variantOptions];
-                      newVariants[index].values = [
-                        ...newVariants[index].values,
-                        value,
-                      ];
-                      setProduct({ ...product, variantOptions: newVariants });
-                      e.currentTarget.value = "";
-                    }
-                  }}
-                />
-              </div>
-
-              <div className="w-full flex mt-4 gap-1">
-                {variant.values.map((v, i) => (
-                  <div
-                    key={i}
-                    className="bg-slate-200 text-gray-900 px-2 py-1 rounded-md text-sm flex items-center gap-1"
-                  >
-                    {v}
-                    <button
-                      disabled={loading}
-                      onClick={() => {
-                        const newVariants = [...product.variantOptions];
-                        newVariants[index].values = newVariants[
-                          index
-                        ].values.filter((val) => val !== v);
-                        setProduct({ ...product, variantOptions: newVariants });
-                      }}
-                    >
-                      <IoIosClose size={20} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <button
-              disabled={loading}
-              onClick={() => setProduct({ ...product, variantOptions: product.variantOptions.filter((v) => v !== variant) })}
-              className="p-2 rounded-md self-start mt-[22px] hover:bg-black/10 transition-all"
-            >
-              <RiDeleteBin6Line className="text-sm text-[#1a1a1a]" />
-            </button>
-          </div>
-        </div>
-      ))}
+      <DraggableList defaultEdit={true} product={product} setProduct={setProduct} loading={loading} />
 
       <div className="flex px-4 mt-4">
         <TextButton
@@ -226,7 +126,7 @@ export default function VariantsCard({
       {
         product.variants.length > 0 && (
           product.variants.map(v => (
-            <div key={v.name} className="flex h-full border-t border-gray-200 w-full">
+            <div key={v.name} className="flex h-full border-t hover:bg-gray-100 transition-all border-gray-200 w-full">
               <div className="h-full mt-6 grid place-items-center pl-4">
                 <Checkbox id={v.name} checked={selectedVariants.includes(v)} onChange={e => {
                   e.stopPropagation()
@@ -241,7 +141,7 @@ export default function VariantsCard({
               <EditVariantDialog initialVariant={v} onSave={v => {
                 setProduct({ ...product, variants: product.variants.map(pv => pv.name === v.name ? v : pv) })
               }} button={
-                <div className="flex p-4 w-full hover:bg-gray-100 bg-white transition-all justify-between cursor-pointer">
+                <div className="flex p-4 w-full justify-between cursor-pointer">
                   <div className="flex flex-col w-full items-start h-full justify-center">
                     <Text className="font-bold text-gray-800">{v.name}</Text>
                     <Text className="text-gray-800">{v.sku}</Text>
@@ -278,5 +178,3 @@ export default function VariantsCard({
     </Card>
   );
 }
-
-
