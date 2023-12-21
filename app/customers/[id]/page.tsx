@@ -60,9 +60,9 @@ const SingleCustomerPage = () => {
   };
 
   return (
-    <div className="min-h-screen sm:p-5 md:w-[100%] lg:px-[20%]">
+    <div className="min-h-screen p-5 md:w-[100%] lg:px-[20%]">
       <div className="flex flex-col gap-4">
-        <div className="flex gap-4 justify-between p-5 sm:p-0">
+        <div className="flex gap-4 justify-between">
           <div className="flex gap-4">
             <Link href="/customers">
               <FaArrowLeft className="text-xs mt-2.5 text-neutral-800" />
@@ -92,7 +92,6 @@ const SingleCustomerPage = () => {
         <Card className="p-5">
           <div className="flex flex-col gap-4 text-sm text-gray-500 font-medium">
             <div className="flex justify-between">
-              {" "}
               <Title className="!mb-0">Customer</Title>
               {customer && <CustomerOptionsPopover customer={customer} />}
             </div>

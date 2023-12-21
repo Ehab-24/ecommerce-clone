@@ -16,13 +16,13 @@ import Input from "@/components/Input";
 import Select from "@/components/Select";
 import countries from "@/data/countries";
 
-import { Customer } from "@/types/customer";
 import FilledButton from "@/components/buttons/FilledButton";
 import OutlinedButton from "@/components/buttons/OutlinedButton";
-import { Address } from "@/types/address";
+import { FaPencilAlt } from "react-icons/fa";
 
-const ManageAddress = () => {
-  const [address, setAddress] = useState<any>();
+const ManageAddress = ({ oldAddress }: { oldAddress?: any }) => {
+  console.log(oldAddress);
+  const [address, setAddress] = useState(oldAddress);
 
   const handleEditAddress = () => {
     console.log("Edit Address");
@@ -34,13 +34,13 @@ const ManageAddress = () => {
 
   return (
     <Dialog>
-      <DialogTrigger className="text-xs text-left align-top border py-1 shadow-sm shadow-black/50 p-2 rounded-lg hover:bg-neutral-200 text-neutral-600">
-        Add new address
+      <DialogTrigger>
+        <FaPencilAlt className="text-sm text-neutral-500" />
       </DialogTrigger>
 
       <DialogContent className="w-[100%]">
         <DialogHeader>
-          <DialogTitle>Add new address</DialogTitle>
+          <DialogTitle>Edit address</DialogTitle>
         </DialogHeader>
 
         <div className="flex flex-col gap-3 p-4">

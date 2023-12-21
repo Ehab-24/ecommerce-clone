@@ -108,16 +108,16 @@ const NewCustomer = () => {
   };
 
   return (
-    <div className="min-h-screen p-0 mb-5 sm:p-5 md:w-[100%] lg:px-[20%]">
+    <div className="min-h-screen p-5 md:w-[100%] lg:px-[20%]">
       <div className="flex flex-col gap-4">
-        <div className="flex items-center gap-2 mb-2 p-5 pb-0 sm:p-0">
+        <div className="flex items-center gap-2 mb-2">
           <Link href="/customers">
             <FaArrowLeft className="text-sm text-neutral-800" />
           </Link>
           <Heading className="!pb-1">New Customer</Heading>
         </div>
 
-        <Title className="pl-2 sm:pl-0">Customer Overview</Title>
+        <Title>Customer Overview</Title>
         <Card className="flex flex-col p-5 gap-4">
           <div className="flex gap-4 flex-col sm:flex-row">
             <Input
@@ -198,8 +198,8 @@ const NewCustomer = () => {
         </Card>
 
         <div className="py-4">
-          <Title className="pl-2 sm:pl-0">Address</Title>
-          <p className="text-sm text-neutral-600 pl-2 sm:pl-0">
+          <Title>Address</Title>
+          <p className="text-sm text-neutral-600">
             The primary address of this customer
           </p>
         </div>
@@ -210,87 +210,49 @@ const NewCustomer = () => {
             onChange={(e) => {
               handleAddressFieldChange("country", e.target.value);
             }}
-            value={customer?.addresses[0].country}
+            value={customer.addresses[0].country}
           />
           <div className="flex gap-4 flex-col sm:flex-row">
             <Input
               onChange={(e) => {
-                handleAddressFieldChange("firstName", e.target.value);
+                handleAddressFieldChange("address", e.target.value);
               }}
-              label="First Name"
-              id="firstName"
+              label="Address"
+              id="address"
               placeholder=""
-              value={customer?.addresses[0].firstName}
+              value={customer?.addresses[0].address}
             />
             <Input
               onChange={(e) => {
-                handleAddressFieldChange("lastName", e.target.value);
+                handleAddressFieldChange("apartment", e.target.value);
               }}
-              label="Last Name"
-              id="lastName"
+              label="Apartment, suite, etc."
+              id="apartment"
               placeholder=""
-              value={customer?.addresses[0].lastName}
+              value={customer?.addresses[0].apartment}
             />
           </div>
-          <Input
-            onChange={(e) => {
-              handleAddressFieldChange("company", e.target.value);
-            }}
-            label="Company"
-            id="company"
-            placeholder=""
-            value={customer?.addresses[0].company}
-          />
-
-          <Input
-            onChange={(e) => {
-              handleAddressFieldChange("address", e.target.value);
-            }}
-            label="Address"
-            id="address"
-            placeholder=""
-            value={customer?.addresses[0].address}
-          />
-          <Input
-            onChange={(e) => {
-              handleAddressFieldChange("apartment", e.target.value);
-            }}
-            label="Apartment, suite, etc."
-            id="apartment"
-            placeholder=""
-            value={customer?.addresses[0].apartment}
-          />
 
           <div className="flex gap-4 flex-col sm:flex-row">
             <Input
-              onChange={(e) => {
-                handleAddressFieldChange("city", e.target.value);
-              }}
               label="City"
               id="city"
               placeholder=""
               value={customer?.addresses[0].city}
+              onChange={(e) => {
+                handleAddressFieldChange("city", e.target.value);
+              }}
             />
             <Input
-              onChange={(e) => {
-                handleAddressFieldChange("postalCode", e.target.value);
-              }}
               label="Postal Code"
               id="postalCode"
               placeholder=""
+              onChange={(e) => {
+                handleAddressFieldChange("postalCode", e.target.value);
+              }}
               value={customer?.addresses[0].postalCode}
             />
           </div>
-
-          <Input
-            onChange={(e) => {
-              handleAddressFieldChange("phone", e.target.value);
-            }}
-            label="Phone"
-            id="phone"
-            placeholder=""
-            value={customer?.addresses[0].phone}
-          />
 
           <p className="text-xs text-neutral-600 pb-2 pt-4">
             You can add multiple addresses for a customer. For example, you can
@@ -299,7 +261,7 @@ const NewCustomer = () => {
         </Card>
 
         <div className="py-4">
-          <Title className="pl-2 sm:pl-0">Tax Exemptions</Title>
+          <Title>Tax Exemptions</Title>
         </div>
         <Card className="p-5">
           <Checkbox
@@ -313,8 +275,8 @@ const NewCustomer = () => {
         </Card>
 
         <div className="py-4">
-          <Title className="pl-2 sm:pl-0">Notes</Title>
-          <p className="text-sm text-neutral-600 pl-2 sm:pl-0">
+          <Title>Notes</Title>
+          <p className="text-sm text-neutral-600">
             Tags can be used to categorize customers into groups.
           </p>
         </div>
@@ -331,8 +293,8 @@ const NewCustomer = () => {
         </Card>
 
         <div className="py-4">
-          <Title className="pl-2 sm:pl-0">Tags</Title>
-          <p className="text-sm text-neutral-600 pl-2 sm:pl-0">
+          <Title>Tags</Title>
+          <p className="text-sm text-neutral-600">
             Tags can be used to categorize customers into groups.
           </p>
         </div>

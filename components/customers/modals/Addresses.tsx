@@ -9,17 +9,12 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogClose,
 } from "@/components/ui/dialog";
 
-import { FaPencilAlt } from "react-icons/fa";
-
-import { Address } from "@/types/address";
-
-import FilledButton from "@/components/buttons/FilledButton";
-import OutlinedButton from "@/components/buttons/OutlinedButton";
 import ManageAddress from "./ManageAddress";
 import { Customer } from "@/types/customer";
+
+import EditAddress from "./EditAddress";
 
 const AddressCard = ({ address }: { address: any }) => {
   console.log(address);
@@ -38,7 +33,7 @@ const AddressCard = ({ address }: { address: any }) => {
       </div>
       <div className="flex flex-col gap-1">
         <div className="flex items-center gap-2">
-          <FaPencilAlt className="text-sm text-neutral-500" />
+          <EditAddress oldAddress={address} />
         </div>
       </div>
     </div>
@@ -70,7 +65,7 @@ const Addresses = ({ customer }: { customer: Customer }) => {
         </div>
 
         <DialogFooter>
-          <ManageAddress customer={customer} />
+          <ManageAddress />
         </DialogFooter>
       </DialogContent>
     </Dialog>
