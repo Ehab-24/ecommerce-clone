@@ -332,6 +332,7 @@ const NewCustomer = () => {
                 </button>
               </div>
             ))}
+
           </div>
         </Card>
 

@@ -24,17 +24,9 @@ const CustomerOptionsPopover = () => {
         <div className="flex flex-col p-0">
           <PopoverButton>Send Account Invite</PopoverButton>
 
-          <PopoverButton>Merge Customer</PopoverButton>
-
-          <PopoverButton>Request customer data</PopoverButton>
-
-          <PopoverButton>Erase personal data</PopoverButton>
-
           <PopoverButton className="text-red-500">
             Delete customer
           </PopoverButton>
-
-          <PopoverButton>Apps</PopoverButton>
         </div>
       </PopoverContent>
     </Popover>
