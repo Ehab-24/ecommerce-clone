@@ -29,7 +29,10 @@ export default async function InventoryPage() {
         </div>
       </div>
 
-      <Datatable products={products} />
+      <Datatable
+        products={products.filter(p => !p.variants || p.variants.length === 0)}
+        variants={products.filter(p => p.variants?.length > 0).flatMap(p => p.variants.map(v => ({ ...v, productTitle: p.title })))}
+      />
     </div>
   );
 }
