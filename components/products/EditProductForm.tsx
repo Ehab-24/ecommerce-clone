@@ -1,5 +1,6 @@
 'use client'
 
+import { multiplyArrays } from "@/lib/products/utils";
 import { useParams, useRouter } from "next/navigation";
 import { ZodError } from "zod";
 import axios, { AxiosError } from "axios";
@@ -33,6 +34,13 @@ export default function EditProductForm({ initialProduct, locations }: { locatio
   const router = useRouter();
   const [product, setProduct] = React.useState<ApiProduct>({ ...initialProduct, vendor: initialProduct.vendor._id, locations: initialProduct.locations.map(l => l._id) })
   const [loading, setLoading] = React.useState(false)
+
+  useEffect(() => {
+    setProduct(p => ({
+      ...p, variants: multiplyArrays(p.variantOptions.map(v => v.name), ...p.variantOptions.map(v => v.values))
+        .map((obj, i) => ({ _id: i.toString(), name: Object.values(obj).join(" / "), values: obj, trackQuantity: false, continueSellingWhenOutOfStock: false }))
+    }))
+  }, [product.variantOptions])
 
   useEffect(() => {
     if (product.price !== 0 && product.costPerItem !== 0) {

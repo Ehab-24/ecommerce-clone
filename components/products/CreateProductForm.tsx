@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react";
 import { ZodError } from "zod";
-import { ApiProductSchema, ApiProduct, VariantValue } from "@/types/product";
+import { ApiProductSchema, ApiProduct } from "@/types/product";
 import Card from "@/components/Card";
 import Checkbox from "@/components/Checkbox";
 import Input from "@/components/Input";
@@ -21,6 +21,7 @@ import axios from "axios";
 import Text from "@/components/Text";
 import { Location } from "@/types/location";
 import VariantsCard from "./variants/VariantsCard";
+import { multiplyArrays } from "@/lib/products/utils";
 
 export default function CreateProductForm({ locations }: { locations: Location[] }) {
 
@@ -46,35 +47,6 @@ export default function CreateProductForm({ locations }: { locations: Location[]
       }));
     }
   }, [product.price, product.costPerItem]);
-
-  function multiplyArrays(arrayNames: string[], ...arrays: string[][]): VariantValue[] {
-    const combineArrays = (result: string[][], arr: string[]) => {
-      if (arr.length === 0) {
-        return result;
-      }
-      if (result.length === 0) {
-        return arr.map(item => [item]);
-      }
-      return result.flatMap(combination =>
-        arr.map(item => [...combination, item])
-      );
-    };
-
-    let result: string[][] = [];
-    arrays.forEach(arr => {
-      result = combineArrays(result, arr);
-    });
-
-    const ans: VariantValue[] = result.map(arr => {
-      const obj: VariantValue = {};
-      for (let i = 0; i < arrayNames.length; i++) {
-        obj[arrayNames[i]] = arr[i];
-      }
-      return obj;
-    });
-
-    return ans
-  }
 
   async function handleSave() {
     setLoading(true);
