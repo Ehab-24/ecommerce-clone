@@ -4,6 +4,7 @@ import Heading from "@/components/Heading";
 import FilledButton from "@/components/buttons/FilledButton";
 import OutlinedButton from "@/components/buttons/OutlinedButton";
 import Datatable from "@/components/orders/drafts/Datatable";
+import Link from "next/link";
 
 const DraftOrders = () => {
   return (
@@ -20,7 +21,9 @@ const DraftOrders = () => {
 
         <div>
           <OutlinedButton className="mr-2">Export</OutlinedButton>
-          <FilledButton>Create Order</FilledButton>
+          <Link href="/orders/drafts/new">
+            <FilledButton>Create Order</FilledButton>
+          </Link>
         </div>
       </div>
       <Datatable />
