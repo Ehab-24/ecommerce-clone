@@ -9,6 +9,7 @@ import { GiftCard } from "@/types/giftCard"
 import { useRouter } from "next/navigation"
 import CardTopBar from "@/components/CardTopBar"
 import CardBarButton from "@/components/CardBarButton"
+import Image from "next/image"
 
 export default function Datatable({ giftCards }: { giftCards: GiftCard[] }) {
 
@@ -145,10 +146,12 @@ export default function Datatable({ giftCards }: { giftCards: GiftCard[] }) {
                 <div className="text-xs font-semibold text-[#616161]">No Recipient</div>
 
               </div>
-              <div className="flex justify-between items-center">
-                <div className="text-xs font-semibold text-neutral-700"></div>
-                <div className="text-xs font-semibold text-neutral-700"></div>
-              </div>
+              <div className="flex flex-col justify-end items-end gap-2 ">
+                <div className="text-xs font-semibold text-neutral-700">$ {gc.initialValue}.00</div>
+                <Image src={"/ReportSvg.svg"} alt={""} width={20} height={20} style={{
+                  color : "#616161"
+                }} />
+              </div>  
             </div>
           ))}
       </div>
