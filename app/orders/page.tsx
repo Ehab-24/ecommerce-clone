@@ -1,15 +1,20 @@
 // pages/orders.tsx
 import React from "react";
-import Link from "next/link";
-import FilledButton from "@/components/buttons/FilledButton";
-import EmptyPage from "@/components/EmptyPage";
 
 import OrdersTables from "@/components/orders/OrdersTables";
+import { apiUrl } from "@/lib/utils";
+import { Order } from "@/types/order";
 
-const OrdersPage = () => {
+export default async function OrdersPage() {
+
+  // const res = await fetch(apiUrl("/api/orders"), { cache: "no-cache" })
+  // if (!res.ok) throw new Error(res.statusText)
+  // const orders: Order[] = await res.json()
+  const orders: Order[] = []
+
   return (
     <div className="p-5">
-      <OrdersTables />
+      <OrdersTables orders={orders} />
     </div>
 
     // <EmptyPage
@@ -24,5 +29,3 @@ const OrdersPage = () => {
     // </EmptyPage>
   );
 };
-
-export default OrdersPage;

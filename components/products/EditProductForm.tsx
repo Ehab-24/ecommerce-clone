@@ -24,7 +24,7 @@ import React from "react";
 import OutlinedButton from "../buttons/OutlinedButton";
 import { Location } from "@/types/location";
 import VariantsCardEditPage from '@/components/products/variants/VariantsCardEditPage';
-import StatusText from "./StatusText";
+import StatusText from "../StatusText";
 import Text from "@/components/Text";
 import TextButton from "../buttons/TextButton";
 

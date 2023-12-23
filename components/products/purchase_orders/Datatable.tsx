@@ -3,7 +3,7 @@
 import Checkbox from "@/components/Checkbox";
 import { useState } from "react";
 import { PurchaseOrder } from "@/types/purchaseOrder";
-import StatusText from "../StatusText";
+import StatusText from "../../StatusText";
 import { useRouter } from "next/navigation";
 
 export default function Datatable({

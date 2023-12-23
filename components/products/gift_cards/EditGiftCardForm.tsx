@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link"
 import { IoIosArrowRoundBack, IoIosSearch } from "react-icons/io";
 import { CiEdit } from "react-icons/ci";
-import StatusText from "@/components/products/StatusText"
+import StatusText from "@/components/StatusText"
 import Card from "@/components/Card"
 import Text from "@/components/Text";
 import SectionTitle from "@/components/SectionTitle";

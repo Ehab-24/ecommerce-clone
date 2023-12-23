@@ -4,7 +4,7 @@
 
 import Checkbox from "@/components/Checkbox"
 import { useState } from "react"
-import StatusText from "../StatusText"
+import StatusText from "../../StatusText"
 import { GiftCard } from "@/types/giftCard"
 import { useRouter } from "next/navigation"
 import CardTopBar from "@/components/CardTopBar"
