@@ -1,7 +1,7 @@
 import Text from '@/components/Text'
 import Image from 'next/image'
 import Link from 'next/link'
-import StatusText from '../StatusText'
+import StatusText from '@/components/StatusText'
 import Card from '@/components/Card'
 import { Product } from '@/types/product'
 import { PiImageThin } from 'react-icons/pi'

@@ -20,7 +20,7 @@ import DatePicker from "@/components/DatePicker";
 import OutlinedButton from "@/components/buttons/OutlinedButtonSmall";
 import AdjustmentsDialog from "@/components/products/purchase_orders/AdjustmentsDialog";
 import TitleMini from "@/components/TitleMini";
-import StatusText from "@/components/products/StatusText";
+import StatusText from "@/components/StatusText";
 import Datatable from "@/components/products/Datatable";
 import { AdjustmentName, ApiPurchaseOrder, PurchaseOrder } from "@/types/purchaseOrder";
 import FilledButton from "@/components/buttons/FilledButton";
