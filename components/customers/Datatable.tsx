@@ -45,7 +45,7 @@ const Datatable = ({
   };
 
   return (
-    <div className="border text-xs rounded-xl shadow-sm shadow-black/40 overflow-hidden">
+    <div className="border text-xs md:rounded-xl shadow-sm shadow-black/40 overflow-hidden">
       <div className="p-2 flex gap-2 item bg-white">
         <InputSearch
           onChange={(e: any) => {

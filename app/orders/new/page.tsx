@@ -11,7 +11,7 @@ import Link from "next/link";
 import { CustomItem } from "@/types/customItem";
 import { Product } from "@/types/product";
 
-import { FaArrowLeft, FaPencilAlt } from "react-icons/fa";
+import { FaArrowLeft, FaPlus } from "react-icons/fa";
 import AddCustomItem from "@/components/modals/orders/AddCustomItem";
 
 import { FaTrashCan } from "react-icons/fa6";
@@ -19,6 +19,8 @@ import Input from "@/components/Input";
 import Card from "@/components/Card";
 import AddNotesModal from "@/components/modals/general/AddNotesModal";
 import CustomerPopover from "@/components/popovers/Customer";
+import BrowseProductsDialog from "@/components/BrowseProductsDialog";
+import FilledButton from "@/components/buttons/FilledButton";
 
 const ItemTile = ({ item, removeItem }: { item: any; removeItem: any }) => {
   const [quantity, setQuantity] = useState(1);
@@ -74,9 +76,9 @@ const OrdersPage = () => {
   };
 
   return (
-    <div className="min-h-screen p-5 md:w-[100%] lg:px-[20%]">
+    <div className="min-h-screen md:p-5 md:w-[100%] flex flex-col lg:px-[20%]">
       <div className="flex flex-col gap-4">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 p-5 md:p-0">
           <Link href="/orders">
             <FaArrowLeft className="text-2xl text-neutral-800 rounded-md p-1 hover:bg-neutral-200" />
           </Link>
@@ -92,9 +94,7 @@ const OrdersPage = () => {
 
           <div className="flex justify-between gap-2 px-4 pb-4">
             <InputSearch placeholder="Search for a product" />
-            <button className="hover:bg-neutral-100 text-sm shadow-sm border border-neutral-100 p-1 px-2 rounded-lg">
-              Browse
-            </button>
+            <BrowseProductsDialog setProducts={setProducts} />
           </div>
 
           {customItems && customItems.length > 0 && (
@@ -110,10 +110,58 @@ const OrdersPage = () => {
                 {customItems.map((item, index) => (
                   <ItemTile key={index} item={item} removeItem={removeItem} />
                 ))}
+
+                {products.map((product, index) => (
+                  <ItemTile
+                    key={index}
+                    item={product}
+                    removeItem={removeItem}
+                  />
+                ))}
               </tbody>
             </table>
           )}
         </Card>
+
+        <div className="bg-white md:rounded-xl shadow-sm shadow-neutral-400">
+          <div className="p-4">
+            <SectionTitle title="Payment" />
+            <div className="flex p-4 gap-2 md:gap-0 text-sm border text-gray-500 border-gray-200 rounded-xl">
+              <div className="flex flex-col gap-2 flex-1 justify-between">
+                <p className="text-black">Subtotal</p>
+                <p>Add discount</p>
+                <p>Add shipping or delivery</p>
+                <p>Estimated tax</p>
+
+                <p className="font-semibold text-black">Total</p>
+              </div>
+
+              <div className="flex flex-col gap-2 flex-2 justify-between">
+                <p>-</p>
+                <p>-</p>
+                <p>-</p>
+                <p>Not calculated</p>
+
+                <p className="font-semibold text-black">
+                  {customItems.map((item) => item.price * item.quantity)}
+                </p>
+              </div>
+
+              <div className="flex flex-col flex-1 gap-2 items-end justify-between">
+                <p>Rs 0.0</p>
+                <p>Rs 0.0</p>
+                <p>Rs 0.0</p>
+                <p>Rs 0.0</p>
+
+                <p className="font-semibold text-black">Rs 0.0</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-4 text-sm bg-neutral-100 md:rounded-b-xl">
+            <p>Add a product to calculate total and view payment options.</p>
+          </div>
+        </div>
 
         <Card className="p-4">
           <div className="flex justify-between align-middle">
@@ -163,6 +211,10 @@ const OrdersPage = () => {
           <SectionTitle title="Tags" />
           <Input id="tags" placeholder="" />
         </Card>
+      </div>
+
+      <div className="self-end md:p-0 p-4 md:my-4">
+        <FilledButton>Add Customer</FilledButton>
       </div>
     </div>
   );

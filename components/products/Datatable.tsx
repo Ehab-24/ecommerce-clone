@@ -1,6 +1,5 @@
 "use client"
 
-
 import {
   Popover,
   PopoverContent,
@@ -10,7 +9,7 @@ import { Product } from "@/types/product"
 import Checkbox from "../Checkbox"
 import Image from "next/image"
 import { useEffect, useState } from "react"
-import StatusText from "./StatusText"
+import StatusText from "../StatusText"
 import { useRouter } from "next/navigation"
 import Card from "../Card"
 import OutlinedButton from "../buttons/OutlinedButton"
@@ -22,22 +21,127 @@ import AddTagsToProductsDialog from "./dialogs/AddTagsToProductsDialog"
 import RemoveTagsFromProductsDialog from "./dialogs/RemoveTagsFromProductsDialog"
 import AddProductsToCollectionsDialog from "./dialogs/AddProductsToCollectionsDialog"
 import RemoveProductsFromCollectionsDialog from "./dialogs/RemoveProductsFromCollections"
+import { Button } from "../ui/button"
 import Text from "../Text"
+import { IoClose, IoSearchOutline } from "react-icons/io5";
+import { MdOutlineFilterList } from "react-icons/md";
+import SortPopover from "../SortPopover"
+import Input from "../Input"
+import FilledButton from "../buttons/FilledButton"
+import AddViewDialog from "../AddViewDialog"
+import HeaderItem from "@/types/headerItem"
+import SortableHeader from "../SortableHeader"
+import AddFilterPopover from "../AddFilterPopover"
+
+type View = string;
 
 export default function Datatable({ products }: { products: Product[] }) {
+
+  const views: View[] = ["all", "active", "draft", "archived"]
+  const headerItems: HeaderItem[] = [
+    { label: "Product", sortable: true, sortKey: "title" },
+    { label: "Status", sortable: false, sortKey: "" },
+    { label: "Inventory", sortable: true, sortKey: "quantity" },
+    { label: "Sales Channel", sortable: false, sortKey: "" },
+    { label: "Markets", sortable: false, sortKey: "" },
+    { label: "Category", sortable: true, sortKey: "category" },
+    { label: "Vendor", sortable: true, sortKey: "vendor" },
+  ]
+  const allFilters = ["Product vendor", "collection", "Product type", "Product tag", "Product price", "Product inventory", "Product status", "Product availability", "Product variant", "Product variant price"]
 
   const router = useRouter()
   const [allChecked, setAllChecked] = useState<boolean>(false)
   const [selectedProducts, setSelectedProducts] = useState<boolean[]>(new Array(products.length).fill(false))
+  const [selectedView, setSelectedView] = useState<View>("all")
+  const [isSearching, setIsSearching] = useState<boolean>(false)
+  const [search, setSearch] = useState<string>("")
+  const [filters, setFilters] = useState<string[]>(['Product vendor', 'collection'])
 
   useEffect(() => {
     setAllChecked(selectedProducts.length > 0 && selectedProducts.every(p => p))
   }, [products, selectedProducts])
 
-  const headers = ["Product", "Status", "Inventory", "Sales Channel", "Markets", "Category", "Vendor"]
-
   return (
-    <div className="relative overflow-x-auto overflow-y-scroll shadow-md sm:rounded-lg">
+    <div className="relative overflow-x-auto overflow-y-scroll shadow-md sm:rounded-lg overflow-hidden">
+
+      <div className=" flex justify-between items-start w-full bg-white px-2 py-1">
+
+        {
+          isSearching ? (
+            <div className="flex mr-2 flex-col w-full">
+              <div className="flex items-center w-full">
+                <Input
+                  id="search"
+                  placeholder="Searching all products"
+                  value={search}
+                  icon={<IoSearchOutline size={16} className='text-gray-800' />}
+                  onChange={e => setSearch(e.target.value)}
+                />
+                <div className="w-4" />
+                <Button variant="ghost" className="px-2 mr-2 h-min py-1 text-gray-800 text-xs hover:bg-gray-200/75" onClick={() => setIsSearching(false)}>
+                  Cancel
+                </Button>
+                <FilledButton>
+                  Save as
+                </FilledButton>
+              </div>
+
+              <div className="w-full border-t border-gray-300 pt-2 mt-2 mb-1 flex gap-1">
+                {
+                  filters.map(f => (
+                    <Button key={f} variant="outline" className="px-2 rounded-lg h-min py-1 text-gray-800 text-xs hover:bg-gray-200/75" onClick={() => { }}>
+                      {f}
+                      <IoClose size={12} className="inline-block ml-1" onClick={() => setFilters(filters.filter(_f => f !== _f))} />
+                    </Button>
+                  ))
+                }
+
+                <AddFilterPopover filters={allFilters} onSelect={f => setFilters([...filters, f])} />
+
+                <Button variant="ghost" className="px-2 rounded-lg h-min py-1 text-gray-800 text-xs hover:bg-gray-200/75" onClick={() => setFilters([])}>
+                  Clear all
+                </Button>
+              </div>
+
+            </div>
+          ) : (
+
+            <div className="flex mr-2 w-full justify-between items-center">
+              <div className="flex gap-2 items-center">
+                {
+                  views.map(v => (
+                    <Button key={v} variant="ghost" className={`hover:bg-gray-200/75 px-3 py-1.5 h-min ${v === selectedView ? "bg-gray-200" : "bg-transparent"}`} onClick={() => setSelectedView(v)}>
+                      <Text className="text-gray-800 capitalize">{v}</Text>
+                    </Button>
+                  ))
+                }
+                <AddViewDialog onSave={name => { }} />
+              </div>
+
+              <OutlinedButton className="p-1.5 flex gap-0.5" onClick={() => setIsSearching(true)}>
+                <IoSearchOutline size={16} className='text-black' />
+                <MdOutlineFilterList size={20} className='text-black' />
+              </OutlinedButton>
+            </div>
+
+          )
+        }
+
+
+        <SortPopover
+          options={[
+            { label: "Product title", value: "title" },
+            { label: "Created", value: "createdAt" },
+            { label: "Updated", value: "updatedAt" },
+            { label: "Inventory", value: "inventory" },
+            { label: "Product type", value: "productType" },
+            { label: "Vendor", value: "vendor" },
+          ]}
+          onChange={val => { }} />
+
+
+      </div>
+
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 ">
         <thead className="text-[10px] text-gray-700 uppercase bg-gray-100 border-t-2 border-b-2 ">
           <tr>
@@ -45,9 +149,9 @@ export default function Datatable({ products }: { products: Product[] }) {
               <Checkbox id="select-all-products" label={selectedProducts.some(p => p) ? selectedProducts.filter(p => p).length + " selected" : ""} checked={allChecked} onChange={e => setSelectedProducts(new Array(products.length).fill(e.target.checked))} />
             </th>
             {
-              headers.map(h => (
-                <th key={h} scope="col" className="px-6 py-3">
-                  {selectedProducts.some(p => p) ? "" : h}
+              headerItems.map(h => (
+                <th key={h.label} scope="col" className="px-6 py-1">
+                  {selectedProducts.some(p => p) ? "" : h.sortable ? <SortableHeader header={h} onClick={() => { }} sorted="none" /> : h.label}
                 </th>
               ))
             }
@@ -78,22 +182,22 @@ export default function Datatable({ products }: { products: Product[] }) {
                   <p className="ml-4">{p.title}</p>
                 </th>
 
-                <td className="px-6 py-4">
+                <td className="px-6 py-2">
                   <StatusText status={p.status} />
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-2">
                   {p.quantity} in stock
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-2">
                   -
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-2">
                   -
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-2">
                   {p.category}
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-2">
                   {p.vendor?.name}
                 </td>
               </tr>
@@ -125,7 +229,7 @@ export default function Datatable({ products }: { products: Product[] }) {
         )
       }
 
-    </div>
+    </div >
   )
 }
 

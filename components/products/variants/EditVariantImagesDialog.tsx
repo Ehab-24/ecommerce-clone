@@ -52,8 +52,7 @@ export default function EditVariantImagesDialog({ onSave, image, altText, initia
               <ImageUploader onSave={url => setImages([...images, url])} text={<Text className="text-gray-800 bg-gray-100 p-1 rounded-xl overflow-hidden">Add image</Text>} />
             </div>
             {
-              initialImages.map((url, i) => {
-                console.log("-> url:", i, url)
+              initialImages.map((url) => {
                 return (
                   <div key={url} onClick={() => setSelectedImage(url)} className={`h-40 w-40 cursor-pointer bg-gray-100 border-2 rounded-xl overflow-hidden relative ${selectedImage === url ? "border-blue-700" : "hover:border-blue-700 border-white"}`}>
                     <Image src={url} alt={altText} width={0} height={0} sizes="100vw" style={{ width: '100%', height: '100%' }} />
@@ -65,8 +64,7 @@ export default function EditVariantImagesDialog({ onSave, image, altText, initia
               })
             }
             {
-              images.map((url, i) => {
-                console.log("-> url:", i, url)
+              images.map((url) => {
                 return (
                   <div key={url} onClick={() => setSelectedImage(url)} className={`h-40 w-40 bg-gray-100 border-2 rounded-xl overflow-hidden relative ${selectedImage === url ? "border-blue-700" : "hover:border-blue-700 border-white"}`}>
                     <Image src={url} alt={altText} width={0} height={0} sizes="100vw" style={{ width: '100%', height: '100%' }} />

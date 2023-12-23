@@ -60,9 +60,9 @@ const SingleCustomerPage = () => {
   };
 
   return (
-    <div className="min-h-screen p-5 md:w-[100%] lg:px-[20%]">
+    <div className="min-h-screen md:p-5 md:w-[100%] lg:px-[20%]">
       <div className="flex flex-col gap-4">
-        <div className="flex gap-4 justify-between">
+        <div className="flex gap-4 justify-between p-5 md:p-0">
           <div className="flex gap-4">
             <Link href="/customers">
               <FaArrowLeft className="text-xs mt-2.5 text-neutral-800" />
@@ -78,7 +78,7 @@ const SingleCustomerPage = () => {
           <MoreActionsPopover />
         </div>
 
-        <Card className="sm:mt-5 p-5">
+        <Card className="p-5">
           <Title>Last order placed</Title>
           <p className="text-sm text-gray-500 font-medium">
             This customer has not placed any orders yet

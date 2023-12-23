@@ -19,14 +19,24 @@ export function AddModal() {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <button className="py-1 px-2 hover:bg-gray-100 rounded-md">
-                    <Image
-                        src="/PlusButton.svg"
-                        width={20}
-                        height={20}
-                        alt="Plus button Image"
-                    />
-                </button>
+                <div>
+                    <button className="hidden sm:block py-1 px-2 hover:bg-gray-100 rounded-md">
+                        <Image
+                            src="/PlusButton.svg"
+                            width={25}
+                            height={25}
+                            alt="Plus button Image"
+                        />
+                    </button>
+                    <button className="flex justify-center items-center sm:hidden w-9 h-7 hover:bg-gray-100 rounded-md mr-3">
+                        <Image
+                            src="/PlusButton.svg"
+                            width={30}
+                            height={30}
+                            alt="Plus button Image"
+                        />
+                    </button>
+                </div>
             </DialogTrigger>
             <DialogContent className="w-[621px] h-52">
                 <DialogHeader className="h-14">

@@ -2,7 +2,7 @@
 
 import Checkbox from "@/components/Checkbox"
 import { useState } from "react"
-import StatusText from "../StatusText"
+import StatusText from "../../StatusText"
 import { useRouter } from "next/navigation"
 import { Transfer } from "@/types/transfer"
 import CardTopBar from "@/components/CardTopBar"

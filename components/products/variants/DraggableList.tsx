@@ -5,22 +5,16 @@ import OutlinedButton from "@/components/buttons/OutlinedButton"
 import { ApiProduct, VariantOption } from "@/types/product"
 import React from "react"
 import { DragDropContext, Droppable, Draggable, OnDragEndResponder, DraggableStateSnapshot, DraggableProvided } from "react-beautiful-dnd"
-import { IoIosClose } from "react-icons/io"
 import { RxDragHandleDots2 } from "react-icons/rx"
 import { RiDeleteBin6Line } from "react-icons/ri"
 
 export default function DraggableList({ product, defaultEdit = false, setProduct, loading }: { product: ApiProduct, loading: boolean, defaultEdit?: boolean, setProduct: React.Dispatch<React.SetStateAction<ApiProduct>> }) {
 
   const handleDrop: OnDragEndResponder = (droppedItem) => {
-    // Ignore drop outside droppable container
     if (!droppedItem.destination) return;
     const updatedList = [...product.variantOptions];
-    // Remove dragged item
-    // const [reorderedItem] = updatedList.splice(droppedItem.source.index, 1);
     const [reorderedItem] = updatedList.splice(droppedItem.source.index, 1);
-    // Add dropped item
     updatedList.splice(droppedItem.destination.index, 0, reorderedItem);
-    // Update State
     setProduct({ ...product, variantOptions: updatedList });
   };
 
@@ -88,7 +82,7 @@ function EditVariant({ variantOption, defaultEdit = false, provided, snapshot, i
           }}
         >
           <RxDragHandleDots2
-            className="text-sm text-[#1a1a1a]"
+            className={`text-sm text-[#1a1a1a] ${edit ? "mt-[22px]" : ""}`}
             size={20}
           />
         </div>
@@ -129,7 +123,7 @@ function EditVariant({ variantOption, defaultEdit = false, provided, snapshot, i
                 ]}
               />
 
-              <div className="w-full mt-4">
+              <div className="w-full my-4">
                 <Input
                   id="variant-values"
                   disabled={loading}
@@ -150,6 +144,9 @@ function EditVariant({ variantOption, defaultEdit = false, provided, snapshot, i
                 />
               </div>
 
+              <DraggableListItem key={variantOption.name} loading={loading} variantOption={variantOption} product={product} setProduct={setProduct} />
+
+              {/*
               <div className="w-full flex mt-4 gap-1">
                 {variantOption.values.map((v, i) => (
                   <div
@@ -172,6 +169,8 @@ function EditVariant({ variantOption, defaultEdit = false, provided, snapshot, i
                   </div>
                 ))}
               </div>
+              */}
+
               {
                 edit && <div className="mt-4 w-min">
                   <OutlinedButton onClick={() => setEdit(false)}>Done</OutlinedButton>
@@ -198,8 +197,8 @@ function EditVariant({ variantOption, defaultEdit = false, provided, snapshot, i
             edit ? (
               <button
                 disabled={loading}
-                onClick={() => setProduct({ ...product, variantOptions: product.variantOptions.filter((v) => v !== product.variantOptions[index]) })}
                 className="p-2 rounded-md self-start mt-[22px] hover:bg-black/10 transition-all"
+                onClick={() => setProduct({ ...product, variantOptions: product.variantOptions.filter((v) => v !== product.variantOptions[index]) })}
               >
                 <RiDeleteBin6Line className="text-sm text-[#1a1a1a]" />
               </button>
@@ -208,7 +207,70 @@ function EditVariant({ variantOption, defaultEdit = false, provided, snapshot, i
             )
           }
         </div>
+
       </div>
     </>
+  )
+}
+
+
+function DraggableListItem({ variantOption, loading, product, setProduct }: { variantOption: VariantOption, product: ApiProduct, loading: boolean, setProduct: React.Dispatch<React.SetStateAction<ApiProduct>> }) {
+
+  const handleDrop: OnDragEndResponder = (droppedItem) => {
+    if (!droppedItem.destination) return;
+    const updatedList = [...variantOption.values];
+    const [reorderedItem] = updatedList.splice(droppedItem.source.index, 1);
+    updatedList.splice(droppedItem.destination.index, 0, reorderedItem);
+    setProduct({ ...product, variantOptions: product.variantOptions.map(_vo => _vo.name === variantOption.name ? { ...variantOption, values: updatedList } : _vo) })
+  };
+
+  return (
+    <div className="w-full">
+      <DragDropContext onDragEnd={handleDrop}>
+        <Droppable droppableId="variant-option-values-list">
+          {(provided) => (
+            <ul {...provided.droppableProps} ref={provided.innerRef} className="gap-4 flex w-full flex-col">
+              {variantOption.values.map((val, index) => (
+                <Draggable key={val} draggableId={val} index={index}>
+                  {(provided, snapshot) => (
+                    <li
+                      {...provided.draggableProps}
+                      ref={provided.innerRef}
+                      className="w-full px-4 flex items-center h-full gap-4 border-b border-gray-300 pb-4"
+                    >
+                      <div
+                        {...provided.dragHandleProps}
+                        id="anchor"
+                        className="w-12 h-full bg-white"
+                        style={{
+                          pointerEvents: snapshot.isDragging ? 'none' : 'auto',
+                        }}
+                      >
+                        <RxDragHandleDots2
+                          className="text-sm text-[#1a1a1a]"
+                          size={20}
+                        />
+                      </div>
+                      <Text>{val}</Text>
+
+                      <div className="w-full" />
+
+                      <button
+                        disabled={loading}
+                        className="p-2 rounded-md self-start hover:bg-black/10 transition-all"
+                        onClick={() => setProduct({ ...product, variantOptions: product.variantOptions.map(_vo => _vo.name === variantOption.name ? { ...variantOption, values: variantOption.values.filter(_val => _val !== val) } : _vo) })}>
+                        <RiDeleteBin6Line className="text-sm text-[#1a1a1a]" />
+                      </button>
+
+                    </li>
+                  )}
+                </Draggable>
+              ))}
+              {provided.placeholder}
+            </ul>
+          )}
+        </Droppable>
+      </DragDropContext>
+    </div>
   )
 }

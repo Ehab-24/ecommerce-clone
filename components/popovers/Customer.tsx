@@ -3,6 +3,10 @@
 import { useState } from "react";
 import Input from "../Input";
 
+import { FaPlus } from "react-icons/fa";
+
+import NewCustomer from "../customers/modals/NewCustomer";
+
 interface Customer {
   id: number;
   name: string;
@@ -71,12 +75,9 @@ const CustomerPopover = () => {
           className="absolute mt-10 rounded-lg w-full bg-white border border-gray-300 shadow-md z-10"
           style={{ top: popoverPosition.top, left: popoverPosition.left }}
         >
-          <div className="flex flex-col text-sm text-neutral-700">
-            <button
-              onClick={handleAddCustomer}
-              className="text-left border-b border-neutral-400"
-            >
-              <p className="p-3">Cretate a new customer</p>
+          <div className="flex flex-col text-sm text-gray-500">
+            <button className="text-left border-b border-neutral-400">
+              <NewCustomer />
             </button>
             {searchResults.length > 0 && (
               <div className="flex flex-col gap-3 py-3">

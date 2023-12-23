@@ -80,7 +80,7 @@ const DialogFooter = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      "flex border-t items-center justify-end border-neutral-200 p-4",
+      "flex border-t items-center gap-2 justify-end border-neutral-200 p-4",
       className
     )}
     {...props}
