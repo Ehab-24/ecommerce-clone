@@ -50,8 +50,8 @@ const DraftOrders = () => {
   }
 
   return (
-    <div className="p-5">
-      <div className="flex items-center justify-between mb-5">
+    <div className="md:p-5">
+      <div className="flex items-center justify-between mb-5 p-5 pb-0 md:p-0">
         <Heading className="!pb-0">Customers</Heading>
         <div className="flex gap-2">
           <ExportImportButtons />

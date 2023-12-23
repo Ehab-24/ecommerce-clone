@@ -1,23 +1,30 @@
 "use client";
 
 import React, { useState } from "react";
-import { FaArrowLeft } from "react-icons/fa";
-import { IoIosClose } from "react-icons/io";
 
-import Link from "next/link";
-import Heading from "@/components/Heading";
-import Card from "@/components/Card";
-import Input from "@/components/Input";
-import Checkbox from "@/components/Checkbox";
-import Select from "@/components/Select";
-import Title from "@/components/Title";
-
-import { Customer } from "@/types/customer";
-
-import countries from "@/data/countries";
-import FilledButton from "@/components/buttons/FilledButton";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 import { toast } from "react-hot-toast";
+
+import { Customer } from "@/types/customer";
+import Input from "@/components/Input";
+import FilledButton from "@/components/buttons/FilledButton";
+import OutlinedButton from "@/components/buttons/OutlinedButton";
+import Title from "@/components/Title";
+import Checkbox from "@/components/Checkbox";
+import Select from "@/components/Select";
+
+import countries from "@/data/countries";
+
+import { FaPlus } from "react-icons/fa";
+import { DialogClose } from "@radix-ui/react-dialog";
 
 const defaultCustomer: Customer = {
   firstName: "",
@@ -108,17 +115,20 @@ const NewCustomer = () => {
   };
 
   return (
-    <div className="min-h-screen md:p-5 md:w-[100%] lg:px-[20%]">
-      <div className="flex flex-col gap-4">
-        <div className="flex items-center gap-2 p-5">
-          <Link href="/customers">
-            <FaArrowLeft className="text-sm text-neutral-800" />
-          </Link>
-          <Heading className="!pb-1">New Customer</Heading>
-        </div>
+    <Dialog>
+      <DialogTrigger>
+        <p className="p-3 flex gap-2 items-center">
+          <FaPlus className="inline-block text-xl p-1 border text-gray-400 border-gray-400 rounded-full" />
+          Cretate a new customer
+        </p>
+      </DialogTrigger>
 
-        <Title className="pl-5">Customer Overview</Title>
-        <Card className="flex flex-col p-5 gap-4">
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Add Customer</DialogTitle>
+        </DialogHeader>
+
+        <div className="flex flex-col p-5 gap-4">
           <div className="flex gap-4 flex-col sm:flex-row">
             <Input
               onChange={(e) => {
@@ -161,18 +171,6 @@ const NewCustomer = () => {
             }}
           />
 
-          <div className="flex">
-            <Input
-              label="Phone"
-              id="phone"
-              placeholder=""
-              value={customer?.phone}
-              onChange={(e) => {
-                handleFieldChange("phone", e.target.value);
-              }}
-            />
-          </div>
-
           <Checkbox
             checked={customer.marketing}
             onChange={(e) => {
@@ -190,20 +188,9 @@ const NewCustomer = () => {
             id="smsMarketing"
             label="Customer agreed to receive SMS marketing text messages."
           />
-
-          <p className="text-xs text-neutral-600 pb-2 pt-4">
-            You should ask your customers for permission before you subscribe
-            them to your marketing emails or SMS.
-          </p>
-        </Card>
-
-        <div className="py-4">
-          <Title className="pl-5">Address</Title>
-          <p className="text-sm pl-5 md:pl-0 text-neutral-600">
-            The primary address of this customer
-          </p>
         </div>
-        <Card className="flex flex-col p-5 gap-2">
+
+        <div className="flex flex-col p-5 gap-2">
           <Select
             label="Country/Region of origin"
             options={countries}
@@ -253,93 +240,19 @@ const NewCustomer = () => {
               value={customer?.addresses[0].postalCode}
             />
           </div>
-
-          <p className="text-xs text-neutral-600 pb-2 pt-4">
-            You can add multiple addresses for a customer. For example, you can
-            add a different shipping address for a customer.
-          </p>
-        </Card>
-
-        <div className="py-4">
-          <Title className="pl-5">Tax Exemptions</Title>
         </div>
-        <Card className="p-5">
-          <Checkbox
-            id="taxExempt"
-            label="Collect Tax"
-            checked={customer?.taxExempt}
-            onChange={(e) => {
-              handleCheckboxChange("taxExempt", e.target.checked);
-            }}
-          />
-        </Card>
 
-        <div className="py-4">
-          <Title className="pl-5">Notes</Title>
-          <p className="text-sm text-neutral-600 pl-5 md:pl-0">
-            Notes are private and won&apos;t be shared with the customer.
-          </p>
-        </div>
-        <Card className="p-5">
-          <Input
-            label="Note"
-            id="note"
-            placeholder=""
-            value={customer?.note}
-            onChange={(e) => {
-              handleFieldChange("note", e.target.value);
-            }}
-          />
-        </Card>
+        <DialogFooter>
+          <DialogClose>
+            <OutlinedButton>Cancel</OutlinedButton>
+          </DialogClose>
 
-        <div className="py-4">
-          <Title className="pl-5">Tags</Title>
-          <p className="text-sm pl-5 md:pl-0 text-neutral-600">
-            Tags can be used to categorize customers into groups.
-          </p>
-        </div>
-        <Card className="p-5">
-          <Input
-            id="tags"
-            label="Tags"
-            placeholder=""
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                console.log(e.currentTarget.value);
-                addTag(e.currentTarget.value);
-                console.log(customer);
-                e.currentTarget.value = "";
-              }
-            }}
-          />
-
-          <div className="flex gap-2">
-            {customer?.tags.map((tag) => (
-              <div
-                key={tag}
-                className="bg-slate-200 mt-2 text-gray-900 px-2 py-1 rounded-md text-sm flex items-center gap-1"
-              >
-                {tag}
-                <button
-                  onClick={() =>
-                    setCustomer({
-                      ...customer,
-                      tags: customer?.tags.filter((t) => t !== tag),
-                    })
-                  }
-                >
-                  <IoIosClose size={20} />
-                </button>
-              </div>
-            ))}
-          </div>
-        </Card>
-
-        <div className="self-end p-5 md:p-0">
-          <FilledButton onClick={addCustomer}>Add Customer</FilledButton>
-        </div>
-      </div>
-    </div>
+          <DialogClose>
+            <FilledButton>Add Customer</FilledButton>
+          </DialogClose>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
 

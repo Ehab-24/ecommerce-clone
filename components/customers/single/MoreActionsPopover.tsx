@@ -22,8 +22,6 @@ const CustomerOptionsPopover = () => {
 
       <PopoverContent className="w-[100%] p-1.5 rounded-xl">
         <div className="flex flex-col p-0">
-          <PopoverButton>Send Account Invite</PopoverButton>
-
           <PopoverButton>Merge Customer</PopoverButton>
 
           <PopoverButton>Request customer data</PopoverButton>
