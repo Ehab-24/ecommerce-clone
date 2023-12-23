@@ -103,6 +103,7 @@ export default function Datatable({ giftCards }: { giftCards: GiftCard[] }) {
               <Checkbox id="select-all-purchaseOrders" label="" checked={selectedProducts.every(e => e)} onChange={e => setSelectedProducts(new Array(giftCards.length).fill(e.target.checked))} />
             </div>
             <div className="flex-1">Code ending</div>
+            <div className="flex-1"></div>
             <div className="flex-1">Status</div>
             <div className="flex-1">Customer</div>
             <div className="flex-1">Recipient</div>
@@ -119,6 +120,11 @@ export default function Datatable({ giftCards }: { giftCards: GiftCard[] }) {
                   setSelectedProducts(newSelectProducts)
                 }} /></div>
                 <div className="text-neutral-500 text-sm font-medium flex-1">{gc.code.substring(gc.code.length - 4)}</div>
+                <div className="flex-1 ">
+                  <Image src={"/ReportSvg.svg"} alt={""} width={20} height={20} style={{
+                  color : "#616161"
+                }} />
+                </div>
                 <div className="text-neutral-700 text-sm font-medium flex-1"><StatusText status={gc.status} /></div>
                 <div className="text-neutral-700 text-sm font-medium flex-1">{gc.customer}</div>
                 <div className="text-neutral-700 text-sm font-medium flex-1">No Recipient</div>
