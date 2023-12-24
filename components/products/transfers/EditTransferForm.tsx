@@ -132,7 +132,7 @@ export default function EditTransferForm({ locations, initialTransfer }: { locat
 
         </div>
 
-        <Datatable products={products} />
+        <Datatable initialProducts={products} />
       </Card>
 
       <div className="flex gap-4">

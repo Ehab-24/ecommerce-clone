@@ -23,7 +23,7 @@ import AddProductsToCollectionsDialog from "./dialogs/AddProductsToCollectionsDi
 import RemoveProductsFromCollectionsDialog from "./dialogs/RemoveProductsFromCollections"
 import { Button } from "../ui/button"
 import Text from "../Text"
-import { IoClose, IoSearchOutline } from "react-icons/io5";
+import { IoSearchOutline } from "react-icons/io5";
 import { MdOutlineFilterList } from "react-icons/md";
 import SortPopover from "../SortPopover"
 import Input from "../Input"
@@ -32,10 +32,23 @@ import AddViewDialog from "../AddViewDialog"
 import HeaderItem from "@/types/headerItem"
 import SortableHeader from "../SortableHeader"
 import AddFilterPopover from "../AddFilterPopover"
+import ProductVendorFilterPopover from "./popovers/ProductVendorFilterPopover"
+import { Vendor } from "@/types/vendor"
+import CollectionFilterPopover from "./popovers/CollectionFilterPopover"
+import TagFilterPopover from "./popovers/TagFilterPopover"
+import StatusFilterPopover from "./popovers/StatusFilterPopover"
+import SalesChannelFilterPopover from "./popovers/SalesChannelFilterPopover"
+import MarketFilterPopover from "./popovers/MarketFilterPopover"
+import ProductTypeFilterPopover from "./popovers/ProductTypeFilterPopover"
+import { Market } from "@/types/market"
+import { Collection } from "@/types/collection"
+import { SalesChannel } from "@/types/salesChannel"
+import GiftCardFilterPopover from "./popovers/GiftCardFilterPopover"
+import { GiftCard } from "@/types/giftCard"
 
 type View = string;
 
-export default function Datatable({ products }: { products: Product[] }) {
+export default function Datatable({ initialProducts, giftCards, statuses, collections, salesChannels, markets, tags, productTypes, vendors }: { initialProducts: Product[], giftCards: GiftCard[], statuses: string[], collections: Collection[], salesChannels: SalesChannel[], markets: Market[], tags: string[], productTypes: string[], vendors: Vendor[] }) {
 
   const views: View[] = ["all", "active", "draft", "archived"]
   const headerItems: HeaderItem[] = [
@@ -47,19 +60,20 @@ export default function Datatable({ products }: { products: Product[] }) {
     { label: "Category", sortable: true, sortKey: "category" },
     { label: "Vendor", sortable: true, sortKey: "vendor" },
   ]
-  const allFilters = ["Product vendor", "collection", "Product type", "Product tag", "Product price", "Product inventory", "Product status", "Product availability", "Product variant", "Product variant price"]
 
   const router = useRouter()
   const [allChecked, setAllChecked] = useState<boolean>(false)
-  const [selectedProducts, setSelectedProducts] = useState<boolean[]>(new Array(products.length).fill(false))
+  const [selectedProducts, setSelectedProducts] = useState<boolean[]>(new Array(initialProducts.length).fill(false))
   const [selectedView, setSelectedView] = useState<View>("all")
   const [isSearching, setIsSearching] = useState<boolean>(false)
   const [search, setSearch] = useState<string>("")
-  const [filters, setFilters] = useState<string[]>(['Product vendor', 'collection'])
+
+  const allFilters = ["Product vendor", "Tagged with", "Status", "Sales channel", "Market", "Product type", "Collection", "Gift card"]
+  const [filters, setFilters] = useState<string[]>([])
 
   useEffect(() => {
     setAllChecked(selectedProducts.length > 0 && selectedProducts.every(p => p))
-  }, [products, selectedProducts])
+  }, [initialProducts, selectedProducts])
 
   return (
     <div className="relative overflow-x-auto overflow-y-scroll shadow-md sm:rounded-lg overflow-hidden">
@@ -74,6 +88,7 @@ export default function Datatable({ products }: { products: Product[] }) {
                   id="search"
                   placeholder="Searching all products"
                   value={search}
+                  className="border-blue-500"
                   icon={<IoSearchOutline size={16} className='text-gray-800' />}
                   onChange={e => setSearch(e.target.value)}
                 />
@@ -89,14 +104,11 @@ export default function Datatable({ products }: { products: Product[] }) {
               <div className="w-full border-t border-gray-300 pt-2 mt-2 mb-1 flex gap-1">
                 {
                   filters.map(f => (
-                    <Button key={f} variant="outline" className="px-2 rounded-lg h-min py-1 text-gray-800 text-xs hover:bg-gray-200/75" onClick={() => { }}>
-                      {f}
-                      <IoClose size={12} className="inline-block ml-1" onClick={() => setFilters(filters.filter(_f => f !== _f))} />
-                    </Button>
+                    <ProductFilter key={f} filter={f} giftCards={giftCards} statuses={statuses} vendors={vendors} tags={tags} markets={markets} salesChannels={salesChannels} collections={collections} productTypes={productTypes} />
                   ))
                 }
 
-                <AddFilterPopover filters={allFilters} onSelect={f => setFilters([...filters, f])} />
+                <AddFilterPopover filters={allFilters} disabled={filters} onSelect={f => setFilters([...filters, f])} />
 
                 <Button variant="ghost" className="px-2 rounded-lg h-min py-1 text-gray-800 text-xs hover:bg-gray-200/75" onClick={() => setFilters([])}>
                   Clear all
@@ -146,7 +158,7 @@ export default function Datatable({ products }: { products: Product[] }) {
         <thead className="text-[10px] text-gray-700 uppercase bg-gray-100 border-t-2 border-b-2 ">
           <tr>
             <th scope="col" className="p-4">
-              <Checkbox id="select-all-products" label={selectedProducts.some(p => p) ? selectedProducts.filter(p => p).length + " selected" : ""} checked={allChecked} onChange={e => setSelectedProducts(new Array(products.length).fill(e.target.checked))} />
+              <Checkbox id="select-all-products" label={selectedProducts.some(p => p) ? selectedProducts.filter(p => p).length + " selected" : ""} checked={allChecked} onChange={e => setSelectedProducts(new Array(initialProducts.length).fill(e.target.checked))} />
             </th>
             {
               headerItems.map(h => (
@@ -160,7 +172,7 @@ export default function Datatable({ products }: { products: Product[] }) {
 
         <tbody className="text-xs">
           {
-            products.map((p, i) => (
+            initialProducts.map((p, i) => (
               <tr key={p._id} className="bg-white border-b hover:bg-gray-50 ">
                 <td className="w-4 p-4">
                   <Checkbox id={"select-" + p._id} checked={selectedProducts[i]} label="" onChange={e => {
@@ -214,15 +226,15 @@ export default function Datatable({ products }: { products: Product[] }) {
           <div className="py-4 min-w-full w-full grid bg-white place-items-center">
             <Card className="px-4 py-2 flex gap-2">
 
-              <OutlinedButton onClick={() => { }}>
+              <Button variant="ghost" className="p-2 bg-gray-200 text-black hover:bg-gray-300 h-min text-xs" onClick={() => { }}>
                 Bulk edit
-              </OutlinedButton>
+              </Button>
 
-              <ChangeProductStatusDialog status="active" text="Setting products as {status} will make them available to their selected sales channels and apps. " selectedProducts={products.filter((_, i) => selectedProducts[i])} successMessage={`${selectedProducts.length} products archived`} />
+              <ChangeProductStatusDialog status="active" text="Setting products as {status} will make them available to their selected sales channels and apps. " selectedProducts={initialProducts.filter((_, i) => selectedProducts[i])} successMessage={`${selectedProducts.length} products archived`} />
 
-              <ChangeProductStatusDialog status="draft" text="Setting products as draft will hide them from all sales channels and apps. " selectedProducts={products.filter((_, i) => selectedProducts[i])} successMessage={`${selectedProducts.length} products drafted`} />
+              <ChangeProductStatusDialog status="draft" text="Setting products as draft will hide them from all sales channels and apps. " selectedProducts={initialProducts.filter((_, i) => selectedProducts[i])} successMessage={`${selectedProducts.length} products drafted`} />
 
-              <MoreActionsPopover selectedProducts={products.filter((_, i) => selectedProducts[i])} />
+              <MoreActionsPopover selectedProducts={initialProducts.filter((_, i) => selectedProducts[i])} />
 
             </Card>
           </div>
@@ -241,10 +253,9 @@ function MoreActionsPopover({ selectedProducts }: { selectedProducts: Product[] 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <button
-          className="select-none rounded-lg border-2 border-neutral-200 py-1 hover:bg-neutral-200 shadow-sm shadow-neutral-500/10 hover:shadow-lg hover:shadow-neutral-900/20 px-2 text-center align-middle font-sans text-xs font-bold text-neutral-900 transition-all focus:ring focus:ring-neutral-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none bg-neutral-50" >
+        <Button variant="ghost" className="p-2 bg-gray-200 text-black hover:bg-gray-300 h-min text-xs" onClick={() => { }}>
           <HiOutlineDotsHorizontal size={14} />
-        </ button>
+        </Button>
       </PopoverTrigger>
       <PopoverContent className="rounded-xl p-1.5 bg-white flex flex-col">
 
@@ -259,3 +270,51 @@ function MoreActionsPopover({ selectedProducts }: { selectedProducts: Product[] 
     </Popover >)
 }
 
+
+function ProductFilter({ filter, giftCards, statuses, vendors, tags, productTypes, collections, markets, salesChannels }: { filter: string, giftCards: GiftCard[], tags: string[], productTypes: string[], statuses: string[], collections: Collection[], markets: Market[], salesChannels: SalesChannel[], vendors: Vendor[] }) {
+
+  function handleProductVendorChange(vendorIds: string[] | null) {
+    // TODO
+  }
+
+  function handleProductTagChange(tags: string | null) {
+    // TODO
+  }
+
+  function handleStatusChange(statuses: string[] | null) {
+    // TODO
+  }
+
+  function handleSalesChannelChange(salesChannelIds: string | null) {
+    // TODO
+  }
+
+  function handleMarketChange(marketIds: string | null) {
+    // TODO
+  }
+
+  function handleProductTypeChange(productTypes: string[] | null) {
+    // TODO
+  }
+
+  function handleCollectionChange(collectionIds: string | null) {
+    // TODO
+  }
+
+  const selectedTag = tags[0]
+  const selectedMarket = markets[0]
+  const selectedCollection = collections[0]
+  const selectedSalesChannel = salesChannels[0]
+
+  switch (filter) {
+    case "Product vendor": return <ProductVendorFilterPopover vendors={vendors} onChange={handleProductVendorChange} />;
+    case "Tagged with": return <TagFilterPopover tags={tags} selectedTag={selectedTag} onChange={handleProductTagChange} />;
+    case "Status": return <StatusFilterPopover statuses={statuses} onChange={handleStatusChange} />;
+    case "Sales channel": return <SalesChannelFilterPopover salesChannels={salesChannels} selectedSalesChannel={selectedSalesChannel} onChange={handleSalesChannelChange} />;
+    case "Market": return <MarketFilterPopover markets={markets} selectedMarket={selectedMarket} onChange={handleMarketChange} />;
+    case "Product type": return <ProductTypeFilterPopover productTypes={productTypes} onChange={handleProductTypeChange} />;
+    case "Collection": return <CollectionFilterPopover collections={collections} selectedCollection={selectedCollection} onChange={handleCollectionChange} />;
+    case "Gift card": return <GiftCardFilterPopover giftCards={giftCards} onChange={handleProductTypeChange} />;
+    default: throw new Error("Invalid products filter" + filter)
+  }
+}

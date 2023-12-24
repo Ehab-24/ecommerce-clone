@@ -1,14 +1,9 @@
 import Card from "@/components/Card";
 import React from "react";
 import EditVariantDialog from "@/components/products/variants/EditVariantDialog";
-import EditVariantsPopover from "@/components/products/EditVariantsPopover";
-import { RxDragHandleDots2 } from "react-icons/rx";
-import { RiDeleteBin6Line } from "react-icons/ri";
+import EditVariantsPopover from "@/components/products/popovers/EditVariantsPopover";
 import { ApiProduct, Variant } from "@/types/product";
 import SectionTitle from "@/components/SectionTitle";
-import Select from "@/components/Select";
-import Input from "@/components/Input";
-import { IoIosClose } from "react-icons/io";
 import TextButton from "@/components/buttons/TextButton";
 import Text from "@/components/Text";
 import Checkbox from "@/components/Checkbox";
@@ -31,25 +26,6 @@ export default function VariantsCard({
 
   const [selectedVariants, setSelectedVariants] = React.useState<Variant[]>([]);
   const [selectedLocation, setSelectedLocation] = React.useState<Location | null>(null);
-
-  function variantsInclude(name: string): boolean {
-    return product.variantOptions.map((v) => v.name).includes(name);
-  }
-
-  function getPlaceholder(name: string): string {
-    switch (name) {
-      case "color":
-        return "Red, Blue, Green";
-      case "size":
-        return "Small, Medium, Large";
-      case "material":
-        return "Cotton, Polyester";
-      case "style":
-        return "Slim fit, Regular fit";
-      default:
-        return "";
-    }
-  }
 
   function getNextVariant(): string {
     const vs: string[] = ["color", "size", "material", "style"];

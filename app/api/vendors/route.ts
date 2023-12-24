@@ -13,9 +13,10 @@ export async function GET() {
                 }
             },
         ]
-        const types = await db.collection('products').aggregate(pipeline).toArray()
+        const names = await db.collection('products').aggregate(pipeline).toArray()
+        const vendors = names.map((name: any) => ({ _id: name._id, name: name._id }))
 
-        return NextResponse.json(types, { status: 200 })
+        return NextResponse.json(vendors, { status: 200 })
     }
     catch (error) {
         return errorResponse(error)

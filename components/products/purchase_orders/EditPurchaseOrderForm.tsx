@@ -139,7 +139,7 @@ export default function EditPurchaseOrderForm({ initialOrder, currencies }: { cu
 
         </div>
 
-        <Datatable products={products} />
+        <Datatable initialProducts={products} />
       </Card>
 
       <div className=" flex flex-col 2xl:flex-row w-full gap-6">
