@@ -4,6 +4,7 @@ import { z } from 'zod'
 const ApiMarketSchema = z.object({
   name: z.string(),
   description: z.string().optional(),
+  domain: z.string().optional(),
 })
 
 type ApiMarket = z.infer<typeof ApiMarketSchema>

@@ -8,7 +8,7 @@ export default function Checkbox({
   onChange,
 }: {
   id: string;
-  label?: string;
+  label?: React.ReactNode;
   checked?: boolean;
   disabled?: boolean;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
