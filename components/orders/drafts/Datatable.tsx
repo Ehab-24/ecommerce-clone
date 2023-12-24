@@ -94,7 +94,7 @@ const Datatable = () => {
                   key={f}
                   variant="outline"
                   className="px-2 rounded-lg h-min py-1 text-gray-800 text-xs hover:bg-gray-200/75"
-                  onClick={() => {}}
+                  onClick={() => { }}
                 >
                   {f}
                   <IoClose
@@ -106,7 +106,7 @@ const Datatable = () => {
               ))}
 
               <AddFilterPopover
-              disabled={filters}
+                disabled={[]}
                 filters={allFilters}
                 onSelect={(f) => setFilters([...filters, f])}
               />
@@ -127,15 +127,14 @@ const Datatable = () => {
                 <Button
                   key={v}
                   variant="ghost"
-                  className={`hover:bg-gray-200/75 px-3 py-1.5 h-min ${
-                    v === selectedView ? "bg-gray-200" : "bg-transparent"
-                  }`}
+                  className={`hover:bg-gray-200/75 px-3 py-1.5 h-min ${v === selectedView ? "bg-gray-200" : "bg-transparent"
+                    }`}
                   onClick={() => setSelectedView(v)}
                 >
                   <Text className="text-gray-800 capitalize">{v}</Text>
                 </Button>
               ))}
-              <AddViewDialog onSave={(name) => {}} />
+              <AddViewDialog onSave={(name) => { }} />
             </div>
 
             <OutlinedButton
@@ -152,7 +151,7 @@ const Datatable = () => {
       <div>
         <div className="hidden md:flex text-gray-600 font-semibold items-center text-sm justify-between px-4 py-2 bg-gray-100 border-y">
           <div className="flex">
-            <Checkbox checked={false} id="selectAll" onChange={() => {}} />
+            <Checkbox checked={false} id="selectAll" onChange={() => { }} />
             <p>Draft order</p>
           </div>
           <p>Status</p>

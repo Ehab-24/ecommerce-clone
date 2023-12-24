@@ -182,7 +182,7 @@ export default function CreatePurchaseOrderForm({ suppliers, locations, currenci
 
           </div>
 
-          <Datatable initialProducts={products} />
+          <Datatable initialProducts={products} giftCards={[]} vendors={[]} statuses={[]} tags={[]} markets={[]} salesChannels={[]} collections={[]} productTypes={[]} />
         </Card>
 
         <div className=" flex flex-col 2xl:flex-row w-full gap-6">

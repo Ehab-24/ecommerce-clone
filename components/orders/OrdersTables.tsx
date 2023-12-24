@@ -106,7 +106,7 @@ export default function Datatable({ orders }: { orders: Order[] }) {
                   key={f}
                   variant="outline"
                   className="px-2 rounded-lg h-min py-1 text-gray-800 text-xs hover:bg-gray-200/75"
-                  onClick={() => {}}
+                  onClick={() => { }}
                 >
                   {f}
                   <IoClose
@@ -118,7 +118,7 @@ export default function Datatable({ orders }: { orders: Order[] }) {
               ))}
 
               <AddFilterPopover
-                disabled={filters}
+                disabled={[]}
                 filters={allFilters}
                 onSelect={(f) => setFilters([...filters, f])}
               />
@@ -139,15 +139,14 @@ export default function Datatable({ orders }: { orders: Order[] }) {
                 <Button
                   key={v}
                   variant="ghost"
-                  className={`hover:bg-gray-200/75 px-3 py-1.5 h-min ${
-                    v === selectedView ? "bg-gray-200" : "bg-transparent"
-                  }`}
+                  className={`hover:bg-gray-200/75 px-3 py-1.5 h-min ${v === selectedView ? "bg-gray-200" : "bg-transparent"
+                    }`}
                   onClick={() => setSelectedView(v)}
                 >
                   <Text className="text-gray-800 capitalize">{v}</Text>
                 </Button>
               ))}
-              <AddViewDialog onSave={(name) => {}} />
+              <AddViewDialog onSave={(name) => { }} />
             </div>
 
             <OutlinedButton
@@ -172,7 +171,7 @@ export default function Datatable({ orders }: { orders: Order[] }) {
             { label: "Total", value: "total" },
             { label: "Channel", value: "channel" },
           ]}
-          onChange={(val) => {}}
+          onChange={(val) => { }}
         />
       </div>
 
@@ -200,7 +199,7 @@ export default function Datatable({ orders }: { orders: Order[] }) {
                 {selectedOrders.some((p) => p) ? (
                   ""
                 ) : h.sortable ? (
-                  <SortableHeader header={h} onClick={() => {}} sorted="none" />
+                  <SortableHeader header={h} onClick={() => { }} sorted="none" />
                 ) : (
                   h.label
                 )}
@@ -257,7 +256,7 @@ export default function Datatable({ orders }: { orders: Order[] }) {
       {selectedOrders.some((p) => p) && (
         <div className="py-4 min-  grid bg-white place-items-center">
           <Card className="px-4 py-2 flex gap-2">
-            <OutlinedButton onClick={() => {}}>Bulk edit</OutlinedButton>
+            <OutlinedButton onClick={() => { }}>Bulk edit</OutlinedButton>
           </Card>
         </div>
       )}

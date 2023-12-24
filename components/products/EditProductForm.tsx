@@ -28,12 +28,29 @@ import StatusText from "../StatusText";
 import Text from "@/components/Text";
 import TextButton from "../buttons/TextButton";
 import Spinner from "../Spinner";
+import { Publishing } from "./Publishing";
+import { SalesChannel } from "@/types/salesChannel";
+import { Market } from "@/types/market";
+import Shipping from "./Shipping";
+import SearchEngineListing from "./SearchEngineListing";
+import ProductOrganization from "./ProductOrganization";
+import Inventory from "./Inventory";
 
 export default function EditProductForm({ initialProduct, locations }: { locations: Location[], initialProduct: Product }) {
 
+  const salesChannels: SalesChannel[] = [
+    { _id: "1", name: "Online Store", createdAt: (new Date).toString(), updatedAt: (new Date).toString() },
+    { _id: "2", name: "POS", createdAt: (new Date).toString(), updatedAt: (new Date).toString() },
+  ]
+  const markets: Market[] = [
+    { _id: "1", name: "US", createdAt: (new Date).toString(), updatedAt: (new Date).toString() },
+    { _id: "2", name: "CA", createdAt: (new Date).toString(), updatedAt: (new Date).toString() },
+    { _id: "3", name: "UK", createdAt: (new Date).toString(), updatedAt: (new Date).toString() },
+  ]
+
   const params = useParams();
   const router = useRouter();
-  const [product, setProduct] = React.useState<ApiProduct>({ ...initialProduct, vendor: initialProduct.vendor._id, locations: initialProduct.locations.map(l => l._id) })
+  const [product, setProduct] = React.useState<ApiProduct>({ ...initialProduct, vendor: initialProduct.vendor._id, locations: initialProduct.locations.map(l => l._id), markets: initialProduct.markets.map(m => m._id) })
   const [loading, setLoading] = React.useState(false)
 
   useEffect(() => {
@@ -184,19 +201,13 @@ export default function EditProductForm({ initialProduct, locations }: { locatio
               <Pricing product={product} setProduct={setProduct} />
             </Card>
 
-            <Card className=" flex-col flex p-4 gap-4">
-              <SectionTitle title="Inventory" />
-              <Inventory product={product} setProduct={setProduct} />
-            </Card>
+            <Inventory product={product} setProduct={setProduct} loading={loading} />
 
-            <Card className=" flex-col flex p-4 gap-4">
-              <SectionTitle title="Shipping" />
-              <Shipping product={product} setProduct={setProduct} />
-            </Card>
+            <Shipping loading={loading} product={product} setProduct={setProduct} />
 
             <VariantsCardEditPage loading={loading} productId={initialProduct._id} locations={locations} initialProduct={initialProduct} product={product} setProduct={setProduct} />
 
-            <SearchEngineListings product={product} setProduct={setProduct} />
+            <SearchEngineListing product={product} setProduct={setProduct} loading={loading} />
           </div>
 
           <div className="flex w-full 2xl:max-w-[280px] flex-col gap-4">
@@ -217,9 +228,14 @@ export default function EditProductForm({ initialProduct, locations }: { locatio
               />
             </Card>
 
-            <Card className=" flex-col flex p-4 gap-4">
-              <SectionTitle title="Product Organization" />
-              <ProductOrganization product={product} setProduct={setProduct} />
+            <Publishing product={product} setProduct={setProduct} markets={markets} salesChannels={salesChannels} />
+
+            <ProductOrganization product={product} setProduct={setProduct} loading={loading} />
+
+            <Card className="p-4">
+              <Select label="Theme template" options={[
+                { label: "Default theme", value: "default" }
+              ]} onChange={() => { }} />
             </Card>
           </div>
 
@@ -330,268 +346,7 @@ function Pricing({
   );
 }
 
-function Inventory({
-  product,
-  setProduct,
-}: {
-  product: ApiProduct;
-  setProduct: React.Dispatch<React.SetStateAction<ApiProduct>>;
-}) {
-  return (
-    <>
-      <Checkbox
-        id="tarck-quantity"
-        checked={product.trackQuantity}
-        label="Track Quantity"
-        onChange={(e) =>
-          setProduct({ ...product, trackQuantity: e.target.checked })
-        }
-      />
-
-      <div className=" flex items-center w-full justify-between mb-4">
-        <p className="text-sm text-gray-900">Block 6-C2 Park</p>
-        {product.trackQuantity ? (
-          <div>
-            <Input
-              id="quantity"
-              value={product.quantity}
-              label=""
-              placeholder="0"
-              type="number"
-              onChange={(e) =>
-                setProduct({ ...product, quantity: Number(e.target.value) })
-              }
-            />
-          </div>
-        ) : (
-          <p className=" text-sm text-gray-700">Not Tracked</p>
-        )}
-      </div>
-      {product.trackQuantity && (
-        <Checkbox
-          id="continue-selling-when-out-of-stock"
-          label="Continue selling when out of stock"
-          onChange={(e) =>
-            setProduct({
-              ...product,
-              continueSellingWhenOutOfStock: e.target.checked,
-            })
-          }
-        />
-      )}
-      <Checkbox
-        id="has-sku"
-        label="This product has a SKU or barcode"
-        onChange={(e) => setProduct({ ...product, hasSku: e.target.checked })}
-      />
-
-      {product.hasSku && (
-        <div className=" w-full flex gap-4 mt-4">
-          <Input
-            id="product-sku"
-            value={product.sku}
-            placeholder=""
-            label="SKU (Stock Keeping Unit)"
-            onChange={(e) => setProduct({ ...product, sku: e.target.value })}
-          />
-          <Input
-            id="product-barcode"
-            value={product.barcode}
-            placeholder=""
-            label="Barcode (ISBN, UPC, GTIN, etc.)"
-            onChange={(e) =>
-              setProduct({ ...product, barcode: e.target.value })
-            }
-          />
-        </div>
-      )}
-    </>
-  );
-}
 
 
 
-function Shipping({
-  product,
-  setProduct,
-}: {
-  product: ApiProduct;
-  setProduct: React.Dispatch<React.SetStateAction<ApiProduct>>;
-}) {
-  return (
-    <>
-      <Checkbox
-        id="physical-product"
-        checked={product.isPhysicalProduct}
-        label="This is a physical product"
-        onChange={(e) =>
-          setProduct({ ...product, isPhysicalProduct: e.target.checked })
-        }
-      />
 
-      <div className="h-4" />
-      {product.isPhysicalProduct ? (
-        <>
-          <div className=" w-full flex gap-4 items-end justify-between mb-4">
-            <div className="w-full">
-              <Input
-                id="weight"
-                value={product.weight}
-                label="Weight"
-                placeholder="0.0"
-                type="number"
-                onChange={(e) =>
-                  setProduct({ ...product, weight: Number(e.target.value) })
-                }
-              />
-            </div>
-
-            <div className="w-full">
-              <Select
-                label="Weight Unit"
-                value={product.weightUnit}
-                options={[
-                  { value: "kg", label: "kg" },
-                  { value: "g", label: "g" },
-                  { value: "lb", label: "lb" },
-                  { value: "oz", label: "oz" },
-                ]}
-                onChange={(e) =>
-                  setProduct({ ...product, weightUnit: e.target.value as "kg" | "g" | "lb" | "oz" })
-                }
-              />
-            </div>
-          </div>
-
-          <Select
-            label="Country/Region of origin"
-            value={product.countryOfOrigin}
-            options={countries}
-            onChange={(e) =>
-              setProduct({ ...product, countryOfOrigin: e.target.value })
-            }
-          />
-        </>
-
-      ) : (
-        <p>Customers won’t enter shipping details at checkout.</p>
-      )}
-    </>
-  );
-}
-
-function ProductOrganization({
-  product,
-  setProduct,
-}: {
-  product: ApiProduct;
-  setProduct: React.Dispatch<React.SetStateAction<ApiProduct>>;
-}) {
-  return (
-    <>
-      <Input
-        id="product-category"
-        value={product.category}
-        label="Product category"
-        placeholder="Apparel & Accessories"
-        onChange={(e) =>
-          setProduct({ ...product, category: e.target.value })
-        }
-      />
-      <Input
-        id="product-type"
-        value={product.type}
-        label="Product Type"
-        placeholder=""
-        onChange={(e) =>
-          setProduct({ ...product, type: e.target.value })
-        }
-      />
-
-      { /*TODO: change to Select*/}
-      <Input
-        id="vendor"
-        value={product.vendor}
-        label="Vendor"
-        onChange={(e) => setProduct({ ...product, vendor: e.target.value })}
-      />
-      <Input
-        id="collections"
-        value={product.collection}
-        label="Collections"
-        placeholder=""
-        onChange={(e) => {/*TODO */ }}
-      />
-
-      < Input
-        id="tags"
-        label="Tags"
-        placeholder=""
-        onKeyDown={(e) => {
-          const value = e.currentTarget.value;
-          if (e.key === "Enter" && value !== "") {
-            setProduct({ ...product, tags: [...product.tags, value] });
-            e.currentTarget.value = "";
-          }
-        }}
-      />
-      <div className="flex gap-2">
-        {product.tags.map((tag) => (
-          <div
-            key={tag}
-            className="bg-slate-200 text-gray-900 px-2 py-1 rounded-md text-sm flex items-center gap-1"
-          >
-            {tag}{" "}
-            <button
-              onClick={() =>
-                setProduct({
-                  ...product,
-                  tags: product.tags.filter((t) => t !== tag),
-                })
-              }
-            >
-              <IoIosClose size={20} />
-            </button>
-          </div>
-        ))}
-      </div>
-    </>
-  );
-}
-
-
-function SearchEngineListings({ product, setProduct }: { product: ApiProduct, setProduct: React.Dispatch<React.SetStateAction<ApiProduct>> }) {
-
-  const [edit, setEdit] = React.useState(false)
-
-  return (
-    <Card className="flex p-4 flex-col mb-4 items-stretch">
-      {
-        edit ? (
-
-          <>
-            <SectionTitle title="Search Engine Listing" />
-            <p className=" text-xs text-gray-900 mb-8">Add a title and description to see how this collection might appear in a search engine listing</p>
-            <Input id="seo-title" value={product.seo.title} onChange={e => setProduct({ ...product, seo: { ...product.seo, title: e.target.value } })} label="SEO Title" />
-            <div className="h-4" />
-            <TextArea label="SEO Description" value={product.seo.description} onChange={e => setProduct({ ...product, seo: { ...product.seo, description: e.target.value } })} />
-          </>
-
-        ) : (
-
-          <>
-            <div className="flex w-full justify-between">
-              <SectionTitle title="Search Engine Listing" />
-              <TextButton onClick={() => setEdit(true)}>
-                Edit
-              </TextButton>
-            </div>
-            <Text className="text-gray-800 text-xl md:text-xl">{product.seo.title || product.title}</Text>
-            <Text>{product.seo.description || product.description}</Text>
-          </>
-
-        )
-      }
-    </Card>
-  )
-}
