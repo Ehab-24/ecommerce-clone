@@ -13,7 +13,8 @@ export async function GET() {
                 }
             },
         ]
-        const types = await db.collection('products').aggregate(pipeline).toArray()
+        let types = await db.collection('products').aggregate(pipeline).toArray()
+        types = types.filter(type => !!type._id)
 
         return NextResponse.json(types, { status: 200 })
     }

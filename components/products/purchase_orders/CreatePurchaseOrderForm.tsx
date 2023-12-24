@@ -87,7 +87,7 @@ export default function CreatePurchaseOrderForm({ suppliers, locations, currenci
       <div className="flex-col max-w-4xl w-full flex gap-6 ">
 
         <Card className="flex flex-col items-center justify-center p-4">
-          <div className="flex w-full h-full gap-4">
+          <div className="flex flex-col md:flex-row w-full h-full gap-4">
 
             <div className="w-full h-full flex flex-col items-start gap-4">
               <SectionTitle title="Supplier" />
@@ -131,7 +131,7 @@ export default function CreatePurchaseOrderForm({ suppliers, locations, currenci
             </div>
           </div>
 
-          <div className="w-full flex justify-between gap-4 mt-8">
+          <div className="w-full flex flex-col md:flex-row justify-between gap-4 mt-8">
             <Select
               label="Payment Terms (optional)"
               onChange={e => setPurchaseOrder({ ...purchaseOrder, paymentTerms: e.target.value })}
@@ -182,7 +182,7 @@ export default function CreatePurchaseOrderForm({ suppliers, locations, currenci
 
           </div>
 
-          <Datatable products={products} />
+          <Datatable initialProducts={products} giftCards={[]} vendors={[]} statuses={[]} tags={[]} markets={[]} salesChannels={[]} collections={[]} productTypes={[]} />
         </Card>
 
         <div className=" flex flex-col 2xl:flex-row w-full gap-6">
@@ -227,7 +227,7 @@ export default function CreatePurchaseOrderForm({ suppliers, locations, currenci
         </div>
       </div>
 
-      <div className="w-full max-w-4xl flex justify-end mb-8">
+      <div className="w-full max-w-4xl flex justify-end mb-8 px-4 md:px-0">
         {
           loading ? (
             <Spinner />

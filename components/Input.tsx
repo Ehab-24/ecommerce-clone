@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React from "react";
 
 export default function Input({
@@ -38,7 +39,7 @@ export default function Input({
       )}
       {
         icon ? (
-          <div className={`flex items-center gap-2 w-full py-1.5 px-2.5 ring-0 rounded-lg ${isFocus ? "border-2 border-gray-500" : "border border-gray-500"}`}>
+          <div className={cn(`flex items-center gap-2 w-full py-1.5 px-2.5 ring-0 rounded-lg ${isFocus ? "border-2 border-gray-500" : "border border-gray-500"}`, className)}>
             {icon}
             <input
               disabled={disabled}
@@ -65,7 +66,7 @@ export default function Input({
             onKeyDown={onKeyDown}
             onFocus={() => setIsFocus(true)}
             onBlur={() => setIsFocus(false)}
-            className={`pl-3 text-sm sm:text-xs w-full border border-gray-200 rounded-lg py-1 outline outline-1 outline-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent ${className}`}
+            className={cn("pl-3 text-sm sm:text-xs w-full border border-gray-200 rounded-lg py-1 outline outline-1 outline-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent", className)}
             placeholder={placeholder}
             required
           />

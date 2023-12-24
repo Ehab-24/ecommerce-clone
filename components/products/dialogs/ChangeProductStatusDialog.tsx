@@ -15,6 +15,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { ZodError } from "zod";
 import Spinner from "@/components/Spinner";
+import { Button } from "@/components/ui/button";
 
 export default function ChangeProductStatusDialog({ text, successMessage, status, selectedProducts }: { selectedProducts: Product[], successMessage: string, status: string, text: string }) {
 
@@ -51,9 +52,9 @@ export default function ChangeProductStatusDialog({ text, successMessage, status
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <OutlinedButton onClick={() => setOpen(!open)}>
+        <Button variant="ghost" className="p-2 bg-gray-200 text-black hover:bg-gray-300 h-min text-xs" onClick={() => { }}>
           Set as {status}
-        </OutlinedButton>
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

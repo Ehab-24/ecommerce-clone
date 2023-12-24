@@ -6,11 +6,9 @@ import Link from "next/link"
 import Card from "@/components/Card"
 import SectionTitle from "@/components/SectionTitle"
 import DatePicker from "@/components/DatePicker"
-import OutlinedButtonSmall from "@/components/buttons/OutlinedButtonSmall"
 import Select from "@/components/Select"
 import { Location } from "@/types/location"
 import StatusText from "@/components/StatusText"
-import FilledButtonSmall from "@/components/buttons/FilledButtonSmall"
 import { ApiTransfer, ApiTransferSchema, Transfer } from "@/types/transfer"
 import Input from "@/components/Input"
 import { IoIosArrowRoundBack, IoIosClose, IoIosSearch } from "react-icons/io"
@@ -22,6 +20,9 @@ import { ZodError } from "zod"
 import Datatable from "../Datatable"
 import { Product } from "@/types/product"
 import BrowseProductsDialog from "@/components/BrowseProductsDialog"
+import OutlinedButton from "@/components/buttons/OutlinedButton"
+import { HiOutlineDotsHorizontal } from "react-icons/hi"
+import { Button } from "@/components/ui/button"
 
 export default function EditTransferForm({ locations, initialTransfer }: { locations: Location[], initialTransfer: Transfer }) {
 
@@ -62,12 +63,12 @@ export default function EditTransferForm({ locations, initialTransfer }: { locat
   }
 
   return (
-    <div className="flex-col max-w-4xl w-full flex gap-6 p-8 ">
-      <div className="flex gap-3 items-center justify-between">
+    <div className="flex-col max-w-4xl w-full flex gap-6 md:px-8 py-8 ">
+      <div className="flex px-4 md:px-0 gap-3 items-start md:items-center justify-between">
 
-        <div className="flex gap-4 items-start">
-          <Link href="/products/transfers" className="p-2 rounded-md hover:bg-black/10 transition-all">
-            <IoIosArrowRoundBack className="text-sm text-[#1a1a1a]" />
+        <div className="flex flex-col md:flex-row gap-4 items-start">
+          <Link href="/products/transfers" className="p-1 rounded-md hover:bg-black/10 transition-all">
+            <IoIosArrowRoundBack size={20} className="text-[#1a1a1a]" />
           </Link>
           <h1 className="text-xl font-bold text-neutral-800 flex gap-2 items-center">
             #{transfer.referenceNumber}
@@ -75,34 +76,43 @@ export default function EditTransferForm({ locations, initialTransfer }: { locat
           </h1>
         </div>
 
-        <div className="flex gap-4">
-          <OutlinedButtonSmall onClick={() => { }}>
-            Delete
-          </OutlinedButtonSmall>
-          <OutlinedButtonSmall onClick={() => { }}>
-            Duplicate
-          </OutlinedButtonSmall>
+        <div className="flex h-min gap-2">
+          <div className="hidden md:flex md:gap-2">
+            <OutlinedButton onClick={() => { }}>
+              Delete
+            </OutlinedButton>
+            <OutlinedButton onClick={() => { }}>
+              Duplicate
+            </OutlinedButton>
+          </div>
+
+          <div className="flex md:hidden">
+            {/*TODO: handle onClick*/}
+            <Button variant="ghost" className="p-2 bg-gray-200 text-black hover:bg-gray-300 h-min text-xs" onClick={() => { }}>
+              <HiOutlineDotsHorizontal size={14} />
+            </Button>
+          </div>
 
           {
             transfer.status === "draft" ? (
-              <FilledButtonSmall onClick={() => setTransfer({ ...transfer, status: "pending" })}>
+              <FilledButton onClick={() => setTransfer({ ...transfer, status: "pending" })}>
                 Mark as Pending
-              </FilledButtonSmall>
+              </FilledButton>
             ) : (
 
-              <FilledButtonSmall onClick={() => { }}>
+              <FilledButton onClick={() => { }}>
                 Recieve Inventory
-              </FilledButtonSmall>
+              </FilledButton>
             )
           }
         </div>
 
       </div>
 
-      <Card className="flex p-4">
+      <Card className="flex flex-col md:flex-row gap-4 md:gap-0 p-4">
         <div className="flex flex-col w-full">
           <SectionTitle title="Origin" />
-          <div className="w-min">
+          <div className="md:w-min">
             <Select value={transfer.origin} onChange={e => setTransfer({ ...transfer, origin: locations.find(l => l._id === e.target.value)!._id })} options={locations.map(l => ({ label: l.name, value: l._id! }))} />
           </div>
         </div>
@@ -111,7 +121,7 @@ export default function EditTransferForm({ locations, initialTransfer }: { locat
 
         <div className="flex flex-col w-full">
           <SectionTitle title="Destination" />
-          <div className="w-min">
+          <div className="md:w-min">
             <Select value={transfer.destination} onChange={e => setTransfer({ ...transfer, destination: locations.find(l => l._id === e.target.value)!._id })} options={locations.map(l => ({ label: l.name, value: l._id! }))} />
           </div>
         </div>
@@ -132,10 +142,10 @@ export default function EditTransferForm({ locations, initialTransfer }: { locat
 
         </div>
 
-        <Datatable products={products} />
+        <Datatable initialProducts={products} giftCards={[]} vendors={[]} statuses={[]} tags={[]} markets={[]} salesChannels={[]} collections={[]} productTypes={[]} />
       </Card>
 
-      <div className="flex gap-4">
+      <div className="flex flex-col md:flex-row gap-4">
         <Card className="flex flex-col p-4 gap-4 h-min w-full">
           <SectionTitle title="Shipping Details" />
           <DatePicker date={transfer.shipping.arrivalDate ? new Date(transfer.shipping.arrivalDate) : undefined} setDate={d => setTransfer({ ...transfer, shipping: { ...transfer.shipping, arrivalDate: d } })} label="Estimated Arrival Date" />
@@ -149,7 +159,7 @@ export default function EditTransferForm({ locations, initialTransfer }: { locat
         </Card>
       </div>
 
-      <div className="w-full max-w-4xl flex justify-end mb-8">
+      <div className="w-full max-w-4xl flex justify-end mb-8 px-4 md:px-0">
         {
           loading ? (
             <Spinner />

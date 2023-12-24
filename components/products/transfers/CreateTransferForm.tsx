@@ -73,11 +73,11 @@ export default function CreateTranserForm({ locations }: { locations: Location[]
 
   return (
     <>
-      <Card className="flex p-4">
+      <Card className="flex flex-col md:flex-row gap-4 md:gap-0 p-4">
 
         <div className="flex flex-col w-full">
           <SectionTitle title="Origin" />
-          <div className="w-min">
+          <div className="md:w-min w-full">
             <Select value={transfer.origin} onChange={e => setTransfer({ ...transfer, origin: e.target.value })} options={locations.map(l => ({ label: l.name, value: l._id }))} />
           </div>
         </div>
@@ -86,7 +86,7 @@ export default function CreateTranserForm({ locations }: { locations: Location[]
 
         <div className="flex flex-col w-full">
           <SectionTitle title="Destination" />
-          <div className="w-min">
+          <div className="md:w-min w-full">
             <Select value={transfer.destination} onChange={e => setTransfer({ ...transfer, destination: e.target.value })} options={locations.map(l => ({ label: l.name, value: l._id }))} />
           </div>
         </div>
@@ -107,10 +107,10 @@ export default function CreateTranserForm({ locations }: { locations: Location[]
 
         </div>
 
-        <Datatable products={products} />
+        <Datatable initialProducts={products} giftCards={[]} vendors={[]} statuses={[]} tags={[]} markets={[]} salesChannels={[]} collections={[]} productTypes={[]} />
       </Card>
 
-      <div className="flex gap-4">
+      <div className="flex flex-col md:flex-row gap-4">
         <Card className="flex flex-col gap-4 p-4 h-min w-full">
           <SectionTitle title="Shipping Details" />
           <DatePicker label="Estimated Arrival Date" date={transfer.shipping.arrivalDate ? new Date(transfer.shipping.arrivalDate) : undefined} setDate={(d) => setTransfer({ ...transfer, shipping: { ...transfer.shipping, arrivalDate: d } })} />
@@ -124,7 +124,7 @@ export default function CreateTranserForm({ locations }: { locations: Location[]
         </Card>
       </div>
 
-      <div className="w-full max-w-4xl flex justify-end mb-8">
+      <div className="w-full max-w-4xl flex justify-end mb-8 px-4 md:px-0">
         {
           loading ? (
             <Spinner />

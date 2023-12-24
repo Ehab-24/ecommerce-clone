@@ -78,10 +78,10 @@ export default function Datatable({ orders }: { orders: Order[] }) {
 
   return (
     <div className="relative overflow-x-auto overflow-y-scroll shadow-md sm:rounded-lg overflow-hidden">
-      <div className=" flex justify-between items-start w-full bg-white px-2 py-1">
+      <div className=" flex justify-between items-start bg-white px-2 py-1">
         {isSearching ? (
-          <div className="flex mr-2 flex-col w-full">
-            <div className="flex items-center w-full">
+          <div className="flex mr-2 flex-col">
+            <div className="flex items-center">
               <Input
                 id="search"
                 placeholder="Searching all products"
@@ -100,13 +100,13 @@ export default function Datatable({ orders }: { orders: Order[] }) {
               <FilledButton>Save as</FilledButton>
             </div>
 
-            <div className="w-full border-t border-gray-300 pt-2 mt-2 mb-1 flex gap-1">
+            <div className=" border-t border-gray-300 pt-2 mt-2 mb-1 flex gap-1">
               {filters.map((f) => (
                 <Button
                   key={f}
                   variant="outline"
                   className="px-2 rounded-lg h-min py-1 text-gray-800 text-xs hover:bg-gray-200/75"
-                  onClick={() => {}}
+                  onClick={() => { }}
                 >
                   {f}
                   <IoClose
@@ -118,6 +118,7 @@ export default function Datatable({ orders }: { orders: Order[] }) {
               ))}
 
               <AddFilterPopover
+                disabled={[]}
                 filters={allFilters}
                 onSelect={(f) => setFilters([...filters, f])}
               />
@@ -132,21 +133,20 @@ export default function Datatable({ orders }: { orders: Order[] }) {
             </div>
           </div>
         ) : (
-          <div className="flex mr-2 w-full justify-between items-center">
+          <div className="flex mr-2  justify-between items-center">
             <div className="flex gap-2 items-center">
               {views.map((v) => (
                 <Button
                   key={v}
                   variant="ghost"
-                  className={`hover:bg-gray-200/75 px-3 py-1.5 h-min ${
-                    v === selectedView ? "bg-gray-200" : "bg-transparent"
-                  }`}
+                  className={`hover:bg-gray-200/75 px-3 py-1.5 h-min ${v === selectedView ? "bg-gray-200" : "bg-transparent"
+                    }`}
                   onClick={() => setSelectedView(v)}
                 >
                   <Text className="text-gray-800 capitalize">{v}</Text>
                 </Button>
               ))}
-              <AddViewDialog onSave={(name) => {}} />
+              <AddViewDialog onSave={(name) => { }} />
             </div>
 
             <OutlinedButton
@@ -171,12 +171,12 @@ export default function Datatable({ orders }: { orders: Order[] }) {
             { label: "Total", value: "total" },
             { label: "Channel", value: "channel" },
           ]}
-          onChange={(val) => {}}
+          onChange={(val) => { }}
         />
       </div>
 
-      <table className="w-full text-sm text-left rtl:text-right text-gray-500 ">
-        <thead className="text-[10px] text-gray-700 uppercase bg-gray-100 border-t-2 border-b-2 ">
+      <div className="text-sm text-left rtl:text-right text-gray-500 ">
+        <div className="text-[10px] text-gray-700 uppercase bg-gray-100 border-t-2 border-b-2 ">
           <tr>
             <th scope="col" className="p-4">
               <Checkbox
@@ -199,14 +199,14 @@ export default function Datatable({ orders }: { orders: Order[] }) {
                 {selectedOrders.some((p) => p) ? (
                   ""
                 ) : h.sortable ? (
-                  <SortableHeader header={h} onClick={() => {}} sorted="none" />
+                  <SortableHeader header={h} onClick={() => { }} sorted="none" />
                 ) : (
                   h.label
                 )}
               </th>
             ))}
           </tr>
-        </thead>
+        </div>
 
         <tbody className="text-xs">
           {orders.map((p, i) => (
@@ -251,12 +251,12 @@ export default function Datatable({ orders }: { orders: Order[] }) {
             </tr>
           ))}
         </tbody>
-      </table>
+      </div>
 
       {selectedOrders.some((p) => p) && (
-        <div className="py-4 min-w-full w-full grid bg-white place-items-center">
+        <div className="py-4 min-  grid bg-white place-items-center">
           <Card className="px-4 py-2 flex gap-2">
-            <OutlinedButton onClick={() => {}}>Bulk edit</OutlinedButton>
+            <OutlinedButton onClick={() => { }}>Bulk edit</OutlinedButton>
           </Card>
         </div>
       )}

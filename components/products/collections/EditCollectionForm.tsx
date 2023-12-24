@@ -61,10 +61,10 @@ export default function CreateCollectionForm({ initialCollection }: { initialCol
 
   return (
 
-    <div className="flex-col max-w-4xl w-full flex gap-6 p-8 ">
+    <div className="flex-col max-w-4xl w-full flex gap-6 md:px-8 py-8 ">
       <div className="flex gap-3 items-center ">
-        <Link href="/products/collections" className="p-2 rounded-md hover:bg-black/10 transition-all">
-          <IoIosArrowRoundBack className="text-sm text-[#1a1a1a]" />
+        <Link href="/products/collections" className="p-1 rounded-md hover:bg-black/10 transition-all">
+          <IoIosArrowRoundBack size={20} className="text-[#1a1a1a]" />
         </Link>
         <Heading>{collection.title}</Heading>
       </div>
@@ -118,7 +118,7 @@ export default function CreateCollectionForm({ initialCollection }: { initialCol
           </div>
         </div>
 
-        <div className="w-full max-w-4xl flex justify-end mb-8">
+        <div className="w-full max-w-4xl flex justify-end mb-8 px-4 md:px-0">
           {
             loading ? (
               <Spinner />
@@ -137,7 +137,7 @@ function UpdateCondition({ condition, updateCondition, onRemove }: { condition: 
   return (
     <div className=" flex flex-col gap-4 items-center">
 
-      <div className="flex w-full gap-4 flex-row">
+      <div className="flex flex-col mf:flex-row w-full gap-4">
         <div className="w-full">
 
           <Select label="" value={condition.field} onChange={e => updateCondition({ ...condition, field: e.target.value })} options={[

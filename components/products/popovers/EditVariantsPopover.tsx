@@ -3,14 +3,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import EditVariantsPriceDialog from "./variants/EditVariantsPricesDialog"
+import EditVariantsPriceDialog from "../variants/EditVariantsPricesDialog"
 import { ApiProduct } from "@/types/product"
-import EditVariantsQuantitiesDialog from "./variants/EditVariantQuantitiesDialog"
-import EditVariantsSKUsDialog from "./variants/EditVariantsSKUs"
-import EditVariantsRegionsDialog from "./variants/EditVariantRegionDialog"
-import EditVariantsHSCodesDialog from "./variants/EditVariantsHSCodes"
-import EditVariantsBarcodesDialog from "./variants/EditVariantsBarcodesDialog"
-import EditVariantsLocationsDialog from "./variants/EditVariantsLocationsDialog"
+import EditVariantsQuantitiesDialog from "../variants/EditVariantQuantitiesDialog"
+import EditVariantsSKUsDialog from "../variants/EditVariantsSKUs"
+import EditVariantsRegionsDialog from "../variants/EditVariantRegionDialog"
+import EditVariantsHSCodesDialog from "../variants/EditVariantsHSCodes"
+import EditVariantsBarcodesDialog from "../variants/EditVariantsBarcodesDialog"
+import EditVariantsLocationsDialog from "../variants/EditVariantsLocationsDialog"
 import { IoIosArrowDown } from "react-icons/io"
 import { Location } from "@/types/location"
 
@@ -87,24 +87,3 @@ export default function EditVariantsPopover({ product, variant = "default", loca
     </Popover>
   )
 }
-
-// function isInViewport(element: HTMLElement) {
-//   const rect = element.getBoundingClientRect();
-//   return (
-//     rect.top >= 0 &&
-//     rect.left >= 0 &&
-//     rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-//     rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-//   );
-// }
-//
-// window.addEventListener('scroll', function() {
-//   const el = document.getElementById('edit-variants-action-button');
-//   if (!el) return;
-//   const isVisibile = isInViewport(el);
-//
-//   const isAbove = el.getBoundingClientRect().top < 0;
-//
-//   console.log(isVisibile, isAbove)
-// });
-//

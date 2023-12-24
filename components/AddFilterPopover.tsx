@@ -8,14 +8,14 @@ import { Button } from "@/components/ui/button"
 import Text from "./Text"
 
 
-export default function AddFilterPopover({ filters, onSelect }: { filters: string[], onSelect: (filter: string) => void }) {
+export default function AddFilterPopover({ filters, disabled, onSelect }: { filters: string[], disabled: string[], onSelect: (filter: string) => void }) {
 
   const [open, setOpen] = useState(false)
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" className="px-2 border-dashed rounded-lg h-min py-1 text-gray-800 text-xs hover:bg-gray-200/75" onClick={() => { }}>
+        <Button variant="outline" disabled={filters.length === disabled.length} className="px-2 border-dashed rounded-lg h-min py-1 text-gray-800 text-xs hover:bg-gray-200/75" onClick={() => { }}>
           Add filter +
         </Button>
       </PopoverTrigger>
@@ -23,7 +23,7 @@ export default function AddFilterPopover({ filters, onSelect }: { filters: strin
 
         {
           filters.map(f => (
-            <button key={f} className="p-2 w-full text-start bg-transparent hover:bg-gray-100 transition-all rounded-lg" onClick={() => {
+            !disabled.includes(f) && <button key={f} className="p-2 w-full text-start bg-transparent hover:bg-gray-100 transition-all rounded-lg" onClick={() => {
               setOpen(false)
               onSelect(f)
             }}>

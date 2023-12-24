@@ -1,6 +1,8 @@
 import { z } from "zod";
 import { Vendor } from "./vendor";
 import { Location } from "./location";
+import { SalesChannel } from "./salesChannel";
+import { Market } from "./market";
 
 const VariantOptionSchema = z.object({ name: z.string(), values: z.array(z.string()) })
 
@@ -59,6 +61,8 @@ const ApiProductSchema = z.object({
   locations: z.array(z.string()),
   variantOptions: z.array(VariantOptionSchema),
   variantImages: z.array(z.string()),
+  salesChannels: z.array(z.string()),
+  markets: z.array(z.string()),
   media: z.array(
     z.object({
       url: z.string(),
@@ -79,7 +83,7 @@ type Variant = z.infer<typeof VariantSchema>;
 type VariantValue = z.infer<typeof VariantSchema>["values"];
 type VariantOption = z.infer<typeof VariantOptionSchema>;
 
-type Product = Omit<Omit<Omit<Omit<ApiProduct, "createdAt">, "updatedAt">, "vendor">, "locations">
-  & { _id: string; createdAt: string; updatedAt: string; vendor: Vendor; locations: Location[] };
+type Product = Omit<Omit<Omit<Omit<Omit<Omit<ApiProduct, "createdAt">, "updatedAt">, "vendor">, "locations">, "salesChannel">, "markets">
+  & { _id: string; createdAt: string; updatedAt: string; vendor: Vendor; locations: Location[], salesChannels: SalesChannel[], markets: Market[] };
 
 export { type Product, type VariantOption, ApiProductSchema, VariantSchema, type VariantValue, type ApiProduct, type Variant };

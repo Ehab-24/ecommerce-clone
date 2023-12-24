@@ -30,8 +30,8 @@ export default async function TransfersPage() {
   const [locations, transfers] = await Promise.all([locationsRes.json(), transfersRes.json()]) as [Location[], Transfer[]]
 
   return (
-    <div className="bg-gray-100 min-h-screen h-full p-8">
-      <div className=" w-full flex justify-between">
+    <div className="bg-gray-100 min-h-screen h-full md:px-8 py-8">
+      <div className=" w-full flex px-4 md:px-0 justify-between">
         <Heading>Transfers</Heading>
       </div>
       <div className="h-8" />

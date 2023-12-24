@@ -8,7 +8,7 @@ export default function Checkbox({
   onChange,
 }: {
   id: string;
-  label?: string;
+  label?: React.ReactNode;
   checked?: boolean;
   disabled?: boolean;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
@@ -46,7 +46,7 @@ export default function Checkbox({
           </span>
         </label>
         <label
-          className="mt-px pl-3 text-gray-900 text-xs cursor-pointer select-none"
+          className="mt-px pl-3 whitespace-nowrap text-gray-900 text-xs cursor-pointer select-none"
           htmlFor={id}
         >
           {label}

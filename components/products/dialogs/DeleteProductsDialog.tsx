@@ -60,15 +60,15 @@ export default function DeleteProductsDialog({ selectedProducts }: { selectedPro
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Archive {selectedProducts.length} products?</DialogTitle>
+          <DialogTitle>Delete {selectedProducts.length} products?</DialogTitle>
         </DialogHeader>
 
-        <Text className="text-gray-800 p-4">Archiving products will hide them from your sales channels and Shopify admin. You’ll find them using the status filter in your product list. </Text>
+        <Text className="text-gray-800 p-4">This can’t be undone.</Text>
 
         <DialogFooter className="flex gap-2">
           <OutlinedButton onClick={() => setOpen(false)}>Cancel</OutlinedButton>
           {
-            loading ? <Spinner /> : <FilledButton onClick={handleSave}>Archive products</FilledButton>
+            loading ? <Spinner /> : <FilledButton bgClass="bg-red-500 hover:bg-red-700" onClick={handleSave}>Delete</FilledButton>
           }
         </DialogFooter>
       </DialogContent>

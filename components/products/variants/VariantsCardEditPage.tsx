@@ -2,21 +2,15 @@ import Card from "@/components/Card";
 import SectionTitle from "@/components/SectionTitle";
 import Text from "@/components/Text";
 import TextButton from "@/components/buttons/TextButton";
-import { ApiProduct, Product, Variant, VariantOption } from "@/types/product";
+import { ApiProduct, Product, Variant } from "@/types/product";
 import React from "react";
-import EditVariantsPopover from "../EditVariantsPopover";
+import EditVariantsPopover from "../popovers/EditVariantsPopover";
 import Checkbox from "@/components/Checkbox";
-import { RxDragHandleDots2 } from "react-icons/rx";
-import Select from "@/components/Select";
-import Input from "@/components/Input";
-import { IoIosClose } from "react-icons/io";
-import OutlinedButton from "@/components/buttons/OutlinedButton";
 import { Location } from "@/types/location";
 import EditVariantImagesDialog from "./EditVariantImagesDialog";
 import Link from "next/link";
 import VariantOptionPopover from "./VariantOptionPopover";
 import AllLocationsPopover from "./AllLocationsPopover";
-import { RiDeleteBin6Line } from "react-icons/ri";
 import DraggableList from "./DraggableList";
 
 export default function VariantsCardEditPage({
