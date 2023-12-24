@@ -21,7 +21,7 @@ const DraftOrders = () => {
 
         <div>
           <OutlinedButton className="mr-2">Export</OutlinedButton>
-          <Link href="/orders/drafts/new">
+          <Link href="/orders/new">
             <FilledButton>Create Order</FilledButton>
           </Link>
         </div>

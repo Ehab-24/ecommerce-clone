@@ -66,7 +66,7 @@ const Datatable = () => {
 
   return (
     <div className="shadow-sm shadow-black/40 md:rounded-xl">
-      <div className=" flex md:rounded-t-xl overflow-x-auto justify-between items-start w-full bg-white px-2 py-1">
+      <div className=" flex md:rounded-t-xl overflow-x-auto justify-between items-start bg-white px-2 py-1">
         {isSearching ? (
           <div className="flex mr-2 flex-col w-full">
             <div className="flex items-center w-full">
@@ -106,6 +106,7 @@ const Datatable = () => {
               ))}
 
               <AddFilterPopover
+              disabled={filters}
                 filters={allFilters}
                 onSelect={(f) => setFilters([...filters, f])}
               />
