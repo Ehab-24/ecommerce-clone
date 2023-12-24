@@ -13,7 +13,7 @@ export default async function CreatePurchaseOrderPage({ params }: { params: { id
 
   return (
     <div className=" w-full bg-gray-100 items-center flex flex-col">
-      <div className="flex-col max-w-4xl w-full flex gap-6 p-8 ">
+      <div className="flex-col max-w-4xl w-full flex gap-6 md:px-8 py-8">
         <EditPurchaseOrderForm initialOrder={order} currencies={currencies} />
       </div>
     </div>

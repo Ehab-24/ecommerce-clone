@@ -27,6 +27,7 @@ import VariantsCardEditPage from '@/components/products/variants/VariantsCardEdi
 import StatusText from "../StatusText";
 import Text from "@/components/Text";
 import TextButton from "../buttons/TextButton";
+import Spinner from "../Spinner";
 
 export default function EditProductForm({ initialProduct, locations }: { locations: Location[], initialProduct: Product }) {
 
@@ -228,14 +229,22 @@ export default function EditProductForm({ initialProduct, locations }: { locatio
       <div className="w-full max-w-4xl flex gap-4 justify-end mb-8 mt-8 md:mt-0 px-4 md:px-0">
         {
           product.status === "archived" ? (
-            <OutlinedButton onClick={() => handleProductStatusChange("active")}>Unarchive Product</OutlinedButton>
+            <OutlinedButton disabled={loading} onClick={() => handleProductStatusChange("active")}>Unarchive Product</OutlinedButton>
           ) : (
-            <OutlinedButton onClick={() => handleProductStatusChange("archived")}>Archive Product</OutlinedButton>
+            <OutlinedButton disabled={loading} onClick={() => handleProductStatusChange("archived")}>Archive Product</OutlinedButton>
           )
         }
-        <FilledButton bgClass="bg-red-500" onClick={handleDelete}>Delete Product</FilledButton>
+        <FilledButton bgClass="bg-red-500" disabled={loading} onClick={handleDelete}>Delete Product</FilledButton>
         {/*TODO: add shouldSave logic*/}
-        <FilledButton disabled={false} onClick={handleSave}>Save</FilledButton>
+        <div className="w-full max-w-4xl flex justify-end mb-8 px-4 md:px-0">
+          {
+            loading ? (
+              <Spinner />
+            ) : (
+              <FilledButton disabled={loading} onClick={handleSave}>Save</FilledButton>
+            )
+          }
+        </div>
       </div>
 
     </>

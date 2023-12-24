@@ -16,13 +16,13 @@ export default async function CreateTransferPage() {
 
   return (
     <div className=" w-full min-h-screen bg-gray-100 items-center flex flex-col">
-      <div className="flex-col max-w-4xl w-full flex gap-6 p-8 ">
-        <div className="flex gap-3 items-center ">
+      <div className="flex-col max-w-4xl w-full flex gap-6 md:px-8 py-8 ">
+        <div className="flex flex-col md:flex-row gap-3 items-start px-4 md:px-0 md:items-center ">
           <Link
             href="/products/transfers"
-            className="p-2 rounded-md hover:bg-black/10 transition-all"
+            className="p-1 rounded-md hover:bg-black/10 transition-all"
           >
-            <IoIosArrowRoundBack className="text-sm text-[#1a1a1a]" />
+            <IoIosArrowRoundBack size={20} className="text-[#1a1a1a]" />
           </Link>
           <h1 className="text-xl font-bold text-[#1a1a1a]">Create Transfer</h1>
         </div>

@@ -7,13 +7,13 @@ import { IoIosArrowRoundBack } from "react-icons/io";
 export default function NewCollectionPage() {
   return (
     <div className=" w-full bg-gray-100 min-h-screen items-center flex flex-col">
-      <div className="flex-col max-w-4xl w-full flex gap-6 p-8 ">
+      <div className="flex-col max-w-4xl w-full flex gap-6  md:px-8 py-8 ">
         <div className="flex gap-3 items-center ">
           <Link
             href="/products"
-            className="p-2 rounded-md hover:bg-black/10 transition-all"
+            className="p-1 rounded-md hover:bg-black/10 transition-all"
           >
-            <IoIosArrowRoundBack className="text-sm text-[#1a1a1a]" />
+            <IoIosArrowRoundBack size={20} className="text-[#1a1a1a]" />
           </Link>
           <Heading>Create collection</Heading>
         </div>

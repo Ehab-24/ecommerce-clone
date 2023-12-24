@@ -48,10 +48,10 @@ export default function EditGiftCardForm({ initialGiftCard }: { initialGiftCard:
   }
 
   return (
-    <div className="flex px-4 my-8 flex-col gap-6 w-full max-w-4xl">
-      <div className="flex gap-3 items-center ">
-        <Link href="/products/gift_cards" className="p-2 rounded-md hover:bg-black/10 transition-all">
-          <IoIosArrowRoundBack className="text-sm text-[#1a1a1a]" />
+    <div className="flex my-8 flex-col gap-6 w-full max-w-4xl">
+      <div className="flex flex-col md:flex-row px-4 md:px-0 gap-3 items-start md:items-center ">
+        <Link href="/products/gift_cards" className="p-1 rounded-md hover:bg-black/10 transition-all">
+          <IoIosArrowRoundBack size={20} className="text-[#1a1a1a]" />
         </Link>
         <h1 className="text-xl font-bold text-neutral-800 flex gap-2 items-center">
           {card.code.substring(card.code.length - 4)}
@@ -111,7 +111,7 @@ export default function EditGiftCardForm({ initialGiftCard }: { initialGiftCard:
         </div>
       </div>
 
-      <div className="w-full max-w-4xl flex justify-end mb-8">
+      <div className="w-full max-w-4xl flex justify-end mb-8 px-4 md:px-0">
         {
           loading ? (
             <Spinner />

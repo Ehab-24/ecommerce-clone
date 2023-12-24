@@ -76,9 +76,9 @@ export default function Datatable({ initialProducts, giftCards, statuses, collec
   }, [initialProducts, selectedProducts])
 
   return (
-    <div className="relative overflow-x-auto overflow-y-scroll shadow-md sm:rounded-lg overflow-hidden">
+    <div className="relative overflow-x-auto shadow-md sm:rounded-lg overflow-hidden">
 
-      <div className=" flex justify-between items-start w-full bg-white px-2 py-1">
+      <div className=" flex justify-between items-start min-w-full w-full px-2 py-1">
 
         {
           isSearching ? (
@@ -154,72 +154,74 @@ export default function Datatable({ initialProducts, giftCards, statuses, collec
 
       </div>
 
-      <table className="w-full text-sm text-left rtl:text-right text-gray-500 ">
-        <thead className="text-[10px] text-gray-700 uppercase bg-gray-100 border-t-2 border-b-2 ">
-          <tr>
-            <th scope="col" className="p-4">
-              <Checkbox id="select-all-products" label={selectedProducts.some(p => p) ? selectedProducts.filter(p => p).length + " selected" : ""} checked={allChecked} onChange={e => setSelectedProducts(new Array(initialProducts.length).fill(e.target.checked))} />
-            </th>
+      <div className="w-full">
+        <table className="w-full text-sm text-left overflow-y-scroll rtl:text-right text-gray-500 ">
+          <thead className="text-[10px] text-gray-700 uppercase bg-gray-100 border-t-2 border-b-2 ">
+            <tr>
+              <th scope="col" className="p-4">
+                <Checkbox id="select-all-products" label={selectedProducts.some(p => p) ? selectedProducts.filter(p => p).length + " selected" : ""} checked={allChecked} onChange={e => setSelectedProducts(new Array(initialProducts.length).fill(e.target.checked))} />
+              </th>
+              {
+                headerItems.map(h => (
+                  <th key={h.label} scope="col" className="px-6 py-1">
+                    {selectedProducts.some(p => p) ? "" : h.sortable ? <SortableHeader header={h} onClick={() => { }} sorted="none" /> : h.label}
+                  </th>
+                ))
+              }
+            </tr>
+          </thead>
+
+          <tbody className="text-xs">
             {
-              headerItems.map(h => (
-                <th key={h.label} scope="col" className="px-6 py-1">
-                  {selectedProducts.some(p => p) ? "" : h.sortable ? <SortableHeader header={h} onClick={() => { }} sorted="none" /> : h.label}
-                </th>
+              initialProducts.map((p, i) => (
+                <tr key={p._id} className="bg-white border-b hover:bg-gray-50 ">
+                  <td className="w-4 p-4">
+                    <Checkbox id={"select-" + p._id} checked={selectedProducts[i]} label="" onChange={e => {
+                      const newSelectProducts = [...selectedProducts]
+                      newSelectProducts[i] = e.target.checked
+                      setSelectedProducts(newSelectProducts)
+                    }} />
+                  </td>
+
+                  <th scope="row" onClick={() => router.push(`/products/${p._id}`)} className="flex gap-1 items-center xl:min-w-[240px] py-4 font-medium text-gray-900 whitespace-nowrap cursor-pointer">
+                    {
+                      p.media?.length > 0 && (p.media.map((m, i) =>
+                        <div key={i} className=" aspect-square h-8 bg-gray-200 rounded-md overflow-hidden">
+                          <Image width="32" height="32" src={m.url} alt={p.title} className="w-full h-full object-cover" />
+                        </div>
+                      ))
+                    }
+
+                    <p className="ml-4">{p.title}</p>
+                  </th>
+
+                  <td className="px-6 py-2">
+                    <StatusText status={p.status} />
+                  </td>
+                  <td className="px-6 py-2">
+                    {p.quantity} in stock
+                  </td>
+                  <td className="px-6 py-2">
+                    -
+                  </td>
+                  <td className="px-6 py-2">
+                    -
+                  </td>
+                  <td className="px-6 py-2">
+                    {p.category}
+                  </td>
+                  <td className="px-6 py-2">
+                    {p.vendor?.name}
+                  </td>
+                </tr>
               ))
             }
-          </tr>
-        </thead>
-
-        <tbody className="text-xs">
-          {
-            initialProducts.map((p, i) => (
-              <tr key={p._id} className="bg-white border-b hover:bg-gray-50 ">
-                <td className="w-4 p-4">
-                  <Checkbox id={"select-" + p._id} checked={selectedProducts[i]} label="" onChange={e => {
-                    const newSelectProducts = [...selectedProducts]
-                    newSelectProducts[i] = e.target.checked
-                    setSelectedProducts(newSelectProducts)
-                  }} />
-                </td>
-
-                <th scope="row" onClick={() => router.push(`/products/${p._id}`)} className="flex gap-1 items-center xl:min-w-[240px] py-4 font-medium text-gray-900 whitespace-nowrap cursor-pointer">
-                  {
-                    p.media?.length > 0 && (p.media.map((m, i) =>
-                      <div key={i} className=" aspect-square h-8 bg-gray-200 rounded-md overflow-hidden">
-                        <Image width="32" height="32" src={m.url} alt={p.title} className="w-full h-full object-cover" />
-                      </div>
-                    ))
-                  }
-
-                  <p className="ml-4">{p.title}</p>
-                </th>
-
-                <td className="px-6 py-2">
-                  <StatusText status={p.status} />
-                </td>
-                <td className="px-6 py-2">
-                  {p.quantity} in stock
-                </td>
-                <td className="px-6 py-2">
-                  -
-                </td>
-                <td className="px-6 py-2">
-                  -
-                </td>
-                <td className="px-6 py-2">
-                  {p.category}
-                </td>
-                <td className="px-6 py-2">
-                  {p.vendor?.name}
-                </td>
-              </tr>
-            ))
-          }
 
 
 
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </div>
 
       {
         selectedProducts.some(p => p) && (

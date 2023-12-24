@@ -22,10 +22,15 @@ import AdjustmentsDialog from "@/components/products/purchase_orders/Adjustments
 import TitleMini from "@/components/TitleMini";
 import StatusText from "@/components/StatusText";
 import Datatable from "@/components/products/Datatable";
-import { AdjustmentName, ApiPurchaseOrder, PurchaseOrder } from "@/types/purchaseOrder";
+import { AdjustmentName, ApiPurchaseOrder, ApiPurchaseOrderSchema, PurchaseOrder } from "@/types/purchaseOrder";
 import FilledButton from "@/components/buttons/FilledButton";
 import BrowseProductsDialog from "@/components/BrowseProductsDialog";
 import { Product } from "@/types/product";
+import { HiOutlineDotsHorizontal } from "react-icons/hi";
+import Spinner from "@/components/Spinner";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { ZodError } from "zod";
 
 export default function EditPurchaseOrderForm({ initialOrder, currencies }: { currencies: { label: string, value: string }[], initialOrder: PurchaseOrder }) {
 
@@ -42,12 +47,38 @@ export default function EditPurchaseOrderForm({ initialOrder, currencies }: { cu
     return initialOrder.products.reduce((acc, product) => acc + product.tax, 0);
   }
 
+  async function handleSave() {
+    setLoading(true)
+    try {
+
+      ApiPurchaseOrderSchema.parse(purchaseOrder)
+      const { status } = await axios.put(`/api/products/transfers/${initialOrder._id}`, purchaseOrder)
+      if (status === 200) {
+        toast.success("Transfer saved!")
+      }
+
+    }
+    catch (error) {
+
+      if (error instanceof ZodError) {
+        toast.error(error.errors[0].message);
+      } else {
+        toast.error("Something went wrong")
+      }
+      console.log(error)
+
+    }
+    finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <>
-      <div className="flex justify-between items-center ">
-        <div className="flex gap-4 items-center">
-          <Link href="/products/purchase_orders" className="p-2 rounded-md hover:bg-black/10 transition-all">
-            <IoIosArrowRoundBack className="text-sm text-[#1a1a1a]" />
+      <div className="flex px-4 md:px-0 justify-between items-start md:items-center ">
+        <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
+          <Link href="/products/purchase_orders" className="p-1 rounded-md hover:bg-black/10 transition-all">
+            <IoIosArrowRoundBack size={20} className="text-[#1a1a1a]" />
           </Link>
           <h1 className="text-xl font-bold text-neutral-800 flex gap-2 items-center">
             #{purchaseOrder.referenceNumber}
@@ -55,13 +86,23 @@ export default function EditPurchaseOrderForm({ initialOrder, currencies }: { cu
           </h1>
         </div>
 
-        <div className="flex gap-4">
-          <OutlinedButton onClick={() => { }}>
-            Delete
-          </OutlinedButton>
-          <OutlinedButton onClick={() => { }}>
-            Duplicate
-          </OutlinedButton>
+        <div className="flex gap-2">
+          <div className="hidden md:flex md:gap-2">
+            <OutlinedButton onClick={() => { }}>
+              Delete
+            </OutlinedButton>
+            <OutlinedButton onClick={() => { }}>
+              Duplicate
+            </OutlinedButton>
+          </div>
+
+          <div className="flex md:hidden">
+            {/*TODO: handle onClick*/}
+            <Button variant="ghost" className="p-2 bg-gray-200 text-black hover:bg-gray-300 h-min text-xs" onClick={() => { }}>
+              <HiOutlineDotsHorizontal size={14} />
+            </Button>
+          </div>
+
           <FilledButton onClick={() => { }}>
             Mark as Ordered
           </FilledButton>
@@ -69,7 +110,7 @@ export default function EditPurchaseOrderForm({ initialOrder, currencies }: { cu
       </div>
 
       <Card className="flex flex-col items-center justify-center p-4">
-        <div className="flex w-full h-full gap-4">
+        <div className="flex flex-col md:flex-row w-full h-full gap-4">
           <div className="w-full h-full flex flex-col items-start gap-4">
             <SectionTitle title="Supplier" />
             {
@@ -96,7 +137,7 @@ export default function EditPurchaseOrderForm({ initialOrder, currencies }: { cu
           </div>
         </div>
 
-        <div className="w-full flex justify-between gap-4 mt-8">
+        <div className="w-full flex flex-col md:flex-row justify-between gap-4 mt-8">
           <Select label="Payment Terms (optional)" value={purchaseOrder.paymentTerms} onChange={() => { }} options={[
             { "label": "None", "value": "" },
             { "label": "Cash on delivery", "value": "COD" },
@@ -173,6 +214,17 @@ export default function EditPurchaseOrderForm({ initialOrder, currencies }: { cu
             <p className="text-xs text-neutral-800" >$ {initialOrder.products.reduce((acc, p) => acc + (p.price || 10) + p.tax, 0).toFixed(2)}</p>
           </div>
         </Card>
+      </div>
+
+
+      <div className="w-full max-w-4xl flex justify-end mb-8 px-4 md:px-0">
+        {
+          loading ? (
+            <Spinner />
+          ) : (
+            <FilledButton disabled={loading} onClick={handleSave}>Save</FilledButton>
+          )
+        }
       </div>
     </>
   )

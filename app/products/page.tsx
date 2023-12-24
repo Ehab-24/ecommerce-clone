@@ -48,7 +48,7 @@ export default async function ProductsPage() {
       <div className=" mb-8 w-full flex justify-between px-4 md:px-0">
         <h1 className="text-xl font-bold text-[#1a1a1a]">Products</h1>
 
-        <div className=" flex gap-4">
+        <div className=" flex gap-2">
           <ExportImportButtons />
           <FilledButton>
             <Link href="/products/new">Add Product</Link>

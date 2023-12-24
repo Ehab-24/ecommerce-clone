@@ -21,8 +21,8 @@ export default async function PurchaseOrdersPage() {
   const purchaseOrders: PurchaseOrder[] = await res.json()
 
   return (
-    <div className="bg-gray-100 px-4 min-h-screen py-8">
-      <div className=" flex items-center justify-between">
+    <div className="bg-gray-100 md:px-8 min-h-screen py-8">
+      <div className=" flex px-4 md:px-0 items-center justify-between">
         <Heading className="!pb-0">Purchase Orders</Heading>
 
         <FilledButton>

@@ -16,8 +16,8 @@ export default async function CollectionsPage() {
   const collections: Collection[] = await res.json();
 
   return (
-    <div className="bg-gray-100 min-h-screen p-8">
-      <div className=" mb-8 w-full flex justify-between">
+    <div className="bg-gray-100 min-h-screen md:px-8 py-8">
+      <div className=" mb-8 w-full flex px-4 md:px-0 justify-between">
         <h1 className="text-xl font-bold text-[#1a1a1a]">Collections</h1>
 
         <FilledButton>
