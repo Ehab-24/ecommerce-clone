@@ -9,7 +9,9 @@ import Heading from "@/components/Heading";
 import FilledButton from "@/components/buttons/FilledButton";
 import OutlinedButton from "@/components/buttons/OutlinedButton";
 import Link from "next/link";
-import Datatable from "@/components/orders/Datatable";
+// import Datatable from "@/components/orders/Datatable";
+
+import Datatable from "@/components/orders/DatatableAlt";
 
 export default async function OrdersPage() {
 
@@ -59,7 +61,9 @@ export default async function OrdersPage() {
           </Link>
         </div>
       </div>
-      <Datatable initialOrders={orders} />
+      {/* <Datatable initialOrders={orders} /> */}
+
+      <Datatable />
     </div>
 
     // <EmptyPage

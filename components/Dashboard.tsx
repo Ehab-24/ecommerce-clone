@@ -9,21 +9,21 @@ interface DashboardProps {
 
 const Dashboard: React.FC<DashboardProps> = ({ children }) => {
   return (
-    <>
+    <div className="w-full">
       <ShopifyHeader />
       <div className="flex min-h-screen">
         {/* Sidebar */}
-        <div className=" hidden md:block">
+        <div className="hidden md:block">
           <Sidebar />
         </div>
 
         {/* Main Content */}
-        <div className="w-full min-h-full bg-[#f1f1f1]">
+        <div className="flex-1 min-h-full md:w-[75vw] lg:w-full bg-[#f1f1f1]">
           {/* Main Content Area */}
           {children}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

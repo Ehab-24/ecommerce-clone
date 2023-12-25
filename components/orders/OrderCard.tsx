@@ -15,7 +15,7 @@ const OrderCard = ({ order, last }: { order?: any; last?: any }) => {
           <div className="flex">
             <div className="flex md:hidden items-center rounded-xl px-2 py-1 gap-2 bg-gray-100">
               <span className="rounded-full outline-1 p-1.5 bg-gray-500"></span>
-              <p className="text-gray-500 text-xs">{order.payment.status}</p>
+              <p className="text-gray-500 text-xs">{order.payment_status}</p>
             </div>
 
             <div className="flex md:hidden items-center rounded-xl px-2 py-1 gap-2 bg-yellow-100">

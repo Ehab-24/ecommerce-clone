@@ -84,7 +84,7 @@ const SingleOrder = () => {
     <div className="min-h-screen md:p-5 md:w-[100%] lg:px-[20%]">
       <div className="flex flex-col sm:flex-row gap-4 justify-between p-5 md:p-0 md:pb-5">
         <div className="flex gap-4">
-          <Link href="/order.customers">
+          <Link href="/orders">
             <FaArrowLeft className="text-xs mt-2.5 text-neutral-800" />
           </Link>
           <div>
