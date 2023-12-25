@@ -15,6 +15,7 @@ import { ZodError } from "zod";
 import Spinner from "@/components/Spinner";
 import FilledButton from "@/components/buttons/FilledButton";
 import axios from "axios";
+import CustomerPopover from "@/components/popovers/Customer";
 
 
 export default function EditGiftCardForm({ initialGiftCard }: { initialGiftCard: GiftCard }) {
@@ -100,7 +101,7 @@ export default function EditGiftCardForm({ initialGiftCard }: { initialGiftCard:
 
             <SectionTitle title="Customer" />
             {/*TODO: replace with a select popover with actual customers*/}
-            <Input id="customer" icon={<IoIosSearch size={16} />} placeholder="Search or create customer" onChange={e => setCard({ ...card, customer: e.target.value })} />
+            <CustomerPopover />
           </Card>
 
           <Card className="flex p-4 flex-col w-full">

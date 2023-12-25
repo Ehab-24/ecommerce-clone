@@ -10,10 +10,10 @@ export default function SortableHeader<T>({ header, setSortKey, sortKey, onSort 
       if (!header.onSort) return;
       if (sortKey === "asc") {
         setSortKey("desc");
-        onSort(header.onSort("desc"));
+        onSort(header.onSort("desc") as T[]);
       } else {
         setSortKey("asc");
-        onSort(header.onSort("asc"));
+        onSort(header.onSort("asc") as T[]);
       }
     }} className="flex gap-1 z-20 items-center">
       <Text className="text-gray-800">{header.label}</Text>

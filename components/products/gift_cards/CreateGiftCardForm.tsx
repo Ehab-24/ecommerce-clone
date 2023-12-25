@@ -26,7 +26,8 @@ export default function CreateGiftCardForm() {
     createdBy: {
       // TODO:
       name: "Admin",
-    }
+    },
+    recipient: "",
   }
 
   const [giftCard, setGiftCard] = React.useState<ApiGiftCard>(defaultGiftCard)
