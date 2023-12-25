@@ -18,7 +18,7 @@ const Dashboard: React.FC<DashboardProps> = ({ children }) => {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 min-h-full md:w-[75vw] lg:w-full bg-[#f1f1f1]">
+        <div className="w-[100vw] min-h-full md:w-[75vw] lg:w-full bg-[#f1f1f1]">
           {/* Main Content Area */}
           {children}
         </div>

@@ -4,7 +4,10 @@ import { Location } from "./location";
 import { SalesChannel } from "./salesChannel";
 import { Market } from "./market";
 
-const VariantOptionSchema = z.object({ name: z.string(), values: z.array(z.string()) })
+const VariantOptionSchema = z.object({
+  name: z.string(),
+  values: z.array(z.string()),
+});
 
 const VariantSchema = z.object({
   _id: z.string(),
@@ -14,11 +17,17 @@ const VariantSchema = z.object({
   weightUnit: z.enum(["kg", "lb", "oz", "g"]).optional(),
   isPhysicalProduct: z.boolean().optional(),
   price: z.number().gte(0, "Variant Price must be greater than 0").optional(),
-  compareAtPrice: z.number().gte(0, "Variant Compare at price must be greater than 0").optional(),
+  compareAtPrice: z
+    .number()
+    .gte(0, "Variant Compare at price must be greater than 0")
+    .optional(),
   chargeTaxes: z.boolean().optional(),
   quantity: z.number().optional(),
   countryOfOrigin: z.string().optional(),
-  costPerItem: z.number().gte(0, "Variant Cost per item must be greater than 0").optional(),
+  costPerItem: z
+    .number()
+    .gte(0, "Variant Cost per item must be greater than 0")
+    .optional(),
   profit: z.number().optional(),
   margin: z.number().optional(),
   sku: z.string().optional(),
@@ -28,18 +37,24 @@ const VariantSchema = z.object({
   image: z.string().nullable().optional(),
   trackQuantity: z.boolean(),
   continueSellingWhenOutOfStock: z.boolean(),
-})
+});
 
 const ApiProductSchema = z.object({
   _id: z.any().optional(),
   title: z.string().min(1, "Product title is required"),
   description: z.string().optional(),
   price: z.number().gte(0, "Price must be greater than 0").optional(),
-  compareAtPrice: z.number().gte(0, "Compare at price must be greater than 0").optional(),
+  compareAtPrice: z
+    .number()
+    .gte(0, "Compare at price must be greater than 0")
+    .optional(),
   chargeTaxes: z.boolean(),
   taxRate: z.number(),
   tax: z.number(),
-  costPerItem: z.number().gte(0, "Cost per item must be greater than 0").optional(),
+  costPerItem: z
+    .number()
+    .gte(0, "Cost per item must be greater than 0")
+    .optional(),
   profit: z.number().optional(),
   margin: z.number().optional(),
   quantity: z.number().gte(0),
@@ -84,7 +99,31 @@ type Variant = z.infer<typeof VariantSchema>;
 type VariantValue = z.infer<typeof VariantSchema>["values"];
 type VariantOption = z.infer<typeof VariantOptionSchema>;
 
-type Product = Omit<Omit<Omit<Omit<Omit<Omit<ApiProduct, "createdAt">, "updatedAt">, "vendor">, "locations">, "salesChannel">, "markets">
-  & { _id: string; createdAt: string; updatedAt: string; vendor: Vendor; locations: Location[], salesChannels: SalesChannel[], markets: Market[] };
+type Product = Omit<
+  Omit<
+    Omit<
+      Omit<Omit<Omit<ApiProduct, "createdAt">, "updatedAt">, "vendor">,
+      "locations"
+    >,
+    "salesChannel"
+  >,
+  "markets"
+> & {
+  _id: string;
+  createdAt: string;
+  updatedAt: string;
+  vendor: Vendor;
+  locations: Location[];
+  salesChannels: SalesChannel[];
+  markets: Market[];
+};
 
-export { type Product, type VariantOption, ApiProductSchema, VariantSchema, type VariantValue, type ApiProduct, type Variant };
+export {
+  type Product,
+  type VariantOption,
+  ApiProductSchema,
+  VariantSchema,
+  type VariantValue,
+  type ApiProduct,
+  type Variant,
+};

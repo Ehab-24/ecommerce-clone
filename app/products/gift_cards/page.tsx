@@ -24,10 +24,10 @@ export default async function CreateGiftCardPage() {
 
   return (
     <div className="bg-gray-100 min-h-screen md:px-8 py-8">
-      <div className=" w-full flex justify-between px-4 md:px-0">
+      <div className=" w-full flex items-center justify-between px-4 md:px-0">
         <Heading>Gift Cards</Heading>
 
-        <div className=" flex items-center gap-4">
+        <div className="hidden md:flex items-center gap-4">
           <HeaderButtons />
           <FilledButton>
             <Link href="/products/gift_cards/new">Create Gift Card</Link>
