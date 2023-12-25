@@ -266,6 +266,7 @@ function SelectedProductsMenu({ setActiveMenu, selectedProducts, setSelectedProd
     if (selectedProducts.length === 0) {
       setActiveMenu("Add Products")
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedProducts]
   )
 
@@ -349,6 +350,7 @@ function ProductsMenu({ load, selectedProducts, setSelectedProducts }: { load: (
       }
     }
     fetchProducts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   function ListItem({ product }: { product: Product }) {
@@ -438,6 +440,7 @@ function Listmenu({ setSubMenu, load, paramsIdName }: { load: () => Promise<List
       }
     }
     fetchCollections();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   function ListItem({ item }: { item: ListMenuItem }) {
