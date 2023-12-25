@@ -3,7 +3,7 @@ import { ApiProductSchema } from "./product";
 import { CustomerSchema } from "./customer";
 
 const OrderSchema = z.object({
-  _id: z.string().optional(),
+  _id: z.string(),
   date: z.string().optional(),
   customer: CustomerSchema,
   channel: z.string().optional(),
@@ -14,7 +14,8 @@ const OrderSchema = z.object({
   delivery_status: z.string().optional(),
   delivery_method: z.string().optional(),
   tags: z.array(z.string()).optional(),
-
+  // TODO: referenceNumber isnt optional
+  referenceNumber: z.string().optional(),
   status: z.string().optional(),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional(),

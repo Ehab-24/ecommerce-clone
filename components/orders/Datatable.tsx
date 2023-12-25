@@ -1,235 +1,299 @@
-"use client";
+"use client"
 
-import React, { useState } from "react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import Checkbox from "@/components/Checkbox"
+import StatusText from "@/components/StatusText"
+import { useRouter } from "next/navigation"
+import Card from "@/components/Card"
+import { Button } from "@/components/ui/button"
+import { FilterElements, HeaderItem, RowProps } from "@/types/Datatable"
+import Datatable from "../Datatable"
+import { Order } from "@/types/order"
+import { useState } from "react"
+import { HiOutlineDotsHorizontal } from "react-icons/hi"
 
-import Card from "@/components/Card";
-import Select from "@/components/Select";
 
-import Checkbox from "../Checkbox";
-import StatusText from "../StatusText";
-import { useRouter } from "next/navigation";
-import OutlinedButton from "../buttons/OutlinedButton";
-import { Button } from "../ui/button";
-import Text from "../Text";
-import { IoClose, IoSearchOutline } from "react-icons/io5";
-import { MdOutlineFilterList } from "react-icons/md";
-import Input from "../Input";
-import FilledButton from "../buttons/FilledButton";
-import AddViewDialog from "../AddViewDialog";
-import { Order } from "@/types/order";
-import AddFilterPopover from "../AddFilterPopover";
-import OrderCard from "./OrderCard";
+export default function OrdersDatable({ initialOrders }: { initialOrders: Order[] }) {
 
-const orders = [
-  {
-    _id: "1001",
-    customer: {
-      name: "John Doe",
-      email: "jonhdoe@gmail.com",
-    },
-    total: "11.60",
-    createdAt: "2021-09-22",
-    status: "Draft",
-    payment: {
-      status: "Unpaid",
-    },
-    fulfillment: "Unfulfilled",
-    items: "2",
-    delivery: {
-      status: "Not delivered",
-      method: "Standard",
-    },
-    tags: ["Drafts"],
-    date: "2021-09-22",
-    channel: "Online Store",
-  },
-];
+  const router = useRouter()
 
-const Datatable = () => {
-  const views = ["All", "Unfulfilled", "Unpaid", "Open", "Closed"];
+  function Row({ item: p, isSelected, setSelected }: RowProps<Order>) {
 
-  const [selectedView, setSelectedView] = useState(views[0]);
+    return (
+      <tr className="bg-white border-b hover:bg-gray-50 ">
+        <td className="w-4 p-4">
+          <Checkbox id={"select-" + p._id} checked={isSelected} label="" onChange={(e) => setSelected(e.target.checked)} />
+        </td>
 
-  const handleViewChange = (view: string) => {
-    setSelectedView(view);
-  };
+        <th
+          scope="row"
+          onClick={() => router.push(`/products/${p._id}`)}
+          className="flex gap-1 items-center xl:min-w-[240px] py-4 font-medium text-gray-900 whitespace-nowrap cursor-pointer"
+        >
+          <p className="ml-4">{p._id!.substring(0, 4)}</p>
+        </th>
 
-  const [isSearching, setIsSearching] = useState<boolean>(false);
-  const [search, setSearch] = useState<string>("");
-  const [filters, setFilters] = useState<string[]>([]);
-
-  const allFilters = [
-    "Drafts",
-    "Open",
-    "Paid",
-    "Unpaid",
-    "Overdue",
-    "Cancelled",
-  ];
+        <td className="px-6 py-2">{p.date}</td>
+        <td className="px-6 py-2">
+          {p.customer?.firstName + " " + p.customer?.lastName}
+        </td>
+        <td className="px-6 py-2">{p.channel}</td>
+        <td className="px-6 py-2">{p.total}</td>
+        <td className="px-6 py-2">{p.payment_status}</td>
+        <td className="px-6 py-2">
+          {p.fulfillment_status && (
+            <StatusText status={p.fulfillment_status} />
+          )}
+        </td>
+        <td className="px-6 py-2">{p.items?.length ?? 0} items</td>
+        <td className="px-6 py-2">{p.delivery_status}</td>
+        <td className="px-6 py-2">{p.delivery_method}</td>
+        <td className="px-6 py-2">{p.tags?.join(", ")}</td>
+      </tr>
+    )
+  }
 
   return (
-    <div className="shadow-sm shadow-black/40 md:rounded-xl">
-      <div className=" flex md:rounded-t-xl overflow-x-auto justify-between items-start whitespace-nowrap bg-white px-2 py-1">
-        {isSearching ? (
-          <div className="flex mr-2 flex-col w-full">
-            <div className="flex items-center w-full">
-              <Input
-                id="search"
-                placeholder="Searching all products"
-                value={search}
-                icon={<IoSearchOutline size={16} className="text-gray-800" />}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-              <div className="w-4" />
-              <Button
-                variant="ghost"
-                className="px-2 mr-2 h-min py-1 text-gray-800 text-xs hover:bg-gray-200/75"
-                onClick={() => setIsSearching(false)}
-              >
-                Cancel
-              </Button>
-              <FilledButton>Save as</FilledButton>
-            </div>
+    <Datatable<Order>
+      initialItems={initialOrders}
+      sortPopoverProps={{
+        //TODO: fecth new `initialOrders` from API
+        onSelect: (value) => { console.log(value) },
+        options: [
+          { label: "Order number", value: "referenceNumber" },
+          { label: "Date", value: "date" },
+          { label: "Customer name", value: "customer.firstName" },
+          { label: "Channel", value: "channel" },
+          { label: "Total", value: "total" },
+          { label: "Payment status", value: "payment_status" },
+          { label: "Fulfillment status", value: "fulfillment_status" },
+          { label: "Items", value: "items.length" },
+          { label: "Destination", value: "destination.name" },
+        ]
+      }}
+      ActionsCard={ActionsCard}
+      Row={Row}
+      headerItems={getHeaderItems(initialOrders)}
+      views={["all", "active", "draft", "archived"]}
+      filters={getAllFilters()}
+    />
+  )
+}
 
-            <div className="w-full border-t border-gray-300 pt-2 mt-2 mb-1 flex gap-1">
-              {filters.map((f) => (
-                <Button
-                  key={f}
-                  variant="outline"
-                  className="px-2 rounded-lg h-min py-1 text-gray-800 text-xs hover:bg-gray-200/75"
-                  onClick={() => {}}
-                >
-                  {f}
-                  <IoClose
-                    size={12}
-                    className="inline-block ml-1"
-                    onClick={() => setFilters(filters.filter((_f) => f !== _f))}
-                  />
-                </Button>
-              ))}
 
-              <AddFilterPopover
-                disabled={filters}
-                filters={allFilters}
-                onSelect={(f) => setFilters([...filters, f])}
-              />
+function ActionsCard() {
+  return (
+    <div className="py-4 min-w-full w-full grid bg-white place-items-center">
+      <Card className="px-4 py-2 flex gap-2">
 
-              <Button
-                variant="ghost"
-                className="px-2 rounded-lg h-min py-1 text-gray-800 text-xs hover:bg-gray-200/75"
-                onClick={() => setFilters([])}
-              >
-                Clear all
-              </Button>
-            </div>
-          </div>
-        ) : (
-          <div className="flex mr-2 w-full justify-between items-center">
-            <div className="flex gap-2 items-center">
-              {views.map((v) => (
-                <Button
-                  key={v}
-                  variant="ghost"
-                  className={`hover:bg-gray-200/75 px-3 py-1.5 h-min ${
-                    v === selectedView ? "bg-gray-200" : "bg-transparent"
-                  }`}
-                  onClick={() => setSelectedView(v)}
-                >
-                  <Text className="text-gray-800 capitalize">{v}</Text>
-                </Button>
-              ))}
-              <AddViewDialog onSave={(name) => {}} />
-            </div>
+        <Button variant="ghost" className="p-2 bg-gray-200 text-black hover:bg-gray-300 h-min text-xs" onClick={() => { }}>
+          Mark as fulfilled
+        </Button>
+        <Button variant="ghost" className="p-2 bg-gray-200 text-black hover:bg-gray-300 h-min text-xs" onClick={() => { }}>
+          Capture payments
+        </Button>
+        <MoreActionsPopover />
 
-            <OutlinedButton
-              className="p-1.5 flex gap-0.5"
-              onClick={() => setIsSearching(true)}
-            >
-              <IoSearchOutline size={16} className="text-black" />
-              <MdOutlineFilterList size={20} className="text-black" />
-            </OutlinedButton>
-          </div>
-        )}
-      </div>
-
-      <div className="overflow-x-auto hidden md:table">
-        <table className="w-full">
-          <thead>
-            <tr className="text-gray-600 text-sm items-center bg-gray-100 border-b">
-              <th className="whitespace-nowrap px-0 py-1.5">
-                <Checkbox checked={false} id="selectAll" onChange={() => {}} />
-              </th>
-              <th className="text-start">Order</th>
-              <th className="whitespace-nowrap pr-10">Date</th>
-              <th className="whitespace-nowrap pr-10">Customer</th>
-              <th className="whitespace-nowrap pr-10">Channel</th>
-              <th className="text-end whitespace-nowrap pr-10">Total</th>
-              <th className="whitespace-nowrap pr-10">Payment status</th>
-              <th className="whitespace-nowrap pr-10">Fulfillment status</th>
-              <th className="whitespace-nowrap pr-10">Items</th>
-              <th className="whitespace-nowrap pr-10">Delivery status</th>
-              <th className="whitespace-nowrap pr-10">Delivery method</th>
-              <th className="whitespace-nowrap pr-10">Tags</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {orders.map((order) => (
-              <tr
-                key={order._id}
-                className="text-gray-600 font-semibold text-sm bg-gray-100 border-b"
-              >
-                <td className="">
-                  <div className="flex items-center">
-                    <Checkbox
-                      checked={false}
-                      id={`order-${order._id}`}
-                      onChange={() => {}}
-                    />
-                    <p className="ml-2">{order._id}</p>
-                  </div>
-                </td>
-                <td className="whitespace-nowrap">{order.date}</td>
-                <td className="whitespace-nowrap">{order.customer.name}</td>
-                <td className="whitespace-nowrap">{order.channel}</td>
-                <td className="text-center whitespace-nowrap">
-                  {order.total && `Rs. ${order.total}`}
-                </td>
-                <td className="whitespace-nowrap">
-                  <div className="flex items-center rounded-xl px-2 py-1 gap-2 bg-gray-100">
-                    <span className="rounded-full outline-1 p-1.5 bg-gray-500"></span>
-                    <p className="text-gray-500 text-xs">
-                      {order.payment.status}
-                    </p>
-                  </div>
-                </td>
-                <td className="whitespace-nowrap">
-                  <div className="flex items-center rounded-xl px-2 py-1 gap-2 bg-gray-100">
-                    <span className="rounded-full outline-1 p-1.5 bg-yellow-500"></span>
-                    <p className="text-gray-500 text-xs">{order.fulfillment}</p>
-                  </div>
-                </td>
-                <td className="whitespace-nowrap">{order.items}</td>
-                <td className="whitespace-nowrap">{order.delivery.status}</td>
-                <td className="whitespace-nowrap">{order.delivery.method}</td>
-                <td className="whitespace-nowrap">{order.tags[0]}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      <div>
-        {orders.map((order, i) => (
-          <OrderCard
-            key={order._id}
-            order={order}
-            last={i === orders.length - 1}
-          />
-        ))}
-      </div>
+      </Card>
     </div>
-  );
-};
+  )
+}
 
-export default Datatable;
+function MoreActionsPopover() {
+
+  const [open, setOpen] = useState(false)
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button variant="ghost" className="p-2 bg-gray-200 text-black hover:bg-gray-300 h-min text-xs" onClick={() => { }}>
+          <HiOutlineDotsHorizontal size={14} />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="rounded-xl p-1.5 bg-white flex flex-col gap-1">
+
+        <Button variant="ghost" className="flex justify-start rounded-lg hover:bg-gray-100 bg-white transition-all h-min text-xs whitespace-nowrap px-2 py-1">
+          Request fullfilment
+        </Button>
+        <Button variant="ghost" className="flex justify-start rounded-lg hover:bg-gray-100 bg-white transition-all h-min text-xs whitespace-nowrap px-2 py-1">
+          Cancel fullfilment requests
+        </Button>
+        <Button variant="ghost" className="flex w-full justify-start rounded-lg hover:bg-gray-100 bg-white transition-all h-min text-xs whitespace-nowrap px-2 py-1">
+          Mark as unfulfilled
+        </Button>
+        <Button variant="ghost" className="flex justify-start rounded-lg hover:bg-gray-100 bg-white transition-all h-min text-xs whitespace-nowrap px-2 py-1">
+          Change fullfilment location
+        </Button>
+
+        <div className="my-2 h-px bg-gray-200 w-full" />
+
+        <Button variant="ghost" className="flex justify-start rounded-lg hover:bg-gray-100 bg-white transition-all h-min text-xs whitespace-nowrap px-2 py-1">
+          Print packing slip
+        </Button>
+        <Button variant="ghost" className="flex justify-start rounded-lg hover:bg-gray-100 bg-white transition-all h-min text-xs whitespace-nowrap px-2 py-1">
+          Archive orders
+        </Button>
+        <Button variant="ghost" className="flex justify-start rounded-lg hover:bg-gray-100 bg-white transition-all h-min text-xs whitespace-nowrap px-2 py-1">
+          Unarchive orders
+        </Button>
+        <Button variant="ghost" className="flex justify-start rounded-lg hover:bg-gray-100 bg-white transition-all h-min text-xs whitespace-nowrap px-2 py-1">
+          Cancel orders
+        </Button>
+
+        <div className="my-2 h-px bg-gray-200 w-full" />
+
+        <Button variant="ghost" className="flex justify-start rounded-lg hover:bg-gray-100 bg-white transition-all h-min text-xs whitespace-nowrap px-2 py-1">
+          Add tags
+        </Button>
+        <Button variant="ghost" className="flex justify-start rounded-lg hover:bg-gray-100 bg-white transition-all h-min text-xs whitespace-nowrap px-2 py-1">
+          Remove tags
+        </Button>
+
+      </PopoverContent>
+    </Popover >)
+}
+
+
+function getHeaderItems(orders: Order[]): HeaderItem<Order>[] {
+  return [
+    {
+      label: "Order", sortable: true, onSort: (sortKey) => {
+        let sortedOrders = [...orders]
+        switch (sortKey) {
+          case "desc": sortedOrders.sort((a, b) => (a.referenceNumber ?? "").localeCompare(b.referenceNumber ?? "")); break;
+          case "asc": sortedOrders.sort((a, b) => (b.referenceNumber ?? "").localeCompare(a.referenceNumber ?? "")); break;
+          default: throw new Error("Sort type not allowed")
+        }
+        return sortedOrders
+      }
+    },
+
+    {
+      label: "Expected arrival", sortable: true, onSort: (sortKey) => {
+        let sortedOrders = [...orders]
+        switch (sortKey) {
+          case "desc": sortedOrders.sort((a, b) => {
+            if (a.date && b.date) {
+              return new Date(a.date).getTime() - new Date(b.date).getTime()
+            }
+            return 0
+          }); break;
+          case "asc": sortedOrders.sort((a, b) => {
+            if (a.date && b.date) {
+              return new Date(b.date).getTime() - new Date(a.date).getTime()
+            }
+            return 0
+          }); break;
+          default: throw new Error("Sort type not allowed")
+        }
+        return sortedOrders
+      }
+    },
+
+    {
+      label: "Customer", sortable: true, onSort: (sortKey) => {
+        let sortedOrders = [...orders]
+        switch (sortKey) {
+          case "desc": sortedOrders.sort((a, b) => a.customer.firstName.localeCompare(b.customer.firstName)); break;
+          case "asc": sortedOrders.sort((a, b) => b.customer.firstName.localeCompare(a.customer.firstName)); break;
+          default: throw new Error("Sort type not allowed")
+        }
+        return sortedOrders
+      }
+    },
+
+    {
+      label: "Channel", sortable: true, onSort: (sortKey) => {
+        let sortedOrders = [...orders]
+        switch (sortKey) {
+          case "desc": sortedOrders.sort((a, b) => (a.channel ?? "").localeCompare(b.channel ?? "")); break;
+          case "asc": sortedOrders.sort((a, b) => (b.channel ?? "").localeCompare(a.channel ?? "")); break;
+          default: throw new Error("Sort type not allowed")
+        }
+        return sortedOrders
+      }
+    },
+
+    {
+      label: "Total", sortable: true, onSort: (sortKey) => {
+        let sortedOrders = [...orders]
+        switch (sortKey) {
+          case "desc": sortedOrders.sort((a, b) => (a.total ?? 0) - (b.total ?? 0)); break;
+          case "asc": sortedOrders.sort((a, b) => (b.total ?? 0) - (a.total ?? 0)); break;
+          default: throw new Error("Sort type not allowed")
+        }
+        return sortedOrders
+      }
+    },
+
+    {
+      label: "Payment status", sortable: true, onSort: (sortKey) => {
+        let sortedOrders = [...orders]
+        switch (sortKey) {
+          case "desc": sortedOrders.sort((a, b) => (a.payment_status ?? "").localeCompare(b.payment_status ?? "")); break;
+          case "asc": sortedOrders.sort((a, b) => (b.payment_status ?? "").localeCompare(a.payment_status ?? "")); break;
+          default: throw new Error("Sort type not allowed")
+        }
+        return sortedOrders
+      }
+    },
+
+    {
+      label: "Fullfilment status", sortable: true, onSort: (sortKey) => {
+        let sortedOrders = [...orders]
+        switch (sortKey) {
+          case "desc": sortedOrders.sort((a, b) => (a.fulfillment_status ?? "").localeCompare(b.fulfillment_status ?? "")); break;
+          case "asc": sortedOrders.sort((a, b) => (b.fulfillment_status ?? "").localeCompare(a.fulfillment_status ?? "")); break;
+          default: throw new Error("Sort type not allowed")
+        }
+        return sortedOrders
+      }
+    },
+
+    {
+      label: "Items", sortable: true, onSort: (sortKey) => {
+        let sortedOrders = [...orders]
+        switch (sortKey) {
+          case "desc": sortedOrders.sort((a, b) => (a.items?.length ?? 0) - (b.items?.length ?? 0)); break;
+          case "asc": sortedOrders.sort((a, b) => (b.items?.length ?? 0) - (a.items?.length ?? 0)); break;
+          default: throw new Error("Sort type not allowed")
+        }
+        return sortedOrders
+      }
+    },
+
+    { label: "Delivery status", sortable: false },
+    { label: "Delivery method", sortable: false },
+    { label: "Tags", sortable: false }
+
+  ]
+}
+
+function getAllFilters(): FilterElements {
+
+  // TODO: create popovers
+  return {
+    "Delivery method": <div>Delivery method</div>,
+    "Destination": <div>Destination</div>,
+    "Status": <div>Status</div>,
+    "Payment status": <div>Payment status</div>,
+    "Product": <div>Product</div>,
+    "Fullfilment status": <div>Fullfilment status</div>,
+    "Delivery status": <div>Delivery status</div>,
+    "Return status": <div>Return status</div>,
+    "Tagged with": <div>Tagged with</div>,
+    "Not tagged with": <div>Not tagged with</div>,
+    "App": <div>App</div>,
+    "Channel": <div>Channel</div>,
+    "Chargeback and inquiry status": <div>Chargeback and inquiry status</div>,
+    "Risk level": <div>Risk level</div>,
+    "Date": <div>Date</div>,
+    "Credit card (Last four digits)": <div>Credit card (Last four digits)</div>,
+    "Label status": <div>Label status</div>,
+    "Discount code": <div>Discount code</div>
+  }
+}

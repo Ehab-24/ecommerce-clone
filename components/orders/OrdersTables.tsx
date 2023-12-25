@@ -1,265 +1,233 @@
-"use client";
+"use client"
 
-import Checkbox from "../Checkbox";
-import { useEffect, useState } from "react";
-import StatusText from "../StatusText";
-import { useRouter } from "next/navigation";
-import Card from "../Card";
-import OutlinedButton from "../buttons/OutlinedButton";
-import { Button } from "../ui/button";
-import Text from "../Text";
-import { IoClose, IoSearchOutline } from "react-icons/io5";
-import { MdOutlineFilterList } from "react-icons/md";
-import SortPopover from "../SortPopover";
-import Input from "../Input";
-import FilledButton from "../buttons/FilledButton";
-import AddViewDialog from "../AddViewDialog";
-import HeaderItem from "@/types/headerItem";
-import SortableHeader from "../SortableHeader";
-import { Order } from "@/types/order";
-import AddFilterPopover from "../AddFilterPopover";
+import Checkbox from "@/components/Checkbox"
+import StatusText from "@/components/StatusText"
+import { useRouter } from "next/navigation"
+import Card from "@/components/Card"
+import { Button } from "@/components/ui/button"
+import { FilterElements, HeaderItem, RowProps } from "@/types/Datatable"
+import Datatable from "../Datatable"
+import { Order } from "@/types/order"
 
-type View = string;
 
-export default function Datatable({ orders }: { orders: Order[] }) {
-  const views: View[] = ["all", "Unfulfilled", "Unpaid", "Open", "Closed"];
-  const headerItems: HeaderItem[] = [
-    { label: "Order", sortable: true, sortKey: "order" },
-    { label: "Date", sortable: true, sortKey: "date" },
-    { label: "Customer", sortable: true, sortKey: "customer" },
-    { label: "Channel", sortable: true, sortKey: "channel" },
-    { label: "Total", sortable: true, sortKey: "total" },
-    { label: "Payment status", sortable: true, sortKey: "payment_status" },
-    {
-      label: "Fulfilment status",
-      sortable: true,
-      sortKey: "fulfilment_status",
-    },
-    { label: "Items", sortable: true, sortKey: "items" },
-    { label: "Delivery status", sortable: false, sortKey: "" },
-    { label: "Delivery method", sortable: false, sortKey: "" },
-    { label: "Tags", sortable: false, sortKey: "" },
-  ];
+export default function OrdersDatable({ initialOrders }: { initialOrders: Order[] }) {
 
-  const allFilters = [
-    "Delivery method",
-    "Destination",
-    "Status",
-    "Payment status",
-    "Product",
-    "Fulfillment status",
-    "Delivery status",
-    "Return status",
-    "Tagged with",
-    "Not tagged with",
-    "App",
-    "Channel",
-    "Chargeback and inquiry status",
-    "Risk level",
-    "Date",
-    "Credit card (Last four digits)",
-    "Label status",
-    "Discount code",
-  ];
+  const router = useRouter()
 
-  const router = useRouter();
-  const [allChecked, setAllChecked] = useState<boolean>(false);
-  const [selectedOrders, setSelectedOrders] = useState<boolean[]>(
-    new Array(orders.length).fill(false)
-  );
-  const [selectedView, setSelectedView] = useState<View>("all");
-  const [isSearching, setIsSearching] = useState<boolean>(false);
-  const [search, setSearch] = useState<string>("");
-  const [filters, setFilters] = useState<string[]>([]);
+  function Row({ item: p, isSelected, setSelected }: RowProps<Order>) {
 
-  useEffect(() => {
-    setAllChecked(selectedOrders.length > 0 && selectedOrders.every((p) => p));
-  }, [orders, selectedOrders]);
+    return (
+      <tr className="bg-white border-b hover:bg-gray-50 ">
+        <td className="w-4 p-4">
+          <Checkbox id={"select-" + p._id} checked={isSelected} label="" onChange={(e) => setSelected(e.target.checked)} />
+        </td>
+
+        <th
+          scope="row"
+          onClick={() => router.push(`/products/${p._id}`)}
+          className="flex gap-1 items-center xl:min-w-[240px] py-4 font-medium text-gray-900 whitespace-nowrap cursor-pointer"
+        >
+          <p className="ml-4">{p._id!.substring(0, 4)}</p>
+        </th>
+
+        <td className="px-6 py-2">{p.date}</td>
+        <td className="px-6 py-2">
+          {p.customer?.firstName + " " + p.customer?.lastName}
+        </td>
+        <td className="px-6 py-2">{p.channel}</td>
+        <td className="px-6 py-2">{p.total}</td>
+        <td className="px-6 py-2">{p.payment_status}</td>
+        <td className="px-6 py-2">
+          {p.fulfillment_status && (
+            <StatusText status={p.fulfillment_status} />
+          )}
+        </td>
+        <td className="px-6 py-2">{p.items?.length ?? 0} items</td>
+        <td className="px-6 py-2">{p.delivery_status}</td>
+        <td className="px-6 py-2">{p.delivery_method}</td>
+        <td className="px-6 py-2">{p.tags?.join(", ")}</td>
+      </tr>
+    )
+  }
 
   return (
-    <div className="relative overflow-x-auto overflow-y-scroll shadow-md sm:rounded-lg overflow-hidden">
-      <div className=" flex justify-between items-start bg-white px-2 py-1">
-        {isSearching ? (
-          <div className="flex mr-2 flex-col">
-            <div className="flex items-center">
-              <Input
-                id="search"
-                placeholder="Searching all products"
-                value={search}
-                icon={<IoSearchOutline size={16} className="text-gray-800" />}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-              <div className="w-4" />
-              <Button
-                variant="ghost"
-                className="px-2 mr-2 h-min py-1 text-gray-800 text-xs hover:bg-gray-200/75"
-                onClick={() => setIsSearching(false)}
-              >
-                Cancel
-              </Button>
-              <FilledButton>Save as</FilledButton>
-            </div>
+    <Datatable<Order>
+      initialItems={initialOrders}
+      sortPopoverProps={{
+        //TODO: fecth new `initialOrders` from API
+        onSelect: (value) => { console.log(value) },
+        options: [
+          { label: "Created", value: "createdAt" },
+          { label: "Expected arrival date", value: "shipping.arrivalDate" },
+          { label: "Supplier", value: "supplier.name" },
+          { label: "Destination", value: "destination.name" },
+          { label: "Status", value: "status" },
+        ]
+      }}
+      ActionsCard={ActionsCard}
+      Row={Row}
+      headerItems={getHeaderItems(initialOrders)}
+      views={["all", "active", "draft", "archived"]}
+      filters={getAllFilters()}
+    />
+  )
+}
 
-            <div className=" border-t border-gray-300 pt-2 mt-2 mb-1 flex gap-1">
-              {filters.map((f) => (
-                <Button
-                  key={f}
-                  variant="outline"
-                  className="px-2 rounded-lg h-min py-1 text-gray-800 text-xs hover:bg-gray-200/75"
-                  onClick={() => { }}
-                >
-                  {f}
-                  <IoClose
-                    size={12}
-                    className="inline-block ml-1"
-                    onClick={() => setFilters(filters.filter((_f) => f !== _f))}
-                  />
-                </Button>
-              ))}
 
-              <AddFilterPopover
-                disabled={[]}
-                filters={allFilters}
-                onSelect={(f) => setFilters([...filters, f])}
-              />
+function ActionsCard() {
+  return (
+    <div className="py-4 min-w-full w-full grid bg-white place-items-center">
+      <Card className="px-4 py-2 flex gap-2">
 
-              <Button
-                variant="ghost"
-                className="px-2 rounded-lg h-min py-1 text-gray-800 text-xs hover:bg-gray-200/75"
-                onClick={() => setFilters([])}
-              >
-                Clear all
-              </Button>
-            </div>
-          </div>
-        ) : (
-          <div className="flex mr-2  justify-between items-center">
-            <div className="flex gap-2 items-center">
-              {views.map((v) => (
-                <Button
-                  key={v}
-                  variant="ghost"
-                  className={`hover:bg-gray-200/75 px-3 py-1.5 h-min ${v === selectedView ? "bg-gray-200" : "bg-transparent"
-                    }`}
-                  onClick={() => setSelectedView(v)}
-                >
-                  <Text className="text-gray-800 capitalize">{v}</Text>
-                </Button>
-              ))}
-              <AddViewDialog onSave={(name) => { }} />
-            </div>
+        <Button variant="ghost" className="p-2 bg-gray-200 text-black hover:bg-gray-300 h-min text-xs" onClick={() => { }}>
+          Add tags
+        </Button>
+        <Button variant="ghost" className="p-2 bg-gray-200 text-black hover:bg-gray-300 h-min text-xs" onClick={() => { }}>
+          Remove tags
+        </Button>
 
-            <OutlinedButton
-              className="p-1.5 flex gap-0.5"
-              onClick={() => setIsSearching(true)}
-            >
-              <IoSearchOutline size={16} className="text-black" />
-              <MdOutlineFilterList size={20} className="text-black" />
-            </OutlinedButton>
-          </div>
-        )}
-
-        <SortPopover
-          options={[
-            { label: "Order number", value: "order_number" },
-            { label: "Date", value: "date" },
-            { label: "Items", value: "items" },
-            { label: "Destination", value: "destination" },
-            { label: "Customer name", value: "customer_name" },
-            { label: "Payment status", value: "payment_status" },
-            { label: "Fullfillment status", value: "fullfillment_status" },
-            { label: "Total", value: "total" },
-            { label: "Channel", value: "channel" },
-          ]}
-          onChange={(val) => { }}
-        />
-      </div>
-
-      <div className="text-sm text-left rtl:text-right text-gray-500 ">
-        <div className="text-[10px] text-gray-700 uppercase bg-gray-100 border-t-2 border-b-2 ">
-          <tr>
-            <th scope="col" className="p-4">
-              <Checkbox
-                id="select-all-products"
-                label={
-                  selectedOrders.some((p) => p)
-                    ? selectedOrders.filter((p) => p).length + " selected"
-                    : ""
-                }
-                checked={allChecked}
-                onChange={(e) =>
-                  setSelectedOrders(
-                    new Array(orders.length).fill(e.target.checked)
-                  )
-                }
-              />
-            </th>
-            {headerItems.map((h) => (
-              <th key={h.label} scope="col" className="px-6 py-1">
-                {selectedOrders.some((p) => p) ? (
-                  ""
-                ) : h.sortable ? (
-                  <SortableHeader header={h} onClick={() => { }} sorted="none" />
-                ) : (
-                  h.label
-                )}
-              </th>
-            ))}
-          </tr>
-        </div>
-
-        <tbody className="text-xs">
-          {orders.map((p, i) => (
-            <tr key={p._id} className="bg-white border-b hover:bg-gray-50 ">
-              <td className="w-4 p-4">
-                <Checkbox
-                  id={"select-" + p._id}
-                  checked={selectedOrders[i]}
-                  label=""
-                  onChange={(e) => {
-                    const newSelectProducts = [...selectedOrders];
-                    newSelectProducts[i] = e.target.checked;
-                    setSelectedOrders(newSelectProducts);
-                  }}
-                />
-              </td>
-
-              <th
-                scope="row"
-                onClick={() => router.push(`/products/${p._id}`)}
-                className="flex gap-1 items-center xl:min-w-[240px] py-4 font-medium text-gray-900 whitespace-nowrap cursor-pointer"
-              >
-                <p className="ml-4">{p._id!.substring(0, 4)}</p>
-              </th>
-
-              <td className="px-6 py-2">{p.date}</td>
-              <td className="px-6 py-2">
-                {p.customer?.firstName + " " + p.customer?.lastName}
-              </td>
-              <td className="px-6 py-2">{p.channel}</td>
-              <td className="px-6 py-2">{p.total}</td>
-              <td className="px-6 py-2">{p.payment_status}</td>
-              <td className="px-6 py-2">
-                {p.fulfillment_status && (
-                  <StatusText status={p.fulfillment_status} />
-                )}
-              </td>
-              <td className="px-6 py-2">{p.items?.length ?? 0} items</td>
-              <td className="px-6 py-2">{p.delivery_status}</td>
-              <td className="px-6 py-2">{p.delivery_method}</td>
-              <td className="px-6 py-2">{p.tags?.join(", ")}</td>
-            </tr>
-          ))}
-        </tbody>
-      </div>
-
-      {selectedOrders.some((p) => p) && (
-        <div className="py-4 min-  grid bg-white place-items-center">
-          <Card className="px-4 py-2 flex gap-2">
-            <OutlinedButton onClick={() => { }}>Bulk edit</OutlinedButton>
-          </Card>
-        </div>
-      )}
+      </Card>
     </div>
-  );
+  )
+}
+
+function getHeaderItems(orders: Order[]): HeaderItem<Order>[] {
+  return [
+    {
+      label: "Order", sortable: true, onSort: (sortKey) => {
+        let sortedOrders = [...orders]
+        switch (sortKey) {
+          case "desc": sortedOrders.sort((a, b) => (a.referenceNumber ?? "").localeCompare(b.referenceNumber ?? "")); break;
+          case "asc": sortedOrders.sort((a, b) => (b.referenceNumber ?? "").localeCompare(a.referenceNumber ?? "")); break;
+          default: throw new Error("Sort type not allowed")
+        }
+        return sortedOrders
+      }
+    },
+
+    {
+      label: "Expected arrival", sortable: true, onSort: (sortKey) => {
+        let sortedOrders = [...orders]
+        switch (sortKey) {
+          case "desc": sortedOrders.sort((a, b) => {
+            if (a.date && b.date) {
+              return new Date(a.date).getTime() - new Date(b.date).getTime()
+            }
+            return 0
+          }); break;
+          case "asc": sortedOrders.sort((a, b) => {
+            if (a.date && b.date) {
+              return new Date(b.date).getTime() - new Date(a.date).getTime()
+            }
+            return 0
+          }); break;
+          default: throw new Error("Sort type not allowed")
+        }
+        return sortedOrders
+      }
+    },
+
+    {
+      label: "Customer", sortable: true, onSort: (sortKey) => {
+        let sortedOrders = [...orders]
+        switch (sortKey) {
+          case "desc": sortedOrders.sort((a, b) => a.customer.firstName.localeCompare(b.customer.firstName)); break;
+          case "asc": sortedOrders.sort((a, b) => b.customer.firstName.localeCompare(a.customer.firstName)); break;
+          default: throw new Error("Sort type not allowed")
+        }
+        return sortedOrders
+      }
+    },
+
+    {
+      label: "Channel", sortable: true, onSort: (sortKey) => {
+        let sortedOrders = [...orders]
+        switch (sortKey) {
+          case "desc": sortedOrders.sort((a, b) => (a.channel ?? "").localeCompare(b.channel ?? "")); break;
+          case "asc": sortedOrders.sort((a, b) => (b.channel ?? "").localeCompare(a.channel ?? "")); break;
+          default: throw new Error("Sort type not allowed")
+        }
+        return sortedOrders
+      }
+    },
+
+    {
+      label: "Total", sortable: true, onSort: (sortKey) => {
+        let sortedOrders = [...orders]
+        switch (sortKey) {
+          case "desc": sortedOrders.sort((a, b) => (a.total ?? 0) - (b.total ?? 0)); break;
+          case "asc": sortedOrders.sort((a, b) => (b.total ?? 0) - (a.total ?? 0)); break;
+          default: throw new Error("Sort type not allowed")
+        }
+        return sortedOrders
+      }
+    },
+
+    {
+      label: "Payment status", sortable: true, onSort: (sortKey) => {
+        let sortedOrders = [...orders]
+        switch (sortKey) {
+          case "desc": sortedOrders.sort((a, b) => (a.payment_status ?? "").localeCompare(b.payment_status ?? "")); break;
+          case "asc": sortedOrders.sort((a, b) => (b.payment_status ?? "").localeCompare(a.payment_status ?? "")); break;
+          default: throw new Error("Sort type not allowed")
+        }
+        return sortedOrders
+      }
+    },
+
+    {
+      label: "Fullfilment status", sortable: true, onSort: (sortKey) => {
+        let sortedOrders = [...orders]
+        switch (sortKey) {
+          case "desc": sortedOrders.sort((a, b) => (a.fulfillment_status ?? "").localeCompare(b.fulfillment_status ?? "")); break;
+          case "asc": sortedOrders.sort((a, b) => (b.fulfillment_status ?? "").localeCompare(a.fulfillment_status ?? "")); break;
+          default: throw new Error("Sort type not allowed")
+        }
+        return sortedOrders
+      }
+    },
+
+    {
+      label: "Items", sortable: true, onSort: (sortKey) => {
+        let sortedOrders = [...orders]
+        switch (sortKey) {
+          case "desc": sortedOrders.sort((a, b) => (a.items?.length ?? 0) - (b.items?.length ?? 0)); break;
+          case "asc": sortedOrders.sort((a, b) => (b.items?.length ?? 0) - (a.items?.length ?? 0)); break;
+          default: throw new Error("Sort type not allowed")
+        }
+        return sortedOrders
+      }
+    },
+
+    { label: "Delivery status", sortable: false },
+    { label: "Delivery method", sortable: false },
+    { label: "Tags", sortable: false }
+
+  ]
+}
+
+
+function getAllFilters(): FilterElements {
+
+  // TODO: create popovers
+  return {
+    "Delivery method": <div>Delivery method</div>,
+    "Destination": <div>Destination</div>,
+    "Status": <div>Status</div>,
+    "Payment status": <div>Payment status</div>,
+    "Product": <div>Product</div>,
+    "Fullfilment status": <div>Fullfilment status</div>,
+    "Delivery status": <div>Delivery status</div>,
+    "Return status": <div>Return status</div>,
+    "Tagged with": <div>Tagged with</div>,
+    "Not tagged with": <div>Not tagged with</div>,
+    "App": <div>App</div>,
+    "Channel": <div>Channel</div>,
+    "Chargeback and inquiry status": <div>Chargeback and inquiry status</div>,
+    "Risk level": <div>Risk level</div>,
+    "Date": <div>Date</div>,
+    "Credit card (Last four digits)": <div>Credit card (Last four digits)</div>,
+    "Label status": <div>Label status</div>,
+    "Discount code": <div>Discount code</div>
+  }
 }
