@@ -6,7 +6,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Product } from "@/types/product";
-import Checkbox from "../Checkbox";
 import Image from "next/image";
 import { useState } from "react";
 import StatusText from "../StatusText";
@@ -39,12 +38,14 @@ import {
   FilterElements,
   HeaderItem,
   RowProps,
-} from "@/types/Datatable";
+} from "@/types/datatable";
 import Datatable from "../Datatable";
-import { init } from "next/dist/compiled/webpack/webpack";
-import ProductCard from "./ProductCard";
+import Text from "../Text";
+import { PiImageThin } from "react-icons/pi";
+import Link from "next/link";
+import Checkbox from "../Checkbox";
 
-export default function Datable({
+export default function ProductDatable({
   initialProducts,
   giftCards,
   statuses,
@@ -66,6 +67,43 @@ export default function Datable({
   vendors: Vendor[];
 }) {
   const router = useRouter();
+
+  function MobileRow({ item: p }: RowProps<Product>) {
+    return (
+      <Link
+        href={`/products/${p._id}`}
+        key={p._id}
+        className="flex w-full gap-2 px-3"
+      >
+        {p.media?.length > 0 ? (
+          <div className="w-12 h-12 rounded-md overflow-hidden">
+            <Image
+              src={p.media[0].url}
+              alt={p.title}
+              width={0}
+              height={0}
+              sizes="100vw"
+              style={{ width: "100%", height: "100%" }}
+            />
+          </div>
+        ) : (
+          <div className="w-12 h-12 rounded-md overflow-hidden border border-gray-300 grid place-items-center">
+            <PiImageThin size={14} className="text-gray-500" />
+          </div>
+        )}
+
+        <div className="flex flex-col gap-1">
+          <Text className="text-gray-800 font-bold text-base">{p.title}</Text>
+          <Text className="text-gray-500">
+            {p.quantity} in stock{" "}
+            {p.variants?.length > 0 && `for ${p.variants.length}`}
+          </Text>
+          <Text className="text-gray-500">{p.vendor.name}</Text>
+          <StatusText status={p.status} />
+        </div>
+      </Link>
+    );
+  }
 
   function Row({ item: p, isSelected, setSelected }: RowProps<Product>) {
     return (
@@ -122,44 +160,41 @@ export default function Datable({
     );
   }
 
-  return (
-    <>
-      <Datatable<Product>
-        initialItems={initialProducts}
-        sortPopoverProps={{
-          //TODO: fecth new `initialProducts` from API
-          onSelect: (value) => {
-            console.log(value);
-          },
-          options: [
-            { label: "Product title", value: "title" },
-            { label: "Created", value: "createdAt" },
-            { label: "Updated", value: "updatedAt" },
-            { label: "Inventory", value: "inventory" },
-            { label: "Product type", value: "productType" },
-            { label: "Vendor", value: "vendor" },
-          ],
-        }}
-        ActionsCard={ActionsCard}
-        Row={Row}
-        headerItems={getHeaderItems(initialProducts)}
-        views={["all", "active", "draft", "archived"]}
-        filters={getAllFilters(
-          vendors,
-          salesChannels,
-          tags,
-          statuses,
-          markets,
-          productTypes,
-          collections,
-          giftCards
-        )}
-      />
+  const views = ["all", "active", "draft", "archived", "some", "more"];
 
-      {initialProducts.map((p) => (
-        <ProductCard key={p._id} product={p} />
-      ))}
-    </>
+  return (
+    <Datatable<Product>
+      initialItems={initialProducts}
+      sortPopoverProps={{
+        //TODO: fecth new `initialProducts` from API
+        onSelect: (value) => {
+          console.log(value);
+        },
+        options: [
+          { label: "Product title", value: "title" },
+          { label: "Created", value: "createdAt" },
+          { label: "Updated", value: "updatedAt" },
+          { label: "Inventory", value: "inventory" },
+          { label: "Product type", value: "productType" },
+          { label: "Vendor", value: "vendor" },
+        ],
+      }}
+      ActionsCard={ActionsCard}
+      Row={Row}
+      MobileRow={MobileRow}
+      headerItems={getHeaderItems(initialProducts)}
+      views={views}
+      filters={getAllFilters(
+        vendors,
+        salesChannels,
+        tags,
+        statuses,
+        markets,
+        productTypes,
+        collections,
+        giftCards
+      )}
+    />
   );
 }
 

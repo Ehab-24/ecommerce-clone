@@ -5,19 +5,44 @@ import StatusText from "@/components/StatusText"
 import { useRouter } from "next/navigation"
 import Card from "@/components/Card"
 import { Button } from "@/components/ui/button"
-import { FilterElements, HeaderItem, RowProps } from "@/types/Datatable"
+import { FilterElements, HeaderItem, RowProps } from "@/types/datatable"
 import Datatable from "../../Datatable"
 import { PurchaseOrder } from "@/types/purchaseOrder"
-
+import Link from "next/link"
+import Text from "@/components/Text"
+import { FaCircle } from "react-icons/fa"
 
 export default function PurchaseOrdersDatable({ initialPurchaseOrders }: { initialPurchaseOrders: PurchaseOrder[] }) {
 
   const router = useRouter()
 
+  function MobileRow({ item: po }: RowProps<PurchaseOrder>) {
+    return (
+
+      <Link href={`/products/purchase_orders/${po._id}`} key={po._id} className="flex w-full px-3">
+
+        <div className="flex items-center justify-between w-full">
+          <div className="flex gap-1 flex-col">
+            <Text className="text-gray-800 font-bold flex items-center gap-1 text-base">#{po.referenceNumber} <span className="text-gray-500 flex items-center gap-1 text-xs"><FaCircle size={5} /> reference</span></Text>
+            <Text className="text-gray-500 flex items-center gap-1 text-xs">{po.supplier?.name} <FaCircle size={5} className="text-gray-500" /> {po.destination.name ?? "No destination"}</Text>
+            <Text className="text-gray-500 flex items-center gap-1 text-xs">$ {po.total} <FaCircle size={5} className="text-gray-500" /> {po.shipping.arrivalDate?.substring(0, 10) ?? "No arrival date"}</Text>
+          </div>
+          <div className="flex flex-col">
+            <Text className="text-gray-800 flex items-center gap-1">
+              <FaCircle size={8} className="text-gray-800" />
+              Recieved
+            </Text>
+            <Text>1 of 1</Text>
+          </div>
+        </div>
+      </Link>
+    )
+  }
+
   function Row({ item: po, isSelected, setSelected }: RowProps<PurchaseOrder>) {
 
     return (
-      <tr key={po._id} className={`border-b transition-all ${isSelected ? "bg-gray-100 hover:bg-gray-200 " : "bg-white hover:bg-gray-50 "}`}>
+      <tr className={`border-b transition-all ${isSelected ? "bg-gray-100 hover:bg-gray-200 " : "bg-white hover:bg-gray-50 "}`}>
         <td className="w-4 p-4">
           <Checkbox id={"select-" + po._id} checked={isSelected} label="" onChange={e => setSelected(e.target.checked)} />
         </td>
@@ -64,6 +89,7 @@ export default function PurchaseOrdersDatable({ initialPurchaseOrders }: { initi
       }}
       ActionsCard={ActionsCard}
       Row={Row}
+      MobileRow={MobileRow}
       headerItems={getHeaderItems(initialPurchaseOrders)}
       views={["all", "active", "draft", "archived"]}
       filters={getAllFilters()}

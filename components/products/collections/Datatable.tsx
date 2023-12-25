@@ -10,11 +10,14 @@ import { useRouter } from "next/navigation";
 import Card from "@/components/Card";
 import { Button } from "@/components/ui/button";
 import { Collection } from "@/types/collection";
-import { FilterElements, HeaderItem, RowProps } from "@/types/Datatable";
+import { FilterElements, HeaderItem, RowProps } from "@/types/datatable";
 import Datatable from "../../Datatable";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { useState } from "react";
-import CollectionCard from "./CollectionCard";
+import Link from "next/link";
+import Text from "@/components/Text";
+import Image from "next/image";
+import { PiImageThin } from "react-icons/pi";
 
 export default function Datable({
   initialCollections,
@@ -22,6 +25,52 @@ export default function Datable({
   initialCollections: Collection[];
 }) {
   const router = useRouter();
+
+  function MobileRow({ item: c }: RowProps<Collection>) {
+    return (
+      <Link
+        href={`/products/collections/${c._id}`}
+        key={c._id}
+        className="flex w-full gap-2 px-3"
+      >
+        {c.image ? (
+          <div className="w-12 h-12 rounded-md overflow-hidden">
+            <Image
+              src={c.image}
+              alt={c.title}
+              width={0}
+              height={0}
+              sizes="100vw"
+              style={{ width: "100%", height: "100%" }}
+            />
+          </div>
+        ) : (
+          <div className="w-12 h-12 rounded-md overflow-hidden border border-gray-300 grid place-items-center">
+            <PiImageThin size={14} className="text-gray-500" />
+          </div>
+        )}
+
+        <div className="flex flex-col gap-1">
+          <Text className="text-gray-800 font-bold text-base">{c.title}</Text>
+          <Text className="text-gray-500 text-xs">
+            {c.products.length} products
+          </Text>
+          <Text className="text-gray-500 text-xs">
+            {c.conditions
+              .map(
+                (condition) =>
+                  condition.field +
+                  " is " +
+                  condition.operator +
+                  " " +
+                  condition.value
+              )
+              .join(",\n")}
+          </Text>
+        </div>
+      </Link>
+    );
+  }
 
   function Row({ item: c, isSelected, setSelected }: RowProps<Collection>) {
     return (
@@ -61,30 +110,25 @@ export default function Datable({
   }
 
   return (
-    <>
-      <Datatable<Collection>
-        initialItems={initialCollections}
-        sortPopoverProps={{
-          //TODO: fecth new `initialCollections` from API
-          onSelect: (value) => {
-            console.log(value);
-          },
-          options: [
-            { label: "Collection title", value: "title" },
-            { label: "Updated", value: "updatedAt" },
-          ],
-        }}
-        ActionsCard={ActionsCard}
-        Row={Row}
-        headerItems={getHeaderItems(initialCollections)}
-        views={["all"]}
-        filters={getAllFilters()}
-      />
-
-      {initialCollections.map((c) => (
-        <CollectionCard key={c._id} collection={c} />
-      ))}
-    </>
+    <Datatable<Collection>
+      initialItems={initialCollections}
+      sortPopoverProps={{
+        //TODO: fecth new `initialCollections` from API
+        onSelect: (value) => {
+          console.log(value);
+        },
+        options: [
+          { label: "Collection title", value: "title" },
+          { label: "Updated", value: "updatedAt" },
+        ],
+      }}
+      ActionsCard={ActionsCard}
+      Row={Row}
+      MobileRow={MobileRow}
+      headerItems={getHeaderItems(initialCollections)}
+      views={["all"]}
+      filters={getAllFilters()}
+    />
   );
 }
 

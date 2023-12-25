@@ -20,6 +20,17 @@ export default async function ProductsPage() {
     fetch(apiUrl("/api/products/gift_cards"), { cache: "no-cache" }),
   ]
 
+
+  const [productsRes, vendorsRes, collectionsRes, typesRes, tagsRes, giftCardsRes] = await Promise.all(requests)
+  if (!productsRes.ok) throw new Error("Failed to load products")
+  if (!vendorsRes.ok) throw new Error("Failed to load vendors")
+  if (!collectionsRes.ok) throw new Error("Failed to load collections")
+  if (!typesRes.ok) throw new Error("Failed to load product types")
+  if (!tagsRes.ok) throw new Error("Failed to load tags")
+  if (!giftCardsRes.ok) throw new Error("Failed to load gift cards")
+
+  const [products, vendors, collections, productTypes, tags, giftCards] = await Promise.all([productsRes.json(), vendorsRes.json(), collectionsRes.json(), typesRes.json(), tagsRes.json(), giftCardsRes.json()])
+
   // TODO: fetch these from the API
   const statuses = ["active", "draft"]
   const salesChannels: SalesChannel[] = [
@@ -31,17 +42,6 @@ export default async function ProductsPage() {
     { _id: "2", name: "CA", createdAt: (new Date).toString(), updatedAt: (new Date).toString() },
     { _id: "3", name: "UK", createdAt: (new Date).toString(), updatedAt: (new Date).toString() },
   ]
-
-
-  const [productsRes, vendorsRes, collectionsRes, typesRes, tagsRes, giftCardsRes] = await Promise.all(requests)
-  if (!productsRes.ok) throw new Error("Failed to load products")
-  if (!vendorsRes.ok) throw new Error("Failed to load vendors")
-  if (!collectionsRes.ok) throw new Error("Failed to load collections")
-  if (!typesRes.ok) throw new Error("Failed to load product types")
-  if (!tagsRes.ok) throw new Error("Failed to load tags")
-  if (!giftCardsRes.ok) throw new Error("Failed to load gift cards")
-
-  const [products, vendors, collections, productTypes, tags, giftCards] = await Promise.all([productsRes.json(), vendorsRes.json(), collectionsRes.json(), typesRes.json(), tagsRes.json(), giftCardsRes.json()])
 
   return (
     <div className="bg-gray-100 min-h-screen mt-6 md:mt-0 md:p-8">

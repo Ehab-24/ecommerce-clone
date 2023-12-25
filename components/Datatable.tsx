@@ -22,10 +22,11 @@ import {
   DataItem,
   ActionCardComponent,
   SortPopoverProps,
-} from "@/types/Datatable";
+} from "@/types/datatable";
 
 export default function Datatable<T extends DataItem>({
   initialItems,
+  MobileRow,
   sortPopoverProps,
   ActionsCard,
   Row,
@@ -37,6 +38,7 @@ export default function Datatable<T extends DataItem>({
   headerItems: HeaderItem<T>[];
   ActionsCard: ActionCardComponent<T>;
   sortPopoverProps: SortPopoverProps;
+  MobileRow: RowComponent<T>;
   Row: RowComponent<T>;
   views: View[];
   filters: FilterElements;
@@ -52,167 +54,235 @@ export default function Datatable<T extends DataItem>({
   const [search, setSearch] = useState<string>("");
 
   return (
-    <div className="relative overflow-x-auto shadow-md sm:rounded-lg overflow-hidden">
-      <div className=" flex justify-between items-start min-w-full w-full px-2 py-1">
-        {isSearching ? (
-          <div className="flex mr-2 flex-col w-full">
-            <div className="flex items-center w-full">
-              <Input
-                id="search"
-                placeholder="Searching all products"
-                value={search}
-                className="border-blue-500"
-                icon={<IoSearchOutline size={16} className="text-gray-800" />}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-              <div className="w-4" />
-              <Button
-                variant="ghost"
-                className="px-2 mr-2 h-min py-1 text-gray-800 text-xs hover:bg-gray-200/75"
-                onClick={() => setIsSearching(false)}
-              >
-                Cancel
-              </Button>
-              <FilledButton>Save as</FilledButton>
-            </div>
-
-            <div className="flex flex-col"></div>
-
-            <div className="w-full border-t border-gray-300 pt-2 mt-2 mb-1 flex gap-1">
-              {Object.entries(activeFilters).map(([_, element]) => element)}
-
-              <AddFilterPopover
-                filters={Object.keys(filters)}
-                disabled={Object.keys(activeFilters)}
-                onSelect={(f) => {
-                  setActiveFilters({ ...activeFilters, [f]: filters[f] });
-                }}
-              />
-
-              <Button
-                variant="ghost"
-                className="px-2 rounded-lg h-min py-1 text-gray-800 text-xs hover:bg-gray-200/75"
-                onClick={() => setActiveFilters({})}
-              >
-                Clear all
-              </Button>
-            </div>
-          </div>
-        ) : (
-          <div className="flex mr-2 w-full justify-between items-center">
-            <div className="flex gap-2 items-center">
-              {views.map((v) => (
+    <>
+      <div className="relative hidden sm:block overflow-x-auto shadow-md sm:rounded-lg overflow-hidden">
+        <div className=" flex justify-between items-start min-w-full w-full px-2 py-1">
+          {isSearching ? (
+            <div className="flex mr-2 flex-col w-full">
+              <div className="flex items-center w-full">
+                <Input
+                  id="search"
+                  placeholder="Searching all products"
+                  value={search}
+                  className="border-blue-500"
+                  icon={<IoSearchOutline size={16} className="text-gray-800" />}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+                <div className="w-4" />
                 <Button
-                  key={v}
                   variant="ghost"
-                  className={`hover:bg-gray-200/75 px-3 py-1.5 h-min ${
-                    v === selectedView ? "bg-gray-200" : "bg-transparent"
-                  }`}
-                  onClick={() => setSelectedView(v)}
+                  className="px-2 mr-2 h-min py-1 text-gray-800 text-xs hover:bg-gray-200/75"
+                  onClick={() => setIsSearching(false)}
                 >
-                  <Text className="text-gray-800 capitalize">{v}</Text>
+                  Cancel
                 </Button>
-              ))}
-              <AddViewDialog onSave={(name) => {}} />
-            </div>
+                <FilledButton>Save as</FilledButton>
+              </div>
 
-            <OutlinedButton
-              className="p-1.5 flex gap-0.5"
-              onClick={() => setIsSearching(true)}
-            >
-              <IoSearchOutline size={16} className="text-black" />
-              <MdOutlineFilterList size={20} className="text-black" />
-            </OutlinedButton>
-          </div>
-        )}
+              <div className="flex flex-col"></div>
 
-        <SortPopover {...sortPopoverProps} />
-      </div>
+              <div className="w-full border-t border-gray-300 pt-2 mt-2 mb-1 flex gap-1">
+                {Object.entries(activeFilters).map(([_, element]) => element)}
 
-      <div className="w-full bg-white hidden md:block">
-        <table className="w-full bg-white text-sm text-left overflow-y-scroll rtl:text-right text-gray-500 ">
-          <thead
-            className={`text-[10px] text-gray-700 uppercase border-t-2 border-b-2 ${
-              selectedItems.length > 0 ? "bg-white" : "bg-gray-100"
-            }`}
-          >
-            <tr>
-              <th scope="col" className="px-4 relative">
-                <Text
-                  className={`absolute whitespace-nowrap z-10 top-1 left-12 ${
-                    selectedItems.length > 0 ? "" : "hidden"
-                  }`}
+                <AddFilterPopover
+                  filters={Object.keys(filters)}
+                  disabled={Object.keys(activeFilters)}
+                  onSelect={(f) => {
+                    setActiveFilters({ ...activeFilters, [f]: filters[f] });
+                  }}
+                />
+
+                <Button
+                  variant="ghost"
+                  className="px-2 rounded-lg h-min py-1 text-gray-800 text-xs hover:bg-gray-200/75"
+                  onClick={() => setActiveFilters({})}
                 >
-                  {selectedItems.reduce((acc, p) => (p ? acc + 1 : acc), 0)}{" "}
-                  SELECTED
-                </Text>
-                <Checkbox
-                  id="select-all-items"
-                  checked={selectedItems.length > 0}
-                  onChange={(e) => {
-                    if (
-                      e.target.checked &&
-                      selectedItems.length < initialItems.length
-                    ) {
-                      setSelectedItems([...initialItems]);
+                  Clear all
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="flex mr-2 w-full justify-between items-center">
+              <div className="flex gap-2 items-center">
+                {views.map((v) => (
+                  <Button
+                    key={v}
+                    variant="ghost"
+                    className={`hover:bg-gray-200/75 px-3 py-1.5 h-min ${
+                      v === selectedView ? "bg-gray-200" : "bg-transparent"
+                    }`}
+                    onClick={() => setSelectedView(v)}
+                  >
+                    <Text className="text-gray-800 capitalize">{v}</Text>
+                  </Button>
+                ))}
+                <AddViewDialog onSave={(name) => {}} />
+              </div>
+
+              <OutlinedButton
+                className="p-1.5 flex gap-0.5"
+                onClick={() => setIsSearching(true)}
+              >
+                <IoSearchOutline size={16} className="text-black" />
+                <MdOutlineFilterList size={20} className="text-black" />
+              </OutlinedButton>
+            </div>
+          )}
+
+          <SortPopover {...sortPopoverProps} />
+        </div>
+
+        <div className="w-full bg-white">
+          <table className="w-full bg-white text-sm text-left overflow-y-scroll rtl:text-right text-gray-500 ">
+            <thead
+              className={`text-[10px] text-gray-700 uppercase border-t-2 border-b-2 ${
+                selectedItems.length > 0 ? "bg-white" : "bg-gray-100"
+              }`}
+            >
+              <tr>
+                <th scope="col" className="px-4 relative">
+                  <Text
+                    className={`absolute whitespace-nowrap z-10 top-1 left-12 ${
+                      selectedItems.length > 0 ? "" : "hidden"
+                    }`}
+                  >
+                    {selectedItems.reduce((acc, p) => (p ? acc + 1 : acc), 0)}{" "}
+                    SELECTED
+                  </Text>
+                  <Checkbox
+                    id="select-all-items"
+                    checked={selectedItems.length > 0}
+                    onChange={(e) => {
+                      if (
+                        e.target.checked &&
+                        selectedItems.length < initialItems.length
+                      ) {
+                        setSelectedItems([...initialItems]);
+                      } else {
+                        setSelectedItems([]);
+                      }
+                    }}
+                  />
+                </th>
+                {headerItems.map((h) => (
+                  <th
+                    key={h.label}
+                    scope="col"
+                    className={`px-6 py-1 ${
+                      selectedItems.length > 0 ? "opacity-0 cursor-default" : ""
+                    }`}
+                  >
+                    {h.sortable ? (
+                      <SortableHeader<T>
+                        header={h}
+                        sortKey={currentSortKey}
+                        setSortKey={setCurrentSortKey}
+                        onSort={(sortedItems) => setItems(sortedItems)}
+                      />
+                    ) : (
+                      h.label
+                    )}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+
+            <tbody className="text-xs">
+              {items.map((item, index) => (
+                <Row
+                  key={item._id}
+                  item={item}
+                  view={selectedView}
+                  filterElements={filters}
+                  index={index}
+                  isSelected={
+                    !!selectedItems.find((_item) => _item._id === item._id)
+                  }
+                  setSelected={(b) => {
+                    if (b) {
+                      setSelectedItems([...selectedItems, item]);
                     } else {
-                      setSelectedItems([]);
+                      setSelectedItems(
+                        selectedItems.filter((_item) => _item._id !== item._id)
+                      );
                     }
                   }}
                 />
-              </th>
-              {headerItems.map((h) => (
-                <th
-                  key={h.label}
-                  scope="col"
-                  className={`px-6 py-1 ${
-                    selectedItems.length > 0 ? "opacity-0 cursor-default" : ""
-                  }`}
-                >
-                  {h.sortable ? (
-                    <SortableHeader
-                      header={h}
-                      sortKey={currentSortKey}
-                      setSortKey={setCurrentSortKey}
-                      onSort={(sortedItems) => setItems(sortedItems)}
-                    />
-                  ) : (
-                    h.label
-                  )}
-                </th>
               ))}
-            </tr>
-          </thead>
+            </tbody>
+          </table>
+        </div>
 
-          <tbody className="text-xs">
-            {items.map((item, index) => (
-              <Row
-                key={item._id}
-                item={item}
-                view={selectedView}
-                filterElements={filters}
-                index={index}
-                isSelected={
-                  !!selectedItems.find((_item) => _item._id === item._id)
-                }
-                setSelected={(b) => {
-                  if (b) {
-                    setSelectedItems([...selectedItems, item]);
-                  } else {
-                    setSelectedItems(
-                      selectedItems.filter((_item) => _item._id !== item._id)
-                    );
-                  }
-                }}
-              />
-            ))}
-          </tbody>
-        </table>
+        {selectedItems.length > 0 && (
+          <ActionsCard selectedItems={selectedItems} />
+        )}
       </div>
 
-      {selectedItems.length > 0 && (
-        <ActionsCard selectedItems={selectedItems} />
-      )}
-    </div>
+      <div className="flex sm:hidden flex-col w-screen">
+        <div className="flex mr-2 w-full justify-between items-center">
+          <div className="flex gap-2 overflow-x-scroll items-center">
+            {views.map((v) => (
+              <Button
+                key={v}
+                variant="ghost"
+                className={`hover:bg-gray-200/75 px-3 py-1.5 h-min ${
+                  v === selectedView ? "bg-gray-200" : "bg-transparent"
+                }`}
+                onClick={() => setSelectedView(v)}
+              >
+                <Text className="text-gray-800 capitalize">{v}</Text>
+              </Button>
+            ))}
+            <AddViewDialog onSave={(name) => {}} />
+          </div>
+
+          <OutlinedButton
+            className="p-1.5 flex gap-0.5"
+            onClick={() => setIsSearching(true)}
+          >
+            <IoSearchOutline size={16} className="text-black" />
+            <MdOutlineFilterList size={20} className="text-black" />
+          </OutlinedButton>
+
+          <SortPopover
+            onSelect={(value) => {
+              console.log(value);
+            }}
+            options={[
+              { label: "Product title", value: "title" },
+              { label: "Created", value: "createdAt" },
+              { label: "Updated", value: "updatedAt" },
+              { label: "Inventory", value: "inventory" },
+              { label: "Product type", value: "productType" },
+              { label: "Vendor", value: "vendor" },
+            ]}
+          />
+        </div>
+
+        <div className="flex flex-col gap-6 mt-4">
+          {items.map((item, index) => (
+            <MobileRow
+              key={item._id}
+              item={item}
+              view={selectedView}
+              filterElements={filters}
+              index={index}
+              isSelected={
+                !!selectedItems.find((_item) => _item._id === item._id)
+              }
+              setSelected={(b) => {
+                if (b) {
+                  setSelectedItems([...selectedItems, item]);
+                } else {
+                  setSelectedItems(
+                    selectedItems.filter((_item) => _item._id !== item._id)
+                  );
+                }
+              }}
+            />
+          ))}
+        </div>
+      </div>
+    </>
   );
 }

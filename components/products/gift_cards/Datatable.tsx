@@ -5,10 +5,13 @@ import StatusText from "@/components/StatusText";
 import { useRouter } from "next/navigation";
 import Card from "@/components/Card";
 import { Button } from "@/components/ui/button";
-import { FilterElements, HeaderItem, RowProps } from "@/types/Datatable";
+import { FilterElements, HeaderItem, RowProps } from "@/types/datatable";
 import Datatable from "../../Datatable";
 import { GiftCard } from "@/types/giftCard";
-import GiftCardCard from "./GiftcardCard";
+import Link from "next/link";
+import Text from "@/components/Text";
+import { CiStickyNote } from "react-icons/ci";
+import { FaCircle } from "react-icons/fa";
 
 export default function GiftCardsDatable({
   initialGiftCards,
@@ -16,6 +19,37 @@ export default function GiftCardsDatable({
   initialGiftCards: GiftCard[];
 }) {
   const router = useRouter();
+
+  function MobileRow({ item: gc }: RowProps<GiftCard>) {
+    return (
+      <Link
+        href={`/products/gift_cards/${gc._id}`}
+        key={gc._id}
+        className="flex w-full gap-2 px-3"
+      >
+        <div className="flex flex-col w-full gap-1">
+          <Text className="text-gray-800 flex items-center gap-1 text-base">
+            {gc.code} <FaCircle size={5} /> {gc.createdAt.substring(0, 10)}
+          </Text>
+          <div className="flex w-full items-center justify-between">
+            <div className="flex flex-col gap-2">
+              <Text className="text-gray-500">
+                {gc.customer?.firstName ?? "No customer"}
+              </Text>
+              <StatusText status={gc.status} />
+            </div>
+            <div className="flex flex-col gap-2">
+              <Text className="text-gray-500">$ {gc.initialValue}</Text>
+              <Text className="text-gray-500">{<CiStickyNote size={8} />}</Text>
+            </div>
+          </div>
+          <Text className="text-gray-500">
+            {gc.recipient?.firstName ?? "No recipient"}
+          </Text>
+        </div>
+      </Link>
+    );
+  }
 
   function Row({ item: gc, isSelected, setSelected }: RowProps<GiftCard>) {
     return (
@@ -53,35 +87,30 @@ export default function GiftCardsDatable({
   }
 
   return (
-    <>
-      <Datatable<GiftCard>
-        initialItems={initialGiftCards}
-        sortPopoverProps={{
-          //TODO: fecth new `initialGiftCards` from API
-          onSelect: (value) => {
-            console.log(value);
-          },
-          options: [
-            { label: "Gift code ending", value: "code" },
-            { label: "Customer last name", value: "customer.lastName" },
-            { label: "recipient last name", value: "recipient.lastName" },
-            { label: "Date created", value: "createdAt" },
-            { label: "Date edited", value: "updatedAt" },
-            { label: "Expiry date", value: "expiresAt" },
-            { label: "Total balance", value: "balance" },
-          ],
-        }}
-        ActionsCard={ActionsCard}
-        Row={Row}
-        headerItems={getHeaderItems(initialGiftCards)}
-        views={["all", "redeemable", "full", "partial", "empty", "deactivated"]}
-        filters={getAllFilters()}
-      />
-
-      {initialGiftCards.map((gc, i) => (
-        <GiftCardCard key={gc._id} giftCard={gc} />
-      ))}
-    </>
+    <Datatable<GiftCard>
+      initialItems={initialGiftCards}
+      sortPopoverProps={{
+        //TODO: fecth new `initialGiftCards` from API
+        onSelect: (value) => {
+          console.log(value);
+        },
+        options: [
+          { label: "Gift code ending", value: "code" },
+          { label: "Customer last name", value: "customer.lastName" },
+          { label: "recipient last name", value: "recipient.lastName" },
+          { label: "Date created", value: "createdAt" },
+          { label: "Date edited", value: "updatedAt" },
+          { label: "Expiry date", value: "expiresAt" },
+          { label: "Total balance", value: "balance" },
+        ],
+      }}
+      ActionsCard={ActionsCard}
+      Row={Row}
+      MobileRow={MobileRow}
+      headerItems={getHeaderItems(initialGiftCards)}
+      views={["all", "redeemable", "full", "partial", "empty", "deactivated"]}
+      filters={getAllFilters()}
+    />
   );
 }
 

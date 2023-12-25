@@ -5,10 +5,12 @@ import StatusText from "@/components/StatusText";
 import { useRouter } from "next/navigation";
 import Card from "@/components/Card";
 import { Button } from "@/components/ui/button";
-import { FilterElements, HeaderItem, RowProps } from "@/types/Datatable";
+import { FilterElements, HeaderItem, RowProps } from "@/types/datatable";
 import Datatable from "../../Datatable";
 import { Transfer } from "@/types/transfer";
-import TransferCard from "./TransferCard";
+import { FaCircle } from "react-icons/fa";
+import Link from "next/link";
+import Text from "@/components/Text";
 
 export default function TransfersDatable({
   initialTransfers,
@@ -16,6 +18,35 @@ export default function TransfersDatable({
   initialTransfers: Transfer[];
 }) {
   const router = useRouter();
+
+  function MobileRow({ item: t }: RowProps<Transfer>) {
+    return (
+      <Link
+        href={`/products/transfers/${t._id}`}
+        key={t._id}
+        className="flex w-full gap-2 px-3"
+      >
+        <div className="flex items-center justify-between w-full">
+          <div className="flex gap-1 flex-col">
+            <Text className="text-gray-800 font-bold text-base">
+              #{t.referenceNumber}
+            </Text>
+            <Text className="text-gray-500 flex items-center gap-1 text-xs">
+              {t.origin.name} <FaCircle size={5} className="text-gray-500" />{" "}
+              {t.destination.name}
+            </Text>
+          </div>
+          <div className="flex flex-col">
+            <Text className="text-gray-800 flex items-center gap-1">
+              <FaCircle size={8} className="text-gray-800" />
+              Recieved
+            </Text>
+            <Text>1 of 1</Text>
+          </div>
+        </div>
+      </Link>
+    );
+  }
 
   function Row({ item: t, isSelected, setSelected }: RowProps<Transfer>) {
     return (
@@ -60,33 +91,28 @@ export default function TransfersDatable({
   }
 
   return (
-    <>
-      <Datatable<Transfer>
-        initialItems={initialTransfers}
-        sortPopoverProps={{
-          //TODO: fecth new `initialTransfers` from API
-          onSelect: (value) => {
-            console.log(value);
-          },
-          options: [
-            { label: "Created", value: "createdAt" },
-            { label: "Expected arrival date", value: "shipping.arrivalDate" },
-            { label: "Origin", value: "origin.name" },
-            { label: "Destination", value: "destination.name" },
-            { label: "Status", value: "status" },
-          ],
-        }}
-        ActionsCard={ActionsCard}
-        Row={Row}
-        headerItems={getHeaderItems(initialTransfers)}
-        views={["all", "active", "draft", "archived"]}
-        filters={getAllFilters()}
-      />
-
-      {initialTransfers.map((t, i) => (
-        <TransferCard key={t._id} transfer={t} />
-      ))}
-    </>
+    <Datatable<Transfer>
+      initialItems={initialTransfers}
+      sortPopoverProps={{
+        //TODO: fecth new `initialTransfers` from API
+        onSelect: (value) => {
+          console.log(value);
+        },
+        options: [
+          { label: "Created", value: "createdAt" },
+          { label: "Expected arrival date", value: "shipping.arrivalDate" },
+          { label: "Origin", value: "origin.name" },
+          { label: "Destination", value: "destination.name" },
+          { label: "Status", value: "status" },
+        ],
+      }}
+      ActionsCard={ActionsCard}
+      Row={Row}
+      MobileRow={MobileRow}
+      headerItems={getHeaderItems(initialTransfers)}
+      views={["all", "active", "draft", "archived"]}
+      filters={getAllFilters()}
+    />
   );
 }
 
