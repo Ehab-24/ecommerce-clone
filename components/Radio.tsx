@@ -1,11 +1,5 @@
+import { RadioItem } from "@/types"
 import React from "react"
-
-type RadioItem = {
-  label: string
-  value: string
-  description?: string
-  checked?: boolean
-}
 
 export default function Radio({ items, name, onChange, className = "" }: { items: RadioItem[], name: string, className?: string, onChange: React.ChangeEventHandler<HTMLInputElement> }) {
   return (

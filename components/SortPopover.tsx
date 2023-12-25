@@ -10,8 +10,9 @@ import { Button } from "./ui/button"
 import { FaArrowDownLong, FaArrowUpLong } from "react-icons/fa6";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group"
 import { Label } from "./ui/label"
+import { RadioItem } from "@/types"
 
-export default function SortPopover({ options, onChange }: { options: { label: string, value: string }[], onChange: (value: string) => void }) {
+export default function SortPopover({ options, onSelect }: { options: RadioItem[], onSelect: (value: string) => void }) {
 
   const [open, setOpen] = useState(false)
 
@@ -24,11 +25,11 @@ export default function SortPopover({ options, onChange }: { options: { label: s
           <BiSortAlt2 size={20} className='text-black' />
         </button>
       </PopoverTrigger>
-      <PopoverContent className="w-max whitespace-nowrap p-1 rounded-xl md:-translate-x-1/4">
+      <PopoverContent className="w-max whitespace-nowrap p-1 rounded-xl md:-translate-x-[10px]">
 
         <div className="flex flex-col p-2 rounded-lg bg-white">
           <Text className="text-gray-800">Sort by</Text>
-          <RadioGroup defaultValue="product-title" onValueChange={onChange} className="mt-4 flex flex-col gap-2">
+          <RadioGroup defaultValue="product-title" onValueChange={onSelect} className="mt-4 flex flex-col gap-2">
             {
               options.map(op => (
                 <div key={op.value} className="flex items-center space-x-2">
