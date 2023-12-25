@@ -107,11 +107,7 @@ const SingleCustomerPage = () => {
               <Title>Default Addresses</Title>
               <p>{customer?.addresses[0].address}</p>
               <p>
-                {customer?.addresses[0].firstName}{" "}
-                {customer?.addresses[0].lastName}
-              </p>
-              <p>
-                {customer?.addresses[0].city}{" "}
+                {customer?.addresses[0].city}
                 {customer?.addresses[0].postalCode}
               </p>
               <p>{customer?.addresses[0].country}</p>

@@ -17,7 +17,6 @@ import SortPopover from "../SortPopover";
 import Input from "../../Input";
 import FilledButton from "../../buttons/FilledButton";
 import AddViewDialog from "../../AddViewDialog";
-import HeaderItem from "@/types/headerItem";
 import SortableHeader from "../../SortableHeader";
 import { Order } from "@/types/order";
 import AddFilterPopover from "../../AddFilterPopover";
@@ -152,7 +151,7 @@ const Datatable = () => {
         <div className="hidden md:flex text-gray-600 font-semibold items-center text-sm justify-between px-4 py-2 bg-gray-100 border-y">
           <div className="flex">
             <Checkbox checked={false} id="selectAll" onChange={() => { }} />
-            <p>Draft order</p>
+s             <p>Draft order</p>
           </div>
           <p>Status</p>
           <p>Total</p>

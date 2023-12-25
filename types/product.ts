@@ -31,6 +31,7 @@ const VariantSchema = z.object({
 })
 
 const ApiProductSchema = z.object({
+  _id: z.any().optional(),
   title: z.string().min(1, "Product title is required"),
   description: z.string().optional(),
   price: z.number().gte(0, "Price must be greater than 0").optional(),

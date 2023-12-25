@@ -31,14 +31,10 @@ const defaultCustomer: Customer = {
 
   addresses: [
     {
-      firstName: "",
-      lastName: "",
-      company: "",
       address: "",
       apartment: "",
       city: "",
       postalCode: "",
-      phone: "",
       country: "",
     },
   ],

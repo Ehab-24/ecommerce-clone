@@ -68,11 +68,11 @@ const Datatable = () => {
   ];
 
   return (
-    <div className="shadow-sm shadow-black/40 md:rounded-xl">
-      <div className=" flex md:rounded-t-xl overflow-x-auto justify-between items-start whitespace-nowrap bg-white px-2 py-1">
+    <div className="shadow-sm shadow-black/40 rounded-xl lg:w-full md:w-[70%]">
+      <div className=" flex rounded-t-xl overflow-x-auto justify-between items-start bg-white px-2 py-1">
         {isSearching ? (
-          <div className="flex mr-2 flex-col w-full">
-            <div className="flex items-center w-full">
+          <div className="flex mr-2 flex-col ">
+            <div className="flex items-center ">
               <Input
                 id="search"
                 placeholder="Searching all products"
@@ -91,7 +91,7 @@ const Datatable = () => {
               <FilledButton>Save as</FilledButton>
             </div>
 
-            <div className="w-full border-t border-gray-300 pt-2 mt-2 mb-1 flex gap-1">
+            <div className=" border-t border-gray-300 pt-2 mt-2 mb-1 flex gap-1">
               {filters.map((f) => (
                 <Button
                   key={f}
@@ -152,71 +152,79 @@ const Datatable = () => {
         )}
       </div>
 
-      <div className="overflow-x-auto hidden md:table">
-        <table className="w-full">
-          <thead>
-            <tr className="text-gray-600 text-sm items-center bg-gray-100 border-b">
-              <th className="whitespace-nowrap px-0 py-1.5">
-                <Checkbox checked={false} id="selectAll" onChange={() => {}} />
-              </th>
-              <th className="text-start">Order</th>
-              <th className="whitespace-nowrap pr-10">Date</th>
-              <th className="whitespace-nowrap pr-10">Customer</th>
-              <th className="whitespace-nowrap pr-10">Channel</th>
-              <th className="text-end whitespace-nowrap pr-10">Total</th>
-              <th className="whitespace-nowrap pr-10">Payment status</th>
-              <th className="whitespace-nowrap pr-10">Fulfillment status</th>
-              <th className="whitespace-nowrap pr-10">Items</th>
-              <th className="whitespace-nowrap pr-10">Delivery status</th>
-              <th className="whitespace-nowrap pr-10">Delivery method</th>
-              <th className="whitespace-nowrap pr-10">Tags</th>
-            </tr>
-          </thead>
+      <div className="hidden sm:block overflow-x-auto overflow-y-hidden">
+        <div className="grid px-4 grid-cols-11 p-1 gap-1 gap-x-32">
+          <div className="text-sm text-gray-700 font-semibold flex gap-1">
+            <Checkbox checked={false} id="selectAll" onChange={() => {}} />
+            Order
+          </div>
+          <div className="text-sm text-gray-700 font-semibold whitespace-nowrap">
+            Date
+          </div>
+          <div className="text-sm text-gray-700 font-semibold whitespace-nowrap">
+            Customer
+          </div>
+          <div className="text-sm text-gray-700 font-semibold whitespace-nowrap">
+            Channel
+          </div>
+          <div className="text-sm text-gray-700 font-semibold text-end">
+            Total
+          </div>
+          <div className="text-sm text-gray-700 font-semibold whitespace-nowrap">
+            Payment status
+          </div>
+          <div className="text-sm text-gray-700 font-semibold whitespace-nowrap">
+            Fulfillment status
+          </div>
+          <div className="text-sm text-gray-700 font-semibold whitespace-nowrap">
+            Items
+          </div>
+          <div className="text-sm text-gray-700 font-semibold whitespace-nowrap">
+            Delivery status
+          </div>
+          <div className="text-sm text-gray-700 font-semibold whitespace-nowrap">
+            Delivery method
+          </div>
+          <div className="text-sm text-gray-700 font-semibold whitespace-nowrap">
+            Tags
+          </div>
+        </div>
 
-          <tbody>
-            {orders.map((order) => (
-              <tr
-                key={order._id}
-                className="text-gray-600 font-semibold text-sm bg-gray-100 border-b"
-              >
-                <td className="">
-                  <div className="flex items-center">
-                    <Checkbox
-                      checked={false}
-                      id={`order-${order._id}`}
-                      onChange={() => {}}
-                    />
-                    <p className="ml-2">{order._id}</p>
-                  </div>
-                </td>
-                <td className="whitespace-nowrap">{order.date}</td>
-                <td className="whitespace-nowrap">{order.customer.name}</td>
-                <td className="whitespace-nowrap">{order.channel}</td>
-                <td className="text-center whitespace-nowrap">
-                  {order.total && `Rs. ${order.total}`}
-                </td>
-                <td className="whitespace-nowrap">
-                  <div className="flex items-center rounded-xl px-2 py-1 gap-2 bg-gray-100">
-                    <span className="rounded-full outline-1 p-1.5 bg-gray-500"></span>
-                    <p className="text-gray-500 text-xs">
-                      {order.payment.status}
-                    </p>
-                  </div>
-                </td>
-                <td className="whitespace-nowrap">
-                  <div className="flex items-center rounded-xl px-2 py-1 gap-2 bg-gray-100">
-                    <span className="rounded-full outline-1 p-1.5 bg-yellow-500"></span>
-                    <p className="text-gray-500 text-xs">{order.fulfillment}</p>
-                  </div>
-                </td>
-                <td className="whitespace-nowrap">{order.items}</td>
-                <td className="whitespace-nowrap">{order.delivery.status}</td>
-                <td className="whitespace-nowrap">{order.delivery.method}</td>
-                <td className="whitespace-nowrap">{order.tags[0]}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {orders.map((order, idx) => (
+          <div
+            key={order._id}
+            className="grid bg-white grid-cols-11 p-1 gap-1 gap-x-32 px-4"
+          >
+            <div className="flex items-center gap-1">
+              <Checkbox
+                checked={false}
+                id={`order-${order._id}`}
+                onChange={() => {}}
+              />
+              {order._id}
+            </div>
+            <div className="whitespace-nowrap text-sm">{order.date}</div>
+            <div className="whitespace-nowrap text-sm">
+              {order.customer.name}
+            </div>
+            <div className="whitespace-nowrap text-sm">{order.channel}</div>
+            <div className="whitespace-nowrap text-sm">
+              {order.total && `Rs. ${order.total}`}
+            </div>
+            <div className="whitespace-nowrap text-sm">
+              {order.payment.status}
+            </div>
+            <div className="whitespace-nowrap text-sm">{order.fulfillment}</div>
+            <div className="whitespace-nowrap text-sm">{order.items}</div>
+            <div className="whitespace-nowrap text-sm">
+              {order.delivery.status}
+            </div>
+            <div className="whitespace-nowrap text-sm">
+              {order.delivery.method}
+            </div>
+            <div className={`whitespace-nowrap text-sm`}>{order.tags[0]}</div>
+          </div>
+        ))}
       </div>
 
       <div>
