@@ -37,7 +37,7 @@ export default async function CreateGiftCardPage() {
       <div className="h-8" />
 
       {giftCards && giftCards.length > 0 ? (
-        <Datatable giftCards={giftCards} />
+        <Datatable initialGiftCards={giftCards} />
       ) : (
         <Card className="flex flex-col items-center justify-center py-16">
           <Image

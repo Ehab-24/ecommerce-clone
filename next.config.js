@@ -4,6 +4,7 @@ const nextConfig = {
     domains: ['loremflickr.com', 'res.cloudinary.com']
   },
   reactStrictMode: false,
+  esmExternals: false,
 }
 
 module.exports = nextConfig

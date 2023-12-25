@@ -38,7 +38,7 @@ import { ActionCardProps, FilterElements, HeaderItem, RowProps } from "@/types/D
 import Datatable from "../Datatable"
 
 
-export default function ProductDatable({ initialProducts, giftCards, statuses, collections, salesChannels, markets, tags, productTypes, vendors }: { initialProducts: Product[], giftCards: GiftCard[], statuses: string[], collections: Collection[], salesChannels: SalesChannel[], markets: Market[], tags: string[], productTypes: string[], vendors: Vendor[] }) {
+export default function Datable({ initialProducts, giftCards, statuses, collections, salesChannels, markets, tags, productTypes, vendors }: { initialProducts: Product[], giftCards: GiftCard[], statuses: string[], collections: Collection[], salesChannels: SalesChannel[], markets: Market[], tags: string[], productTypes: string[], vendors: Vendor[] }) {
 
   const router = useRouter()
 

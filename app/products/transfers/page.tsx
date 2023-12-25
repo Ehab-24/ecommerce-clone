@@ -38,7 +38,7 @@ export default async function TransfersPage() {
 
       {
         locations && locations.length > 0 && transfers && transfers.length > 0 ? (
-          <Datatable transfers={transfers} />
+          <Datatable initialTransfers={transfers} />
         ) : (
           <Card className="flex flex-col items-center justify-center py-16">
             <Image

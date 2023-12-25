@@ -25,7 +25,7 @@ export default async function CollectionsPage() {
         </FilledButton>
       </div>
 
-      <Datatable collections={collections} />
+      <Datatable initialCollections={collections} />
     </div>
   );
 }

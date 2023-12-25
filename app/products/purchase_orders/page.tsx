@@ -34,7 +34,7 @@ export default async function PurchaseOrdersPage() {
       <div className="h-8" />
 
       {purchaseOrders && purchaseOrders.length > 0 ? (
-        <Datatable purchaseOrders={purchaseOrders} />
+        <Datatable initialPurchaseOrders={purchaseOrders} />
       ) : (
         <Card className="flex flex-col items-center justify-center py-16">
           <Image
