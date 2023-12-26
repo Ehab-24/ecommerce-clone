@@ -87,19 +87,16 @@ export function SortPopover() {
             <div className="flex flex-col items-start mt-4">
               <span
                 onClick={() => setSortOrder("asc")}
-                className={`flex cursor-pointer items-center text-gray-700 py-1 rounded-md pl-1 w-full ${
-                  sortOrder === "asc" ? "bg-neutral-50" : ""
-                }`}
+                className={`flex cursor-pointer items-center text-gray-700 py-1 rounded-md pl-1 w-full ${sortOrder === "asc" ? "bg-neutral-50" : ""
+                  }`}
               >
                 <FaArrowUp
-                  className={`inline-block mr-2 ${
-                    sortOrder === "asc" ? "text-blue-500" : "text-gray-500"
-                  }`}
+                  className={`inline-block mr-2 ${sortOrder === "asc" ? "text-blue-500" : "text-gray-500"
+                    }`}
                 />
                 <span
-                  className={`text-sm ${
-                    sortOrder === "asc" ? "text-blue-500" : ""
-                  }`}
+                  className={`text-sm ${sortOrder === "asc" ? "text-blue-500" : ""
+                    }`}
                 >
                   Oldest to newest
                 </span>
@@ -107,19 +104,16 @@ export function SortPopover() {
 
               <span
                 onClick={() => setSortOrder("desc")}
-                className={`flex cursor-pointer items-center text-gray-700 py-1 rounded-md pl-1 w-full ${
-                  sortOrder === "desc" ? "bg-neutral-50" : ""
-                }`}
+                className={`flex cursor-pointer items-center text-gray-700 py-1 rounded-md pl-1 w-full ${sortOrder === "desc" ? "bg-neutral-50" : ""
+                  }`}
               >
                 <FaArrowDown
-                  className={`inline-block mr-2 ${
-                    sortOrder === "desc" ? "text-blue-500" : "text-gray-500"
-                  }`}
+                  className={`inline-block mr-2 ${sortOrder === "desc" ? "text-blue-500" : "text-gray-500"
+                    }`}
                 />
                 <span
-                  className={`text-sm ${
-                    sortOrder === "desc" ? "text-blue-500" : ""
-                  }`}
+                  className={`text-sm ${sortOrder === "desc" ? "text-blue-500" : ""
+                    }`}
                 >
                   Newest to oldest
                 </span>

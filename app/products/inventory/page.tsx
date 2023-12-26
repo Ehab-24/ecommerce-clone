@@ -1,4 +1,4 @@
-import Datatable from "@/components/products/inventory/Datatable";
+import Datatable, { VariantWithTitle } from "@/components/products/inventory/Datatable";
 import { apiUrl } from "@/lib/utils";
 import { Product } from "@/types/product";
 import Link from "next/link";
@@ -13,10 +13,14 @@ export default async function InventoryPage() {
   if (!res.ok) {
     throw new Error("Failed to fetch products")
   }
+
   const products: Product[] = await res.json()
+  const variants: VariantWithTitle[] = products.flatMap(p => p.variants?.map(v => ({ ...v, title: p.title }) ?? [productToVariant(p)]))
+
+  console.log(variants)
 
   return (
-    <div className="bg-gray-100 min-h-screen p-8">
+    <div className="bg-gray-100 min-h-screen md:px-8 py-8">
       <div className=" mb-8 w-full flex justify-between">
         <h1 className="text-xl font-bold text-[#1a1a1a]">Inventory</h1>
 
@@ -30,8 +34,22 @@ export default async function InventoryPage() {
       </div>
 
       <Datatable
-        initialProducts={products.filter(p => !p.variants || p.variants.length === 0)}
+        initialVariants={variants}
       />
     </div>
   );
+}
+
+function productToVariant(p: Product): VariantWithTitle {
+  return {
+    _id: p._id,
+    title: p.title,
+    name: p.title,
+    values: {},
+    trackQuantity: p.trackQuantity,
+    continueSellingWhenOutOfStock: p.continueSellingWhenOutOfStock,
+    quantity: p.quantity,
+    image: p.media?.length > 0 ? p.media[0].url : undefined,
+    status: p.status,
+  } as VariantWithTitle
 }

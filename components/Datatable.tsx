@@ -108,15 +108,14 @@ export default function Datatable<T extends DataItem>({
                   <Button
                     key={v}
                     variant="ghost"
-                    className={`hover:bg-gray-200/75 px-3 py-1.5 h-min ${
-                      v === selectedView ? "bg-gray-200" : "bg-transparent"
-                    }`}
+                    className={`hover:bg-gray-200/75 px-3 py-1.5 h-min ${v === selectedView ? "bg-gray-200" : "bg-transparent"
+                      }`}
                     onClick={() => setSelectedView(v)}
                   >
                     <Text className="text-gray-800 capitalize">{v}</Text>
                   </Button>
                 ))}
-                <AddViewDialog onSave={(name) => {}} />
+                <AddViewDialog onSave={(name) => { }} />
               </div>
 
               <OutlinedButton
@@ -135,16 +134,14 @@ export default function Datatable<T extends DataItem>({
         <div className="w-full bg-white">
           <table className="w-full bg-white text-sm text-left overflow-y-scroll rtl:text-right text-gray-500 ">
             <thead
-              className={`text-[10px] text-gray-700 uppercase border-t-2 border-b-2 ${
-                selectedItems.length > 0 ? "bg-white" : "bg-gray-100"
-              }`}
+              className={`text-[10px] text-gray-700 uppercase border-t-2 border-b-2 ${selectedItems.length > 0 ? "bg-white" : "bg-gray-100"
+                }`}
             >
               <tr>
                 <th scope="col" className="px-4 relative">
                   <Text
-                    className={`absolute whitespace-nowrap z-10 top-1 left-12 ${
-                      selectedItems.length > 0 ? "" : "hidden"
-                    }`}
+                    className={`absolute whitespace-nowrap z-10 top-1 left-12 ${selectedItems.length > 0 ? "" : "hidden"
+                      }`}
                   >
                     {selectedItems.reduce((acc, p) => (p ? acc + 1 : acc), 0)}{" "}
                     SELECTED
@@ -168,9 +165,8 @@ export default function Datatable<T extends DataItem>({
                   <th
                     key={h.label}
                     scope="col"
-                    className={`px-6 py-1 ${
-                      selectedItems.length > 0 ? "opacity-0 cursor-default" : ""
-                    }`}
+                    className={`px-6 py-1 ${selectedItems.length > 0 ? "opacity-0 cursor-default" : ""
+                      }`}
                   >
                     {h.sortable ? (
                       <SortableHeader<T>
@@ -219,21 +215,20 @@ export default function Datatable<T extends DataItem>({
       </div>
 
       <div className="flex sm:hidden flex-col w-screen">
-        <div className="flex mr-2 w-full justify-between items-center">
+        <div className="flex gap-2 px-2 mr-2 w-full justify-between items-center">
           <div className="flex gap-2 overflow-x-scroll items-center">
             {views.map((v) => (
               <Button
                 key={v}
                 variant="ghost"
-                className={`hover:bg-gray-200/75 px-3 py-1.5 h-min ${
-                  v === selectedView ? "bg-gray-200" : "bg-transparent"
-                }`}
+                className={`hover:bg-gray-200/75 px-3 py-1.5 h-min ${v === selectedView ? "bg-gray-200" : "bg-transparent"
+                  }`}
                 onClick={() => setSelectedView(v)}
               >
                 <Text className="text-gray-800 capitalize">{v}</Text>
               </Button>
             ))}
-            <AddViewDialog onSave={(name) => {}} />
+            <AddViewDialog onSave={(name) => { }} />
           </div>
 
           <OutlinedButton

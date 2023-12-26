@@ -5,10 +5,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { Product } from "@/types/product"
+import { Variant } from "@/types/product"
 import Image from "next/image"
 import { useState } from "react"
-import StatusText from "../../StatusText"
 import { useRouter } from "next/navigation"
 import Card from "../../Card"
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
@@ -17,21 +16,43 @@ import { ActionCardProps, FilterElements, HeaderItem, RowProps } from "@/types/d
 import Datatable from "../../Datatable"
 import Text from "../../Text"
 import { PiImageThin } from "react-icons/pi"
-import Link from "next/link"
 import Checkbox from "../../Checkbox"
 
-export default function InventoryDatable({ initialProducts }: { initialProducts: Product[] }) {
+export type VariantWithTitle = Variant & { title: string }
 
+export default function InventoryDatable({ initialVariants }: { initialVariants: VariantWithTitle[] }) {
+
+
+  // TODO: implement API for this
+  const quantities = {
+    incoming: 0,
+    committed: 0,
+    available: 0,
+    onHand: 0,
+    unavailable: 0,
+  }
   const router = useRouter();
 
-  function MobileRow({ item: p }: RowProps<Product>) {
+  function MobileRow({ item: v }: RowProps<VariantWithTitle>) {
+
+    function QuantityDiv({ label, quantity }: { label: string, quantity: number }) {
+      return (
+        <div className="flex flex-col rounded-lg border-t border-gray-300 py-2">
+          <div className="flex w-full justify-between items-center">
+            <Text className="text-gray-800 capitalize">{label}</Text>
+            <Text className="text-gray-800">{quantity}</Text>
+          </div>
+        </div>
+      )
+    }
+
     return (
 
-      <Link href={`/products/${p._id}`} key={p._id} className="flex w-full gap-2 px-3">
+      <div className="flex border-t border-gray-300 py-4 gap-4 w-full">
         {
-          p.media?.length > 0 ? (
+          v.image ? (
             <div className="w-12 h-12 rounded-md overflow-hidden">
-              <Image src={p.media[0].url} alt={p.title} width={0} height={0} sizes="100vw" style={{ width: '100%', height: '100%' }} />
+              <Image src={v.image} alt={v.name} width={0} height={0} sizes="100vw" style={{ width: '100%', height: '100%' }} />
             </div>
           ) : (
             <div className="w-12 h-12 rounded-md overflow-hidden border border-gray-300 grid place-items-center">
@@ -39,55 +60,62 @@ export default function InventoryDatable({ initialProducts }: { initialProducts:
             </div>
           )
         }
-
-        <div className="flex flex-col gap-1">
-          <Text className="text-gray-800 font-bold text-base">{p.title}</Text>
-          <Text className="text-gray-500">{p.quantity} in stock {p.variants?.length > 0 && `for ${p.variants.length}`}</Text>
-          <Text className="text-gray-500">{p.vendor.name}</Text>
-          <StatusText status={p.status} />
+        <div className="flex w-full flex-col px-4 gap-6">
+          <div className="flex flex-col gap-1">
+            <Text className="text-gray-800 font-bold text-base">{v.title}</Text>
+            <Text className="text-gray-800 bg-gray-200 px-1 w-min whitespace-nowrap py-0.5 rounded-lg">{v.name}</Text>
+            <Text className="text-gray-500">{v.sku ?? "No SKU"}</Text>
+          </div>
+          <div className="flex flex-col">
+            {
+              Object.entries(quantities).map(([label, quantity]) => <QuantityDiv key={label} label={label} quantity={quantity} />)
+            }
+          </div>
         </div>
-      </Link>
+      </div>
+
     )
   }
 
 
-  function Row({ item: p, isSelected, setSelected }: RowProps<Product>) {
+  function Row({ item: v, isSelected, setSelected }: RowProps<VariantWithTitle>) {
 
     return (
-      <tr key={p._id} className={`border-b transition-all ${isSelected ? "bg-gray-100 hover:bg-gray-200 " : "bg-white hover:bg-gray-50 "}`}>
+      <tr key={v._id} className={`border-b transition-all ${isSelected ? "bg-gray-100 hover:bg-gray-200 " : "bg-white hover:bg-gray-50 "}`}>
         <td className="w-4 p-4">
-          <Checkbox id={"select-" + p._id} checked={isSelected} label="" onChange={e => setSelected(e.target.checked)} />
+          <Checkbox id={"select-" + v._id} checked={isSelected} label="" onChange={e => setSelected(e.target.checked)} />
         </td>
 
-        <th scope="row" onClick={() => router.push(`/products/${p._id}`)} className="flex gap-1 items-center xl:min-w-[240px] py-4 font-medium text-gray-900 whitespace-nowrap cursor-pointer">
+        <th scope="row" onClick={() => router.push(`/products/${v._id}`)} className="flex gap-1 items-center xl:min-w-[240px] py-4 font-medium text-gray-900 whitespace-nowrap cursor-pointer">
           {
-            p.media?.length > 0 && (p.media.map((m, i) =>
-              <div key={i} className=" aspect-square h-8 bg-gray-200 rounded-md overflow-hidden">
-                <Image width="32" height="32" src={m.url} alt={p.title} className="w-full h-full object-cover" />
-              </div>
-            ))
+            v.image && <div className=" aspect-square h-8 bg-gray-200 rounded-md overflow-hidden">
+              <Image width="32" height="32" src={v.image} alt={v.title} className="w-full h-full object-cover" />
+            </div>
           }
 
-          <p className="ml-4">{p.title}</p>
+          <div className="flex flex-col gap-1">
+            <Text className="text-gray-800 text-base font-bold">{v.title}</Text>
+            <Text className="text-gray-800 bg-gray-200 px-1 py-0.5 w-min whitespace-nowrap rounded-lg">{v.name}</Text>
+          </div>
         </th>
 
         <td className="px-6 py-2">
-          <StatusText status={p.status} />
+          {v.sku ?? "No SKU"}
         </td>
         <td className="px-6 py-2">
-          {p.quantity} in stock
+          {quantities.unavailable}
         </td>
         <td className="px-6 py-2">
-          -
+          {quantities.committed}
         </td>
         <td className="px-6 py-2">
-          -
+          {quantities.available}
         </td>
         <td className="px-6 py-2">
-          {p.category}
+          {quantities.onHand}
         </td>
         <td className="px-6 py-2">
-          {p.vendor?.name}
+          {quantities.incoming}
         </td>
       </tr>
     )
@@ -96,8 +124,8 @@ export default function InventoryDatable({ initialProducts }: { initialProducts:
   const views = ["all", "active", "draft", "archived", "some", "more"]
 
   return (
-    <Datatable<Product>
-      initialItems={initialProducts}
+    <Datatable<VariantWithTitle>
+      initialItems={initialVariants}
       sortPopoverProps={{
         //TODO: fecth new `initialProducts` from API
         onSelect: (value) => { console.log(value) },
@@ -113,7 +141,7 @@ export default function InventoryDatable({ initialProducts }: { initialProducts:
       ActionsCard={ActionsCard}
       Row={Row}
       MobileRow={MobileRow}
-      headerItems={getHeaderItems(initialProducts)}
+      headerItems={getHeaderItems(initialVariants)}
       views={views}
       filters={getAllFilters()}
     />
@@ -122,7 +150,7 @@ export default function InventoryDatable({ initialProducts }: { initialProducts:
 
 
 
-function ActionsCard({ selectedItems: selectedProducts }: ActionCardProps<Product>) {
+function ActionsCard({ selectedItems: selectedProducts }: ActionCardProps<VariantWithTitle>) {
   return (
     <div className="py-4 min-w-full w-full grid bg-white place-items-center">
       <Card className="px-4 py-2 flex gap-2">
@@ -137,7 +165,7 @@ function ActionsCard({ selectedItems: selectedProducts }: ActionCardProps<Produc
   )
 }
 
-function MoreActionsPopover({ selectedProducts }: { selectedProducts: Product[] }) {
+function MoreActionsPopover({ selectedProducts }: { selectedProducts: Variant[] }) {
 
   const [open, setOpen] = useState(false)
 
@@ -154,58 +182,90 @@ function MoreActionsPopover({ selectedProducts }: { selectedProducts: Product[] 
 }
 
 
-function getHeaderItems(products: Product[]): HeaderItem<Product>[] {
+function getHeaderItems(variants: VariantWithTitle[]): HeaderItem<VariantWithTitle>[] {
   return [
     {
       label: "Product", sortable: true, onSort: (sortKey) => {
-        let sortedProducts = [...products]
+        let sortedVariants = [...variants]
         switch (sortKey) {
-          case "desc": sortedProducts.sort((a, b) => a.title.localeCompare(b.title)); break;
-          case "asc": sortedProducts.sort((a, b) => b.title.localeCompare(a.title)); break;
+          case "desc": sortedVariants.sort((a, b) => a.title.localeCompare(b.title)); break;
+          case "asc": sortedVariants.sort((a, b) => b.title.localeCompare(a.title)); break;
           default: throw new Error("Sort type not allowed")
         }
-        return sortedProducts
-      }
-    },
-
-    { label: "Status", sortable: false },
-
-    {
-      label: "Inventory", sortable: true, onSort: (sortKey) => {
-        let sortedProducts = [...products]
-        switch (sortKey) {
-          case "desc": sortedProducts.sort((a, b) => a.quantity - b.quantity); break;
-          case "asc": sortedProducts.sort((a, b) => b.quantity - a.quantity); break;
-          default: throw new Error("Sort type not allowed")
-        }
-        return sortedProducts
-      }
-    },
-
-    { label: "Sales Channel", sortable: false },
-    { label: "Markets", sortable: false },
-
-    {
-      label: "Category", sortable: true, onSort: (sortKey) => {
-        let sortedProducts = [...products]
-        switch (sortKey) {
-          case "desc": sortedProducts.sort((a, b) => a.category?.localeCompare(b.category ?? "") ?? 0); break;
-          case "asc": sortedProducts.sort((a, b) => b.category?.localeCompare(a.category ?? "") ?? 0); break;
-          default: throw new Error("Sort type not allowed")
-        }
-        return sortedProducts
+        return sortedVariants
       }
     },
 
     {
-      label: "Vendor", sortable: true, onSort: (sortKey) => {
-        let sortedProducts = [...products]
+      label: "SKU", sortable: true, onSort: (sortKey) => {
+        let sortedVariants = [...variants]
         switch (sortKey) {
-          case "desc": sortedProducts.sort((a, b) => a.vendor?.name?.localeCompare(b.vendor?.name ?? "") ?? 0); break;
-          case "asc": sortedProducts.sort((a, b) => b.vendor?.name?.localeCompare(a.vendor?.name ?? "") ?? 0); break;
+          case "desc": sortedVariants.sort((a, b) => (a.sku ?? "").localeCompare(b.sku ?? "")); break;
+          case "asc": sortedVariants.sort((a, b) => (b.sku ?? "").localeCompare(a.sku ?? "")); break;
           default: throw new Error("Sort type not allowed")
         }
-        return sortedProducts
+        return sortedVariants
+      }
+    },
+
+    //TODO: compare actual quantities
+    {
+      label: "Unavailable", sortable: true, onSort: (sortKey) => {
+        let sortedVariants = [...variants]
+        switch (sortKey) {
+          case "desc": sortedVariants.sort((a, b) => (a.quantity ?? 0) - (b.quantity ?? 0)); break;
+          case "asc": sortedVariants.sort((a, b) => (b.quantity ?? 0) - (a.quantity ?? 0)); break;
+          default: throw new Error("Sort type not allowed")
+        }
+        return sortedVariants
+      }
+    },
+
+    {
+      label: "Committed", sortable: true, onSort: (sortKey) => {
+        let sortedVariants = [...variants]
+        switch (sortKey) {
+          case "desc": sortedVariants.sort((a, b) => (a.quantity ?? 0) - (b.quantity ?? 0)); break;
+          case "asc": sortedVariants.sort((a, b) => (b.quantity ?? 0) - (a.quantity ?? 0)); break;
+          default: throw new Error("Sort type not allowed")
+        }
+        return sortedVariants
+      }
+    },
+
+    {
+      label: "Available", sortable: true, onSort: (sortKey) => {
+        let sortedVariants = [...variants]
+        switch (sortKey) {
+          case "desc": sortedVariants.sort((a, b) => (a.quantity ?? 0) - (b.quantity ?? 0)); break;
+          case "asc": sortedVariants.sort((a, b) => (b.quantity ?? 0) - (a.quantity ?? 0)); break;
+          default: throw new Error("Sort type not allowed")
+        }
+        return sortedVariants
+      }
+    },
+
+    {
+      label: "On hand", sortable: true, onSort: (sortKey) => {
+        let sortedVariants = [...variants]
+        switch (sortKey) {
+          case "desc": sortedVariants.sort((a, b) => (a.quantity ?? 0) - (b.quantity ?? 0)); break;
+          case "asc": sortedVariants.sort((a, b) => (b.quantity ?? 0) - (a.quantity ?? 0)); break;
+          default: throw new Error("Sort type not allowed")
+        }
+        return sortedVariants
+      }
+    },
+
+    {
+      label: "Incoming", sortable: true, onSort: (sortKey) => {
+        let sortedVariants = [...variants]
+        switch (sortKey) {
+          case "desc": sortedVariants.sort((a, b) => (a.quantity ?? 0) - (b.quantity ?? 0)); break;
+          case "asc": sortedVariants.sort((a, b) => (b.quantity ?? 0) - (a.quantity ?? 0)); break;
+          default: throw new Error("Sort type not allowed")
+        }
+        return sortedVariants
       }
     },
   ]

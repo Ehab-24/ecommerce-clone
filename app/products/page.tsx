@@ -44,7 +44,7 @@ export default async function ProductsPage() {
   ]
 
   return (
-    <div className="bg-gray-100 min-h-screen mt-6 md:mt-0 md:p-8">
+    <div className="bg-gray-100 min-h-screen pt-6 md:pt-0 md:p-8">
       <div className=" mb-8 w-full flex justify-between px-4 md:px-0">
         <h1 className="text-xl font-bold text-[#1a1a1a]">Products</h1>
 
