@@ -1,18 +1,18 @@
+
 import getDb from "@/lib/db";
-import { ApiProductSchema } from "@/types/product";
+import { ApiOrderSchema } from "@/types/order";
 import { NextRequest, NextResponse } from "next/server";
 import { errorResponse } from "../utils";
 
 export async function POST(request: NextRequest) {
     try {
-        const payload = ApiProductSchema.parse(await request.json())
+        const payload = ApiOrderSchema.parse(await request.json())
         const db = await getDb()
 
-        /* ts-ignore */
         payload.createdAt = (new Date()).toString()
         payload.updatedAt = (new Date()).toString()
 
-        const insertResult = await db.collection("products").insertOne(payload)
+        const insertResult = await db.collection("orders").insertOne(payload)
         console.log(insertResult)
         return NextResponse.json(insertResult, { status: 201 })
 
@@ -64,9 +64,9 @@ export async function GET(request: NextRequest) {
         }
 
         const db = await getDb()
-        const products = await db.collection("products").aggregate(pipeline).toArray()
+        const orders = await db.collection("orders").aggregate(pipeline).toArray()
 
-        return NextResponse.json(products, { status: 200 })
+        return NextResponse.json(orders, { status: 200 })
     }
     catch (error) {
         return errorResponse(error)

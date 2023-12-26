@@ -2,8 +2,7 @@ import { z } from "zod";
 import { ApiProductSchema } from "./product";
 import { CustomerSchema } from "./customer";
 
-const OrderSchema = z.object({
-  _id: z.string(),
+const ApiOrderSchema = z.object({
   date: z.string().optional(),
   customer: CustomerSchema,
   channel: z.string().optional(),
@@ -21,5 +20,10 @@ const OrderSchema = z.object({
   updatedAt: z.string().optional(),
 });
 
-type Order = z.infer<typeof OrderSchema>;
-export { type Order, OrderSchema };
+type ApiOrder = z.infer<typeof ApiOrderSchema>;
+
+type Order = Omit<Omit<ApiOrder, "createdAt">, "updatedAt"> & {
+  _id: string; createdAt: string; updatedAt: string;
+}
+
+export { type Order, ApiOrderSchema, type ApiOrder };
