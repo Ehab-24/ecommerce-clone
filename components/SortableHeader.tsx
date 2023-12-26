@@ -1,7 +1,7 @@
 import Text from "./Text";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import React from "react";
-import { HeaderItem, SortKey } from "@/types/Datatable";
+import { HeaderItem, SortKey } from "@/types/datatable";
 
 export default function SortableHeader<T>({ header, setSortKey, sortKey, onSort }: { header: HeaderItem<T>, onSort: (sortedItems: T[]) => void, setSortKey: React.Dispatch<React.SetStateAction<SortKey>>, sortKey: SortKey }) {
 

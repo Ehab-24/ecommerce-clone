@@ -142,7 +142,7 @@ const OrdersPage = () => {
                 <p>Not calculated</p>
 
                 <p className="font-semibold text-black">
-                  {customItems.map((item) => item.price * item.quantity)}
+                  {customItems.map((item) => (item.price || 1) * item.quantity)}
                 </p>
               </div>
 

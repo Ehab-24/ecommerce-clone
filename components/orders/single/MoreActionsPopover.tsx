@@ -1,3 +1,5 @@
+"use client";
+
 import OutlinedButton from "@/components/buttons/OutlinedButton";
 import PopoverButton from "@/components/buttons/PopoverButton";
 import {

@@ -6,7 +6,7 @@ import OutlinedButton from "@/components/buttons/OutlinedButton";
 import { apiUrl } from "@/lib/utils";
 import EditOrderForm from "@/components/orders/EditOrderForm";
 
-export const runtime = "edge"
+// export const runtime = "edge"
 
 export default async function OrderPage({ params }: { params: { id: string } }) {
   const res = await fetch(apiUrl(`api/orders/${params.id}`))

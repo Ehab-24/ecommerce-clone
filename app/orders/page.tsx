@@ -1,6 +1,4 @@
 // pages/orders.tsx
-import React from "react";
-
 import { Order } from "@/types/order";
 
 import Heading from "@/components/Heading";
@@ -9,6 +7,8 @@ import OutlinedButton from "@/components/buttons/OutlinedButton";
 import Link from "next/link";
 import Datatable from "@/components/orders/Datatable";
 import { apiUrl } from "@/lib/utils";
+
+export const runtime = "edge"
 
 export default async function OrdersPage() {
 
