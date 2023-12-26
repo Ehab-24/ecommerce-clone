@@ -8,8 +8,45 @@ import { errorResponse } from "../../utils"
 export async function GET(_: NextRequest, { params }: { params: { id: string } }) {
     try {
 
+
         const db = await getDb()
-        const order = await db.collection("orders").findOne({ _id: new ObjectId(params.id) })
+        const pipeline: any = [
+            {
+                $match: {
+                    _id: new ObjectId(params.id)
+                }
+            },
+            {
+                $addFields: {
+                    customer: { $toObjectId: "$customer" }
+                }
+            },
+            {
+                $addFields: {
+                    items: { $map: { input: "$items", as: "item", in: { $toObjectId: "$$item" } } }
+                }
+            },
+            {
+                $lookup: {
+                    from: 'products',
+                    localField: 'items',
+                    foreignField: '_id',
+                    as: 'items'
+                }
+            },
+            {
+                $lookup: {
+                    from: "customers",
+                    localField: "customer",
+                    foreignField: "_id",
+                    as: "customer"
+                }
+            }
+
+        ]
+
+        const result = await db.collection("orders").aggregate(pipeline).toArray()
+        const order = { ...result[0], customer: result[0].customer[0] }
         return NextResponse.json(order, { status: 200 })
     }
     catch (error) {

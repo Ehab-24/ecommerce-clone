@@ -1,10 +1,10 @@
 import { z } from "zod";
 import { ApiProductSchema } from "./product";
-import { CustomerSchema } from "./customer";
+import { Customer } from "./customer";
 
 const ApiOrderSchema = z.object({
   date: z.string().optional(),
-  customer: CustomerSchema,
+  customer: z.string(),
   channel: z.string().optional(),
   total: z.number().optional(),
   payment_status: z.string().optional(),
@@ -14,7 +14,7 @@ const ApiOrderSchema = z.object({
   delivery_method: z.string().optional(),
   tags: z.array(z.string()).optional(),
   // TODO: referenceNumber isnt optional
-  referenceNumber: z.string().optional(),
+  referenceNumber: z.string(),
   status: z.string().optional(),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional(),
@@ -22,8 +22,8 @@ const ApiOrderSchema = z.object({
 
 type ApiOrder = z.infer<typeof ApiOrderSchema>;
 
-type Order = Omit<Omit<ApiOrder, "createdAt">, "updatedAt"> & {
-  _id: string; createdAt: string; updatedAt: string;
+type Order = Omit<Omit<Omit<ApiOrder, "createdAt">, "updatedAt">, "customer"> & {
+  _id: string; createdAt: string; updatedAt: string; customer: Customer;
 }
 
 export { type Order, ApiOrderSchema, type ApiOrder };

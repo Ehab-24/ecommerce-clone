@@ -33,11 +33,32 @@ export async function GET(request: NextRequest) {
 
         const pipeline: any = [
             {
-                $skip: limit * page
+                $addFields: {
+                    customer: { $toObjectId: "$customer" }
+                }
             },
             {
-                $limit: limit
+                $addFields: {
+                    items: { $map: { input: "$items", as: "item", in: { $toObjectId: "$$item" } } }
+                }
             },
+            {
+                $lookup: {
+                    from: 'products',
+                    localField: 'items',
+                    foreignField: '_id',
+                    as: 'items'
+                }
+            },
+            {
+                $lookup: {
+                    from: "customers",
+                    localField: "customer",
+                    foreignField: "_id",
+                    as: "customer"
+                }
+            }
+
         ]
 
         if (q) {
@@ -51,20 +72,18 @@ export async function GET(request: NextRequest) {
             })
         }
 
-        if (fields && fields.length > 0) {
+        if (fields.length) {
             pipeline.push({
                 $project: {
-                    _id: 1,
-                    ...fields.reduce((acc, field) => {
-                        acc[field] = 1
-                        return acc
-                    }, {} as { [key: string]: number })
+                    ...fields?.reduce((acc, field) => ({ ...acc, [field]: 1 }), {}),
                 }
             })
         }
 
         const db = await getDb()
-        const orders = await db.collection("orders").aggregate(pipeline).toArray()
+        const results = await db.collection("orders").aggregate(pipeline).limit(limit).skip(page * limit).toArray()
+
+        const orders = results.map(res => ({ ...res, customer: res.customer[0] }))
 
         return NextResponse.json(orders, { status: 200 })
     }
