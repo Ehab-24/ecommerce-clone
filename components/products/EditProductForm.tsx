@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { multiplyArrays } from "@/lib/products/utils";
 import { useParams, useRouter } from "next/navigation";
@@ -23,7 +23,7 @@ import { useEffect } from "react";
 import React from "react";
 import OutlinedButton from "../buttons/OutlinedButton";
 import { Location } from "@/types/location";
-import VariantsCardEditPage from '@/components/products/variants/VariantsCardEditPage';
+import VariantsCardEditPage from "@/components/products/variants/VariantsCardEditPage";
 import StatusText from "../StatusText";
 import Text from "@/components/Text";
 import TextButton from "../buttons/TextButton";
@@ -36,33 +36,77 @@ import SearchEngineListing from "./SearchEngineListing";
 import ProductOrganization from "./ProductOrganization";
 import Inventory from "./Inventory";
 
-export default function EditProductForm({ initialProduct, locations }: { locations: Location[], initialProduct: Product }) {
-
+export default function EditProductForm({
+  initialProduct,
+  locations,
+}: {
+  locations: Location[];
+  initialProduct: Product;
+}) {
   const salesChannels: SalesChannel[] = [
-    { _id: "1", name: "Online Store", createdAt: (new Date).toString(), updatedAt: (new Date).toString() },
-    { _id: "2", name: "POS", createdAt: (new Date).toString(), updatedAt: (new Date).toString() },
-  ]
+    {
+      _id: "1",
+      name: "Online Store",
+      createdAt: new Date().toString(),
+      updatedAt: new Date().toString(),
+    },
+    {
+      _id: "2",
+      name: "POS",
+      createdAt: new Date().toString(),
+      updatedAt: new Date().toString(),
+    },
+  ];
   const markets: Market[] = [
-    { _id: "1", name: "US", createdAt: (new Date).toString(), updatedAt: (new Date).toString() },
-    { _id: "2", name: "CA", createdAt: (new Date).toString(), updatedAt: (new Date).toString() },
-    { _id: "3", name: "UK", createdAt: (new Date).toString(), updatedAt: (new Date).toString() },
-  ]
+    {
+      _id: "1",
+      name: "US",
+      createdAt: new Date().toString(),
+      updatedAt: new Date().toString(),
+    },
+    {
+      _id: "2",
+      name: "CA",
+      createdAt: new Date().toString(),
+      updatedAt: new Date().toString(),
+    },
+    {
+      _id: "3",
+      name: "UK",
+      createdAt: new Date().toString(),
+      updatedAt: new Date().toString(),
+    },
+  ];
 
   const params = useParams();
   const router = useRouter();
-  const [product, setProduct] = React.useState<ApiProduct>({ ...initialProduct, vendor: initialProduct.vendor._id, locations: initialProduct.locations.map(l => l._id), markets: initialProduct.markets.map(m => m._id) })
-  const [loading, setLoading] = React.useState(false)
+  const [product, setProduct] = React.useState<ApiProduct>({
+    ...initialProduct,
+    vendor: initialProduct.vendor?._id,
+    locations: initialProduct.locations?.map((l) => l._id) || [],
+    markets: initialProduct.markets?.map((m) => m._id) || [],
+  });
+  const [loading, setLoading] = React.useState(false);
 
   useEffect(() => {
-    setProduct(p => ({
-      ...p, variants: multiplyArrays(p.variantOptions.map(v => v.name), ...p.variantOptions.map(v => v.values))
-        .map((obj, i) => ({ _id: i.toString(), name: Object.values(obj).join(" / "), values: obj, trackQuantity: false, continueSellingWhenOutOfStock: false }))
-    }))
-  }, [product.variantOptions])
+    setProduct((p) => ({
+      ...p,
+      variants: multiplyArrays(
+        p.variantOptions.map((v) => v.name),
+        ...p.variantOptions.map((v) => v.values)
+      ).map((obj, i) => ({
+        _id: i.toString(),
+        name: Object.values(obj).join(" / "),
+        values: obj,
+        trackQuantity: false,
+        continueSellingWhenOutOfStock: false,
+      })),
+    }));
+  }, [product.variantOptions]);
 
   useEffect(() => {
     if (product.price !== 0 && product.costPerItem !== 0) {
-      setProduct(p => ({
+      setProduct((p) => ({
         ...p,
         profit: (p.price || 0) - (p.costPerItem || 0),
         margin:
@@ -74,17 +118,14 @@ export default function EditProductForm({ initialProduct, locations }: { locatio
   }, [product?.price, product?.costPerItem]);
 
   async function handleSave() {
-    setLoading(true)
+    setLoading(true);
     try {
-
-      ApiProductSchema.parse(product)
-      const { status } = await axios.put(`/api/products/${params.id}`, product)
+      ApiProductSchema.parse(product);
+      const { status } = await axios.put(`/api/products/${params.id}`, product);
       if (status === 200) {
         toast.success("Product saved successfully");
       }
-
     } catch (error) {
-
       if (error instanceof ZodError) {
         toast.error((error as ZodError).errors[0].message);
       } else if (error instanceof AxiosError) {
@@ -92,56 +133,47 @@ export default function EditProductForm({ initialProduct, locations }: { locatio
       } else {
         toast.error("Something went wrong");
       }
-      console.log(error)
-
+      console.log(error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
   async function handleDelete() {
-    setLoading(true)
+    setLoading(true);
     try {
-
-      const { status } = await axios.delete(`/api/products/${params.id}`)
+      const { status } = await axios.delete(`/api/products/${params.id}`);
       if (status === 200) {
-        router.push("/products")
+        router.push("/products");
       }
-
     } catch (error) {
-
       if (error instanceof ZodError) {
         toast.error(error.errors[0].message);
       } else {
         toast.error("Something went wrong");
-        console.log(error)
+        console.log(error);
       }
-
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
   async function handleProductStatusChange(status: string): Promise<void> {
-    setLoading(true)
+    setLoading(true);
     try {
-
-      const res = await axios.put(`/api/products/${params.id}`, { status })
+      const res = await axios.put(`/api/products/${params.id}`, { status });
       if (res.status === 200) {
-        toast.success("Product archived successfully")
+        toast.success("Product archived successfully");
       }
-
-    }
-    catch (error) {
+    } catch (error) {
       if (error instanceof ZodError) {
         toast.error(error.errors[0].message);
       } else {
         toast.error("Something went wrong");
-        console.log(error)
+        console.log(error);
       }
-    }
-    finally {
-      setLoading(false)
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -149,7 +181,8 @@ export default function EditProductForm({ initialProduct, locations }: { locatio
     <>
       <div className="flex-col max-w-4xl w-full flex gap-4 md:p-8 ">
         <div className="flex flex-col md:flex-row px-4 md:px-0 gap-3 mt-4 md:mt-0 items-start">
-          <Link href="/products"
+          <Link
+            href="/products"
             className="p-0.5 rounded-md hover:bg-black/10 transition-all"
           >
             <IoIosArrowRoundBack size={24} className="text-black" />
@@ -166,7 +199,9 @@ export default function EditProductForm({ initialProduct, locations }: { locatio
               <Input
                 id="title"
                 value={product.title}
-                onChange={(e) => setProduct({ ...product, title: e.target.value })}
+                onChange={(e) =>
+                  setProduct({ ...product, title: e.target.value })
+                }
                 label="Title"
                 placeholder="Title"
               />
@@ -182,18 +217,35 @@ export default function EditProductForm({ initialProduct, locations }: { locatio
             <Card className="flex p-4 flex-col gap-4 items-stretch ">
               <SectionTitle title="Media" />
 
-              <div className={product.media?.length === 0 ? "w-full" : "w-full gap-2 grid grid-cols-2 lg:grid-cols-3"}>
-                {
-                  product.media?.map((m, i) => (
-                    <div key={i} className="rounded-md overflow-hidden" >
-                      <Image src={m.url} alt={product.title} width={0} height={0} sizes="100vw" style={{ width: '100%', height: '100%' }} />
-                    </div>
-                  ))
+              <div
+                className={
+                  product.media?.length === 0
+                    ? "w-full"
+                    : "w-full gap-2 grid grid-cols-2 lg:grid-cols-3"
                 }
+              >
+                {product.media?.map((m, i) => (
+                  <div key={i} className="rounded-md overflow-hidden">
+                    <Image
+                      src={m.url}
+                      alt={product.title}
+                      width={0}
+                      height={0}
+                      sizes="100vw"
+                      style={{ width: "100%", height: "100%" }}
+                    />
+                  </div>
+                ))}
 
-                <ImageUploader onSave={(url) => setProduct({ ...product, media: [...product.media, { type: "image", url }] })} />
+                <ImageUploader
+                  onSave={(url) =>
+                    setProduct({
+                      ...product,
+                      media: [...product.media, { type: "image", url }],
+                    })
+                  }
+                />
               </div>
-
             </Card>
 
             <Card className="flex p-4 flex-col gap-4 items-stretch">
@@ -201,13 +253,32 @@ export default function EditProductForm({ initialProduct, locations }: { locatio
               <Pricing product={product} setProduct={setProduct} />
             </Card>
 
-            <Inventory product={product} setProduct={setProduct} loading={loading} />
+            <Inventory
+              product={product}
+              setProduct={setProduct}
+              loading={loading}
+            />
 
-            <Shipping loading={loading} product={product} setProduct={setProduct} />
+            <Shipping
+              loading={loading}
+              product={product}
+              setProduct={setProduct}
+            />
 
-            <VariantsCardEditPage loading={loading} productId={initialProduct._id} locations={locations} initialProduct={initialProduct} product={product} setProduct={setProduct} />
+            <VariantsCardEditPage
+              loading={loading}
+              productId={initialProduct._id}
+              locations={locations}
+              initialProduct={initialProduct}
+              product={product}
+              setProduct={setProduct}
+            />
 
-            <SearchEngineListing product={product} setProduct={setProduct} loading={loading} />
+            <SearchEngineListing
+              product={product}
+              setProduct={setProduct}
+              loading={loading}
+            />
           </div>
 
           <div className="flex w-full 2xl:max-w-[280px] flex-col gap-4">
@@ -228,46 +299,71 @@ export default function EditProductForm({ initialProduct, locations }: { locatio
               />
             </Card>
 
-            <Publishing product={product} setProduct={setProduct} markets={markets} salesChannels={salesChannels} />
+            <Publishing
+              product={product}
+              setProduct={setProduct}
+              markets={markets}
+              salesChannels={salesChannels}
+            />
 
-            <ProductOrganization product={product} setProduct={setProduct} loading={loading} />
+            <ProductOrganization
+              product={product}
+              setProduct={setProduct}
+              loading={loading}
+            />
 
             <Card className="p-4">
-              <Select label="Theme template" options={[
-                { label: "Default theme", value: "default" }
-              ]} onChange={() => { }} />
+              <Select
+                label="Theme template"
+                options={[{ label: "Default theme", value: "default" }]}
+                onChange={() => {}}
+              />
             </Card>
           </div>
-
         </div>
       </div>
 
-      <div className="w-full max-w-4xl flex gap-4 justify-end mb-8 mt-8 md:mt-0 px-4 md:px-0">
-        {
-          product.status === "archived" ? (
-            <OutlinedButton disabled={loading} onClick={() => handleProductStatusChange("active")}>Unarchive Product</OutlinedButton>
+      <div
+        className="w-full items-center justify-between
+      max-w-4xl flex gap-4 mb-8 mt-8 md:mt-0 px-4 mx-10
+      md:px-8 lg:px-0"
+      >
+        <div className="flex gap-4">
+          {product.status === "archived" ? (
+            <OutlinedButton
+              disabled={loading}
+              onClick={() => handleProductStatusChange("active")}
+            >
+              Unarchive Product
+            </OutlinedButton>
           ) : (
-            <OutlinedButton disabled={loading} onClick={() => handleProductStatusChange("archived")}>Archive Product</OutlinedButton>
-          )
-        }
-        <FilledButton bgClass="bg-red-500" disabled={loading} onClick={handleDelete}>Delete Product</FilledButton>
-        {/*TODO: add shouldSave logic*/}
-        <div className="w-full max-w-4xl flex justify-end mb-8 px-4 md:px-0">
-          {
-            loading ? (
-              <Spinner />
-            ) : (
-              <FilledButton disabled={loading} onClick={handleSave}>Save</FilledButton>
-            )
-          }
+            <OutlinedButton
+              disabled={loading}
+              onClick={() => handleProductStatusChange("archived")}
+            >
+              Archive Product
+            </OutlinedButton>
+          )}
+          <FilledButton
+            bgClass="bg-red-500"
+            disabled={loading}
+            onClick={handleDelete}
+          >
+            Delete Product
+          </FilledButton>
         </div>
+        {/*TODO: add shouldSave logic*/}
+        {loading ? (
+          <Spinner />
+        ) : (
+          <FilledButton disabled={loading} onClick={handleSave}>
+            Save
+          </FilledButton>
+        )}
       </div>
-
     </>
-
-  )
+  );
 }
-
 
 function Pricing({
   product,
@@ -345,8 +441,3 @@ function Pricing({
     </>
   );
 }
-
-
-
-
-

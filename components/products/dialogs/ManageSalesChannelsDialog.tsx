@@ -16,8 +16,7 @@ import Checkbox from "@/components/Checkbox";
 export default function ManageSalesChannelsDialog({ salesChannels, initiallySelectedChannels, onSave }: { salesChannels: SalesChannel[], initiallySelectedChannels: string[], onSave: (selectedChannels: string[]) => void }) {
 
   const [open, setOpen] = useState(false)
-  const [selectedChannels, setSelectedChannels] = useState(initiallySelectedChannels)
-
+  const [selectedChannels, setSelectedChannels] = useState(initiallySelectedChannels || []);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>

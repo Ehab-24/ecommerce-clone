@@ -22,7 +22,7 @@ export default function OutlinedButton({
       text-neutral-900 transition-all focus:ring 
       focus:ring-neutral-300 active:opacity-[0.85] disabled:pointer-events-none 
       disabled:opacity-50 disabled:shadow-none bg-neutral-50"
-      type="button ${className}`}
+      type="button whitespace-nowrap ${className}`}
       {...props}
     >
       {children}

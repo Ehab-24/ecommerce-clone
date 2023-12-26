@@ -1,3 +1,5 @@
+"use client";
+
 import { FaArrowLeft } from "react-icons/fa";
 import Link from "next/link";
 import Heading from "@/components/Heading";
@@ -6,12 +8,19 @@ import OutlinedButton from "@/components/buttons/OutlinedButton";
 import { apiUrl } from "@/lib/utils";
 import EditOrderForm from "@/components/orders/EditOrderForm";
 
-// export const runtime = "edge"
+import { Order } from "@/types/order";
+import { useState, useEffect } from "react";
 
-export default async function OrderPage({ params }: { params: { id: string } }) {
-  const res = await fetch(apiUrl(`api/orders/${params.id}`))
-  if (!res.ok) throw new Error("Failed to fetch order")
-  const order = await res.json()
+export default function OrderPage({ params }: { params: { id: string } }) {
+  const [order, setOrder] = useState<Order>();
+
+  useEffect(() => {
+    fetch(`/api/orders/${params.id}`, { cache: "no-cache" })
+      .then((res) => res.json())
+      .then((order) => setOrder(order));
+
+    console.log(order);
+  }, []);
 
   return (
     <div className="min-h-screen md:p-5 md:w-[100%] lg:px-[20%]">
@@ -37,7 +46,7 @@ export default async function OrderPage({ params }: { params: { id: string } }) 
               </div>
             </div>
             <p className="text-xs py-1 text-neutral-500">
-              {order.date?.slice(0, 10) ?? ""}
+              {order?.date?.slice(0, 10) ?? ""}
             </p>
           </div>
         </div>
@@ -51,7 +60,7 @@ export default async function OrderPage({ params }: { params: { id: string } }) 
         </div>
       </div>
 
-      <EditOrderForm initialOrder={order} />
+      {order && <EditOrderForm initialOrder={order} />}
     </div>
   );
-};
+}

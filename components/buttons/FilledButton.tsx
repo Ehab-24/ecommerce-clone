@@ -18,7 +18,7 @@ export default function FilledButton({
       font-bold text-white shadow-md shadow-neutral-900/10
       transition-all hover:shadow-lg hover:shadow-neutral-900/20
       focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85]
-      active:shadow-none disabled:pointer-events-none disabled:opacity-50
+      active:shadow-none disabled:pointer-events-none disabled:opacity-50 whitespace-nowrap
       disabled:shadow-none`}
       type="button"
     >
