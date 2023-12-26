@@ -1,7 +1,5 @@
 "use client";
 
-import React, { useState } from "react";
-
 import {
   Dialog,
   DialogContent,
@@ -15,17 +13,15 @@ import {
 import Input from "@/components/Input";
 
 import { FaPencilAlt } from "react-icons/fa";
+import { useState } from "react";
 
-const AddNotesModal = ({ addItem }: { addItem: any }) => {
-  const [note, setNote] = useState("");
+const AddNotesModal = ({ defaultValue = "", onSave }: { defaultValue?: string, onSave: (note: string) => void }) => {
 
-  const handleAddItem = () => {
-    addItem(note);
-    setNote("");
-  };
+  const [open, setOpen] = useState(false)
+  const [note, setNote] = useState(defaultValue)
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger>
         <FaPencilAlt className="text-sm text-neutral-500" />
       </DialogTrigger>
@@ -47,12 +43,15 @@ const AddNotesModal = ({ addItem }: { addItem: any }) => {
 
         <DialogFooter>
           <DialogClose asChild>
-            <button className="text-sm border border-neutral-900 shadow-lg p-1 px-2 rounded-lg">
+            <button onClick={() => setOpen(false)} className="text-sm border border-neutral-900 shadow-lg p-1 px-2 rounded-lg">
               Cancel
             </button>
           </DialogClose>
           <button
-            onClick={handleAddItem}
+            onClick={() => {
+              setOpen(false);
+              onSave(note);
+            }}
             className="text-sm border border-neutral-900 bg-neutral-800 text-white shadow-lg p-1 px-2 rounded-lg"
           >
             Done

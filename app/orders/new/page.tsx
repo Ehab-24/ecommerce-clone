@@ -9,9 +9,8 @@ import Heading from "@/components/Heading";
 import Link from "next/link";
 
 import { CustomItem } from "@/types/customItem";
-import { Product } from "@/types/product";
 
-import { FaArrowLeft, FaPlus } from "react-icons/fa";
+import { FaArrowLeft } from "react-icons/fa";
 import AddCustomItem from "@/components/modals/orders/AddCustomItem";
 
 import { FaTrashCan } from "react-icons/fa6";
@@ -21,14 +20,13 @@ import AddNotesModal from "@/components/modals/general/AddNotesModal";
 import CustomerPopover from "@/components/popovers/Customer";
 import BrowseProductsDialog from "@/components/BrowseProductsDialog";
 import FilledButton from "@/components/buttons/FilledButton";
+import { ApiOrder, ApiOrderSchema } from "@/types/order";
+import toast from "react-hot-toast";
+import axios from "axios";
+import { ZodError } from "zod";
+import Spinner from "@/components/Spinner";
 
-const ItemTile = ({ item, removeItem }: { item: any; removeItem: any }) => {
-  const [quantity, setQuantity] = useState(1);
-
-  const handleRemoveItem = () => {
-    removeItem(item);
-  };
-
+const ItemTile = ({ order, setOrder, item }: { order: ApiOrder, item: CustomItem, setOrder: React.Dispatch<React.SetStateAction<ApiOrder>> }) => {
   return (
     <tr className="text-sm text-neutral-700 border-t border-neutral-300">
       <td className="pl-4 py-4">{item.name}</td>
@@ -36,16 +34,16 @@ const ItemTile = ({ item, removeItem }: { item: any; removeItem: any }) => {
         <Input
           id="quantity"
           type="number"
-          value={quantity}
-          onChange={(e: any) => setQuantity(e.target.value)}
+          value={item.quantity}
+          onChange={(e: any) => setOrder({ ...order, customItems: order.customItems.map(ci => ci.name === item.name ? ({ ...ci, quantity: Number(e.target.value) }) : ci) })}
           className="border border-neutral-300 rounded-lg text-sm w-24"
         />
       </td>
-      <td className="pl-2">Rs. {item.price * quantity}</td>
+      <td className="pl-2">Rs. {(item.price ?? 0) * item.quantity}</td>
       <td>
         <button
           className="hover:bg-neutral-100 rounded-md"
-          onClick={handleRemoveItem}
+          onClick={() => setOrder({ ...order, customItems: order.customItems.filter(ci => ci.name !== item.name) })}
         >
           <FaTrashCan className="text-sm text-neutral-600" />
         </button>
@@ -55,25 +53,38 @@ const ItemTile = ({ item, removeItem }: { item: any; removeItem: any }) => {
 };
 
 const OrdersPage = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [customItems, setCustomItems] = useState<CustomItem[]>([]);
-  const [notes, setNotes] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [order, setOrder] = useState<ApiOrder>(defaultOrder);
 
   const addItem = (item: CustomItem) => {
-    setCustomItems([...customItems, item]);
+    setOrder({ ...order, customItems: [...order.customItems, item] });
   };
 
-  const removeItem = (item: CustomItem) => {
-    setCustomItems(customItems.filter((i) => i !== item));
-  };
+  async function handleSave() {
+    setLoading(true);
 
-  const addNote = (note: string) => {
-    setNotes([...notes, note]);
-  };
+    try {
 
-  const removeNote = (note: string) => {
-    setNotes(notes.filter((n) => n !== note));
-  };
+      const result = ApiOrderSchema.parse(order);
+      const { status } = await axios.post(`/api/orders`, result);
+
+      if (status === 201) {
+        toast.success("Order created successfully!");
+        setOrder(defaultOrder);
+      }
+    } catch (error) {
+
+      if (error instanceof ZodError) {
+        toast.error(error.errors[0].message);
+      } else {
+        toast.error("Something went wrong");
+      }
+      console.log(error);
+
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <div className="min-h-screen md:p-5 md:w-[100%] flex flex-col lg:px-[20%]">
@@ -94,10 +105,10 @@ const OrdersPage = () => {
 
           <div className="flex justify-between gap-2 px-4 pb-4">
             <InputSearch placeholder="Search for a product" />
-            <BrowseProductsDialog setProducts={setProducts} />
+            <BrowseProductsDialog setProducts={ps => setOrder({ ...order, products: ps.map(p => ({ _id: p._id, quantity: 1, price: p.price, physical: p.isPhysicalProduct, weight: p.weight, weightUnit: p.weightUnit })) })} />
           </div>
 
-          {customItems && customItems.length > 0 && (
+          {order.customItems && order.customItems.length > 0 && (
             <table className="w-full">
               <thead>
                 <tr className="text-sm text-neutral-500">
@@ -107,15 +118,16 @@ const OrdersPage = () => {
                 </tr>
               </thead>
               <tbody>
-                {customItems.map((item, index) => (
-                  <ItemTile key={index} item={item} removeItem={removeItem} />
+                {order.customItems.map((item, index) => (
+                  <ItemTile key={index} item={item} order={order} setOrder={setOrder} />
                 ))}
 
-                {products.map((product, index) => (
+                {order.products.map((product, index) => (
                   <ItemTile
                     key={index}
+                    order={order}
+                    setOrder={setOrder}
                     item={product}
-                    removeItem={removeItem}
                   />
                 ))}
               </tbody>
@@ -143,7 +155,7 @@ const OrdersPage = () => {
                 <p>Not calculated</p>
 
                 <p className="font-semibold text-black">
-                  {customItems.map((item) => item.price * item.quantity)}
+                  {order.customItems.map((item) => (item.price ?? 0) * item.quantity)}
                 </p>
               </div>
 
@@ -166,25 +178,19 @@ const OrdersPage = () => {
         <Card className="p-4">
           <div className="flex justify-between align-middle">
             <SectionTitle title="Notes" />
-            <AddNotesModal addItem={addNote} />
+            <AddNotesModal defaultValue={order.note} onSave={n => setOrder({ ...order, note: n })} />
           </div>
 
-          {notes && notes.length > 0 ? (
-            <div className="flex flex-col gap-2 p-4">
-              {notes.map((note, index) => (
-                <div
-                  key={index}
-                  className="flex justify-between items-center gap-2"
-                >
-                  <p className="text-sm">{note}</p>
-                  <button
-                    className="hover:bg-neutral-100 rounded-md"
-                    onClick={() => removeNote(note)}
-                  >
-                    <FaTrashCan className="text-sm text-neutral-600" />
-                  </button>
-                </div>
-              ))}
+          {order.note ? (
+            <div
+              className="flex justify-between items-center gap-2"
+            >
+              <p className="text-sm">{order.note}</p>
+              <button
+                className="hover:bg-neutral-100 rounded-md"
+              >
+                <FaTrashCan className="text-sm text-neutral-600" />
+              </button>
             </div>
           ) : (
             <div className="text-sm">No notes</div>
@@ -213,11 +219,28 @@ const OrdersPage = () => {
         </Card>
       </div>
 
-      <div className="self-end md:p-0 p-4 md:my-4">
-        <FilledButton>Add Customer</FilledButton>
-      </div>
+      {
+        loading ? (
+
+          <div className="w-full h-full grid place-items-center">
+            <Spinner />
+          </div>
+        ) : (
+          <div className="self-end md:p-0 p-4 md:my-4">
+            <FilledButton onClick={handleSave}>Add order</FilledButton>
+          </div>
+        )
+      }
     </div>
   );
 };
 
 export default OrdersPage;
+
+
+const defaultOrder: ApiOrder = {
+  products: [],
+  customItems: [],
+  referenceNumber: "",
+  note: ""
+} 

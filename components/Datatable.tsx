@@ -55,7 +55,7 @@ export default function Datatable<T extends DataItem>({
 
   return (
     <>
-      <div className="relative hidden sm:block overflow-x-auto shadow-md sm:rounded-lg overflow-hidden">
+      <div className="relative hidden sm:block overflow-x-auto shadow-md sm:rounded-xl border border-gray-200 overflow-hidden">
         <div className=" flex justify-between items-start min-w-full w-full px-2 py-1">
           {isSearching ? (
             <div className="flex mr-2 flex-col w-full">
@@ -102,7 +102,7 @@ export default function Datatable<T extends DataItem>({
               </div>
             </div>
           ) : (
-            <div className="flex mr-2 w-full justify-between items-center">
+            <div className="flex bg-white mr-2 w-full justify-between items-center">
               <div className="flex gap-2 items-center">
                 {views.map((v) => (
                   <Button
@@ -140,7 +140,7 @@ export default function Datatable<T extends DataItem>({
               <tr>
                 <th scope="col" className="px-4 relative">
                   <Text
-                    className={`absolute whitespace-nowrap z-10 top-1 left-12 ${selectedItems.length > 0 ? "" : "hidden"
+                    className={`absolute whitespace-nowrap z-10 top-[20%] left-12 ${selectedItems.length > 0 ? "" : "hidden"
                       }`}
                   >
                     {selectedItems.reduce((acc, p) => (p ? acc + 1 : acc), 0)}{" "}

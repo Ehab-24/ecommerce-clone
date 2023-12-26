@@ -10,16 +10,43 @@ import StatusText from "@/components/StatusText"
 import { useRouter } from "next/navigation"
 import Card from "@/components/Card"
 import { Button } from "@/components/ui/button"
-import { FilterElements, HeaderItem, RowProps } from "@/types/Datatable"
+import { FilterElements, HeaderItem, RowProps } from "@/types/datatable"
 import Datatable from "../Datatable"
 import { Order } from "@/types/order"
 import { useState } from "react"
 import { HiOutlineDotsHorizontal } from "react-icons/hi"
-
+import Link from "next/link"
+import Text from "../Text"
+import { FaCircle } from "react-icons/fa"
 
 export default function OrdersDatable({ initialOrders }: { initialOrders: Order[] }) {
 
   const router = useRouter()
+
+
+  function MobileRow({ item: o }: RowProps<Order>) {
+    return (
+
+      <Link href={`/orders/${o._id}`} key={o._id} className="flex w-full px-3">
+
+        <div className="flex items-center justify-between w-full">
+          <div className="flex gap-1 flex-col">
+            <Text className="text-gray-800 font-bold flex items-center gap-1 text-base">#{o.referenceNumber} <span className="text-gray-500 flex items-center gap-1 text-xs"><FaCircle size={5} /> {o.date ?? "No Date"}</span></Text>
+            <Text className="text-gray-500 flex items-center gap-1 text-xs">{o.customer?.firstName + " " + o.customer?.lastName}</Text>
+            <Text className="text-gray-500 flex items-center gap-1 text-xs"> <FaCircle size={8} className="text-gray-800" /> {o.payment_status}
+              <div className="flex w-24 items-center rounded-xl px-2 py-1 gap-2 bg-yellow-100">
+                <span className="rounded-full outline-1 p-1.5 bg-yellow-500"></span>
+                <p className="text-gray-500 text-xs">{o.fulfillment_status}</p>
+              </div>
+            </Text>
+            <Text className="text-gray-800">{o.customItems?.length + o.products.length} item <FaCircle size={4} className="text-gray-800" /> </Text>
+          </div>
+          <Text className="text-base text-gray-800">$ {o.products.reduce((acc, p) => acc + (p.price ?? 0), 0) + o.customItems?.reduce((acc, p) => acc + (p.price ?? 0), 0)}</Text>
+        </div>
+      </Link>
+    )
+  }
+
 
   function Row({ item: p, isSelected, setSelected }: RowProps<Order>) {
 
@@ -34,12 +61,12 @@ export default function OrdersDatable({ initialOrders }: { initialOrders: Order[
           onClick={() => router.push(`/products/${p._id}`)}
           className="flex gap-1 items-center xl:min-w-[240px] py-4 font-medium text-gray-900 whitespace-nowrap cursor-pointer"
         >
-          <p className="ml-4">{p._id!.substring(0, 4)}</p>
+          <p className="ml-4">#{p._id.substring(0, 4)}</p>
         </th>
 
         <td className="px-6 py-2">{p.date}</td>
         <td className="px-6 py-2">
-          {p.customer?.firstName + " " + p.customer?.lastName}
+          {(p.customer?.firstName ?? "") + " " + (p.customer?.lastName ?? "")}
         </td>
         <td className="px-6 py-2">{p.channel}</td>
         <td className="px-6 py-2">{p.total}</td>
@@ -49,7 +76,7 @@ export default function OrdersDatable({ initialOrders }: { initialOrders: Order[
             <StatusText status={p.fulfillment_status} />
           )}
         </td>
-        <td className="px-6 py-2">{p.items?.length ?? 0} items</td>
+        <td className="px-6 py-2">{p.products.length + (p.customItems?.length ?? 0)} items</td>
         <td className="px-6 py-2">{p.delivery_status}</td>
         <td className="px-6 py-2">{p.delivery_method}</td>
         <td className="px-6 py-2">{p.tags?.join(", ")}</td>
@@ -77,6 +104,7 @@ export default function OrdersDatable({ initialOrders }: { initialOrders: Order[
       }}
       ActionsCard={ActionsCard}
       Row={Row}
+      MobileRow={MobileRow}
       headerItems={getHeaderItems(initialOrders)}
       views={["all", "active", "draft", "archived"]}
       filters={getAllFilters()}
@@ -258,8 +286,8 @@ function getHeaderItems(orders: Order[]): HeaderItem<Order>[] {
       label: "Items", sortable: true, onSort: (sortKey) => {
         let sortedOrders = [...orders]
         switch (sortKey) {
-          case "desc": sortedOrders.sort((a, b) => (a.items?.length ?? 0) - (b.items?.length ?? 0)); break;
-          case "asc": sortedOrders.sort((a, b) => (b.items?.length ?? 0) - (a.items?.length ?? 0)); break;
+          case "desc": sortedOrders.sort((a, b) => (a.products?.length ?? 0) - (b.products?.length ?? 0)); break;
+          case "asc": sortedOrders.sort((a, b) => (b.products?.length ?? 0) - (a.products?.length ?? 0)); break;
           default: throw new Error("Sort type not allowed")
         }
         return sortedOrders

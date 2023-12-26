@@ -34,20 +34,55 @@ export async function GET(request: NextRequest) {
         const pipeline: any = [
             {
                 $addFields: {
-                    customer: { $toObjectId: "$customer" }
+                    customer: {
+                        $cond: {
+                            if: { $eq: ["$customer", null] },
+                            then: null,
+                            else: { $toObjectId: "$customer" }
+                        }
+                    }
                 }
             },
             {
                 $addFields: {
-                    items: { $map: { input: "$items", as: "item", in: { $toObjectId: "$$item" } } }
+                    products: {
+                        $map: {
+                            input: "$products",
+                            as: "product",
+                            in: {
+                                $mergeObjects: [
+                                    "$$product",
+                                    {
+                                        _id: { $toObjectId: "$$product._id" } // Convert _id to ObjectId
+                                    }
+                                ]
+                            }
+                        }
+                    }
                 }
             },
             {
+                $unwind: "$products"
+            },
+            {
                 $lookup: {
-                    from: 'products',
-                    localField: 'items',
-                    foreignField: '_id',
-                    as: 'items'
+                    from: "products",
+                    localField: "products._id",
+                    foreignField: "_id",
+                    as: "products.productDetails"
+                }
+            },
+            {
+                $group: {
+                    _id: "$_id",
+                    products: {
+                        $push: {
+                            $mergeObjects: [
+                                "$products",
+                                { $arrayElemAt: ["$products.productDetails", 0] }
+                            ]
+                        }
+                    }
                 }
             },
             {
@@ -83,7 +118,7 @@ export async function GET(request: NextRequest) {
         const db = await getDb()
         const results = await db.collection("orders").aggregate(pipeline).limit(limit).skip(page * limit).toArray()
 
-        const orders = results.map(res => ({ ...res, customer: res.customer[0] }))
+        const orders = results.map(res => ({ ...res, customer: res.customer[0] ?? null }))
 
         return NextResponse.json(orders, { status: 200 })
     }
