@@ -27,21 +27,21 @@ export default function OrdersDatable({ initialOrders }: { initialOrders: Order[
   function MobileRow({ item: o }: RowProps<Order>) {
     return (
 
-      <Link href={`/orders/${o._id}`} key={o._id} className="flex w-full px-3">
+      <Link href={`/orders/${o._id}`} key={o._id} className="flex w-full px-4">
 
         <div className="flex items-center justify-between w-full">
           <div className="flex gap-1 flex-col">
             <Text className="text-gray-800 font-bold flex items-center gap-1 text-base">#{o.referenceNumber} <span className="text-gray-500 flex items-center gap-1 text-xs"><FaCircle size={5} /> {o.date ?? "No Date"}</span></Text>
             <Text className="text-gray-500 flex items-center gap-1 text-xs">{o.customer?.firstName + " " + o.customer?.lastName}</Text>
-            <Text className="text-gray-500 flex items-center gap-1 text-xs"> <FaCircle size={8} className="text-gray-800" /> {o.payment_status}
+            <Text as='div' className="text-gray-500 flex items-center gap-1 text-xs"> <FaCircle size={8} className="text-gray-800" /> {o.payment_status}
               <div className="flex w-24 items-center rounded-xl px-2 py-1 gap-2 bg-yellow-100">
                 <span className="rounded-full outline-1 p-1.5 bg-yellow-500"></span>
                 <p className="text-gray-500 text-xs">{o.fulfillment_status}</p>
               </div>
             </Text>
-            <Text className="text-gray-800">{o.customItems?.length + o.products.length} item <FaCircle size={4} className="text-gray-800" /> </Text>
+            <Text className="text-gray-800 flex items-center gap-1">{(o.customItems?.length ?? 0) + o.products.length} item <FaCircle size={4} className="text-gray-800" /> </Text>
           </div>
-          <Text className="text-base text-gray-800">$ {o.products.reduce((acc, p) => acc + (p.price ?? 0), 0) + o.customItems?.reduce((acc, p) => acc + (p.price ?? 0), 0)}</Text>
+          <Text className="text-base text-gray-800">$ {o.products.reduce((acc, p) => acc + (p.price ?? 0), 0) + (o.customItems?.reduce((acc, p) => acc + (p.price ?? 0), 0) ?? 0)}</Text>
         </div>
       </Link>
     )
@@ -53,12 +53,12 @@ export default function OrdersDatable({ initialOrders }: { initialOrders: Order[
     return (
       <tr className="bg-white border-b hover:bg-gray-50 ">
         <td className="w-4 p-4">
-          <Checkbox id={"select-" + p._id} checked={isSelected} label="" onChange={(e) => setSelected(e.target.checked)} />
+          <Checkbox id={"select-" + p._id} checked={isSelected} onChange={(e) => setSelected(e.target.checked)} />
         </td>
 
         <th
           scope="row"
-          onClick={() => router.push(`/products/${p._id}`)}
+          onClick={() => router.push(`/orders/${p._id}`)}
           className="flex gap-1 items-center xl:min-w-[240px] py-4 font-medium text-gray-900 whitespace-nowrap cursor-pointer"
         >
           <p className="ml-4">#{p._id.substring(0, 4)}</p>
