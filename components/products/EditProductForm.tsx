@@ -100,6 +100,7 @@ export default function EditProductForm({
         values: obj,
         trackQuantity: false,
         continueSellingWhenOutOfStock: false,
+        inventoryLevels: [],
       })),
     }));
   }, [product.variantOptions]);
@@ -254,6 +255,7 @@ export default function EditProductForm({
             </Card>
 
             <Inventory
+              locations={locations}
               product={product}
               setProduct={setProduct}
               loading={loading}
@@ -316,7 +318,7 @@ export default function EditProductForm({
               <Select
                 label="Theme template"
                 options={[{ label: "Default theme", value: "default" }]}
-                onChange={() => {}}
+                onChange={() => { }}
               />
             </Card>
           </div>

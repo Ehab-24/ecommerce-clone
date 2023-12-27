@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react";
 import { ZodError } from "zod";
-import { ApiProductSchema, ApiProduct } from "@/types/product";
+import { ApiProductSchema, ApiProduct, InventoryLevel } from "@/types/product";
 import Card from "@/components/Card";
 import Input from "@/components/Input";
 import Select from "@/components/Select";
@@ -44,7 +44,7 @@ export default function CreateProductForm({ locations }: { locations: Location[]
   useEffect(() => {
     setProduct(p => ({
       ...p, variants: multiplyArrays(p.variantOptions.map(v => v.name), ...p.variantOptions.map(v => v.values))
-        .map((obj, i) => ({ _id: i.toString(), name: Object.values(obj).join(" / "), values: obj, trackQuantity: false, continueSellingWhenOutOfStock: false }))
+        .map((obj, i) => ({ _id: i.toString(), name: Object.values(obj).join(" / "), values: obj, trackQuantity: false, continueSellingWhenOutOfStock: false, inventoryLevels: [] }))
     }))
   }, [product.variantOptions])
 
@@ -91,7 +91,7 @@ export default function CreateProductForm({ locations }: { locations: Location[]
 
   return (
     <>
-      <div className="w-full flex flex-col 2xl:flex-row justify-center gap-4">
+      <div className="w-full flex flex-col xl:flex-row justify-center gap-4">
         <div className=" flex flex-col w-full self-center gap-4 mb-8">
 
           <Card className="flex p-4 flex-col gap-4 items-stretch">
@@ -156,6 +156,7 @@ export default function CreateProductForm({ locations }: { locations: Location[]
           />
 
           <Inventory
+            locations={locations}
             loading={loading}
             product={product}
             setProduct={setProduct}
@@ -176,7 +177,7 @@ export default function CreateProductForm({ locations }: { locations: Location[]
           />
         </div>
 
-        <div className="flex flex-col 2xl:max-w-[280px] w-full gap-4">
+        <div className="flex flex-col xl:max-w-[280px] w-full gap-4">
           <Card className=" flex-col flex p-4 gap-4">
             <SectionTitle title="Status" />
             <Select
@@ -245,6 +246,7 @@ const defaultProduct: ApiProduct = {
   variants: [],
   variantOptions: [],
   variantImages: [],
+  inventoryLevels: [],
   media: [],
   seo: {
     title: "",
@@ -252,3 +254,8 @@ const defaultProduct: ApiProduct = {
   },
   tags: [],
 };
+
+const defaultInventoryLevel: InventoryLevel = {
+  location: "",
+  available: 0,
+}

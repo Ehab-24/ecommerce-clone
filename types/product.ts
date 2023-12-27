@@ -9,9 +9,21 @@ const VariantOptionSchema = z.object({
   values: z.array(z.string()),
 });
 
+const InventoryLevelSchema = z.object({
+  location: z.string(),
+  available: z.number(),
+  incoming: z.number().optional(),
+  committed: z.number().optional(),
+  unavailable: z.number().optional(),
+  onHand: z.number().optional(),
+  updatedAt: z.string().optional(),
+  createdAt: z.string().optional(),
+})
+
 const VariantSchema = z.object({
   _id: z.string(),
   name: z.string(),
+  inventoryLevels: z.array(InventoryLevelSchema),
   values: z.record(z.string().min(1, "Variant option must have a value")),
   weight: z.number().optional(),
   weightUnit: z.enum(["kg", "lb", "oz", "g"]).optional(),
@@ -37,6 +49,8 @@ const VariantSchema = z.object({
   image: z.string().nullable().optional(),
   trackQuantity: z.boolean(),
   continueSellingWhenOutOfStock: z.boolean(),
+  createdAt: z.string().optional(),
+  updatedAt: z.string().optional(),
 });
 
 const ApiProductSchema = z.object({
@@ -79,6 +93,7 @@ const ApiProductSchema = z.object({
   variantImages: z.array(z.string()),
   salesChannels: z.array(z.string()),
   markets: z.array(z.string()),
+  inventoryLevels: z.array(InventoryLevelSchema),
   media: z.array(
     z.object({
       url: z.string(),
@@ -93,37 +108,15 @@ const ApiProductSchema = z.object({
   updatedAt: z.optional(z.union([z.string(), z.date()])),
 });
 
-type ApiProduct = z.infer<typeof ApiProductSchema>;
-type Variant = z.infer<typeof VariantSchema>;
+type InventoryLevel = z.infer<typeof InventoryLevelSchema>;
 
+type Variant = z.infer<typeof VariantSchema>;
 type VariantValue = z.infer<typeof VariantSchema>["values"];
 type VariantOption = z.infer<typeof VariantOptionSchema>;
 
-type Product = Omit<
-  Omit<
-    Omit<
-      Omit<Omit<Omit<ApiProduct, "createdAt">, "updatedAt">, "vendor">,
-      "locations"
-    >,
-    "salesChannel"
-  >,
-  "markets"
-> & {
-  _id: string;
-  createdAt: string;
-  updatedAt: string;
-  vendor: Vendor;
-  locations: Location[];
-  salesChannels: SalesChannel[];
-  markets: Market[];
+type ApiProduct = z.infer<typeof ApiProductSchema>;
+type Product = Omit<Omit<Omit<Omit<Omit<Omit<ApiProduct, "createdAt">, "updatedAt">, "vendor">, "locations">, "salesChannel">, "markets"> & {
+  _id: string; createdAt: string; updatedAt: string; vendor: Vendor; locations: Location[]; salesChannels: SalesChannel[]; markets: Market[];
 };
 
-export {
-  type Product,
-  type VariantOption,
-  ApiProductSchema,
-  VariantSchema,
-  type VariantValue,
-  type ApiProduct,
-  type Variant,
-};
+export { type Product, type VariantOption, ApiProductSchema, VariantSchema, type InventoryLevel, type VariantValue, type ApiProduct, type Variant };

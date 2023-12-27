@@ -26,7 +26,6 @@ export default function Inventory({
     <Card className=" flex-col flex p-4 gap-4">
       <SectionTitle title="Inventory" />
 
-
       <Checkbox
         id="tarck-quantity"
         disabled={loading}

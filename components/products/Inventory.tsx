@@ -1,19 +1,29 @@
 
-import { ApiProduct } from "@/types/product";
+import { ApiProduct, InventoryLevel } from "@/types/product";
 import Card from "../Card";
 import SectionTitle from "../SectionTitle";
 import Checkbox from "../Checkbox";
 import Input from "../Input";
+import Text from "../Text";
+import EditLocationsDialog from "./dialogs/EditLocationsDialog";
+import { Location } from "@/types/location";
 
 export default function Inventory({
   loading,
+  locations,
   product,
   setProduct,
 }: {
   loading: boolean;
+  locations: Location[];
   product: ApiProduct;
   setProduct: React.Dispatch<React.SetStateAction<any>>;
 }) {
+
+  function getLocation(id: string): Location {
+    return locations.find(l => l._id === id)!
+  }
+
   return (
     <Card className=" flex-col flex p-4 gap-4">
       <SectionTitle title="Inventory" />
@@ -26,23 +36,21 @@ export default function Inventory({
         }
       />
 
-      <div className=" flex items-center w-full justify-between mb-4">
-        <p className="text-sm text-gray-900">Block 6-C2 Park</p>
-        {product.trackQuantity ? (
-          <div>
-            <Input
-              id="quantity"
-              disabled={loading}
-              placeholder="0"
-              type="number"
-              onChange={(e) =>
-                setProduct({ ...product, quantity: Number(e.target.value) })
-              }
-            />
-          </div>
-        ) : (
-          <p className=" text-sm text-gray-700">Not Tracked</p>
-        )}
+      <div className="flex w-full items-center mt-4 justify-between">
+        <Text className="text-gray-800 font-bold">Quantity</Text>
+        <EditLocationsDialog initialLocations={product.inventoryLevels.map(il => il.location)} locations={locations} onSave={ls => setProduct({ ...product, inventoryLevels: ls.map(l => ({ ...defaultInventoryLevel, location: l._id })) })} />
+      </div>
+
+      <div className="flex flex-col gap-2 w-full">
+        {
+          product.inventoryLevels.map((il, i) => (
+            <div key={i} className="flex items-center justify-between w-full">
+              <Text className="text-gray-800 whitespace-nowrap">{getLocation(il.location).name}</Text>
+              <div className="w-full" />
+              <Input id={il.location + "quantity"} className="w-min" value={il.available} onChange={e => setProduct({ ...product, inventoryLevels: product.inventoryLevels.map(_il => _il.location === il.location ? { ..._il, available: Number(e.target.value) } : _il) })} />
+            </div>
+          ))
+        }
       </div>
       {product.trackQuantity && (
         <Checkbox
@@ -84,4 +92,11 @@ export default function Inventory({
       )}
     </Card>
   );
+}
+
+
+
+const defaultInventoryLevel: InventoryLevel = {
+  location: "",
+  available: 0,
 }
