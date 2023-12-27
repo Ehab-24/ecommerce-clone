@@ -9,16 +9,16 @@ import {
 } from "@/components/ui/dialog";
 import OutlinedButton from "../../buttons/OutlinedButton";
 import FilledButton from "../../buttons/FilledButton";
-import { Variant } from "@/types/product";
+import { ApiVariant } from "@/types/product";
 import Text from "@/components/Text";
 import Input from "@/components/Input";
 import { Location } from "@/types/location";
 import { IoIosArrowForward } from "react-icons/io";
 
-export default function EditVariantsQuantitiesDialog({ initialVariants, locations, onSave }: { initialVariants: Variant[], locations: Location[], onSave: (variants: Variant[]) => void }) {
+export default function EditVariantsQuantitiesDialog({ initialVariants, locations, onSave }: { initialVariants: ApiVariant[], locations: Location[], onSave: (variants: ApiVariant[]) => void }) {
 
   const [open, setOpen] = React.useState(false);
-  const [variants, setVariants] = React.useState<Variant[]>(initialVariants)
+  const [variants, setVariants] = React.useState<ApiVariant[]>(initialVariants)
   const [quantityForAll, setQuantityForAll] = React.useState<number | undefined>(undefined)
   const [currentLocation, setCurrentLocation] = React.useState<Location | undefined>(undefined)
 
@@ -45,7 +45,7 @@ export default function EditVariantsQuantitiesDialog({ initialVariants, location
                 <Input id="edit-all-quantity" label="Apply a quantity to all variants" icon={<Text>$</Text>} placeholder="0.00" value={quantityForAll} onChange={e => setQuantityForAll(Number(e.target.value))} />
                 <div className="h-8 flex items-stretch">
                   <OutlinedButton disabled={quantityForAll === undefined} onClick={() => {
-                    const newVariants: Variant[] = [...variants]
+                    const newVariants: ApiVariant[] = [...variants]
                     newVariants.forEach(v => v.price = quantityForAll!)
                     setVariants(newVariants)
                   }}>
@@ -67,7 +67,7 @@ export default function EditVariantsQuantitiesDialog({ initialVariants, location
                     <Text className="text-gray-800 w-40">{v.quantity || "-"}</Text>
                     <div className="w-40">
                       <Input id={v.name} value={v.quantity} onChange={(e) => {
-                        const newVariants: Variant[] = [...variants]
+                        const newVariants: ApiVariant[] = [...variants]
                         newVariants.find(v => v.name === e.target.id)!.quantity = Number(e.target.value)
                         setVariants(newVariants)
                       }} />

@@ -1,16 +1,16 @@
 import Checkbox from "@/components/Checkbox"
 import React from "react"
-import { Variant, VariantOption } from "@/types/product"
+import { ApiVariant, VariantOption } from "@/types/product"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { IoIosArrowDown } from "react-icons/io"
 import Text from "@/components/Text"
 
-export default function VariantOptionPopover({ option, variants, selectedVariants, setSelectedVariants }: { option: VariantOption, variants: Variant[], selectedVariants: Variant[], setSelectedVariants: React.Dispatch<React.SetStateAction<Variant[]>> }) {
+export default function VariantOptionPopover({ option, variants, selectedVariants, setSelectedVariants }: { option: VariantOption, variants: ApiVariant[], selectedVariants: ApiVariant[], setSelectedVariants: React.Dispatch<React.SetStateAction<ApiVariant[]>> }) {
 
   function handleChange(checked: boolean, val: string) {
     if (checked) {
-      const newVariants: Variant[] = [...selectedVariants, ...variants.filter(v => v.values[option.name] === val)]
-      const uniqueVariants: Variant[] = newVariants.filter((v, i, a) => a.findIndex(t => (t.name === v.name)) === i)
+      const newVariants: ApiVariant[] = [...selectedVariants, ...variants.filter(v => v.values[option.name] === val)]
+      const uniqueVariants: ApiVariant[] = newVariants.filter((v, i, a) => a.findIndex(t => (t.name === v.name)) === i)
       setSelectedVariants(uniqueVariants)
     } else {
       setSelectedVariants(selectedVariants.filter(v => v.values[option.name] !== val))

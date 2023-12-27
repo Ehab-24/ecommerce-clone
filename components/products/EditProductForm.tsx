@@ -1,6 +1,6 @@
 "use client";
 
-import { multiplyArrays } from "@/lib/products/utils";
+import { multiplyArrays, variantToAPIVariant } from "@/lib/products/utils";
 import { useParams, useRouter } from "next/navigation";
 import { ZodError } from "zod";
 import axios, { AxiosError } from "axios";
@@ -13,9 +13,8 @@ import Input from "@/components/Input";
 import Select from "@/components/Select";
 import TextArea from "@/components/TextArea";
 import FilledButton from "@/components/buttons/FilledButton";
-import { IoIosArrowRoundBack, IoIosClose } from "react-icons/io";
+import { IoIosArrowRoundBack } from "react-icons/io";
 import SectionTitle from "@/components/SectionTitle";
-import countries from "@/data/countries";
 import Heading from "@/components/Heading";
 import ImageUploader from "@/components/ImageUploader";
 import Image from "next/image";
@@ -25,8 +24,6 @@ import OutlinedButton from "../buttons/OutlinedButton";
 import { Location } from "@/types/location";
 import VariantsCardEditPage from "@/components/products/variants/VariantsCardEditPage";
 import StatusText from "../StatusText";
-import Text from "@/components/Text";
-import TextButton from "../buttons/TextButton";
 import Spinner from "../Spinner";
 import { Publishing } from "./Publishing";
 import { SalesChannel } from "@/types/salesChannel";
@@ -36,13 +33,7 @@ import SearchEngineListing from "./SearchEngineListing";
 import ProductOrganization from "./ProductOrganization";
 import Inventory from "./Inventory";
 
-export default function EditProductForm({
-  initialProduct,
-  locations,
-}: {
-  locations: Location[];
-  initialProduct: Product;
-}) {
+export default function EditProductForm({ initialProduct, locations, }: { locations: Location[]; initialProduct: Product; }) {
   const salesChannels: SalesChannel[] = [
     {
       _id: "1",
@@ -82,8 +73,8 @@ export default function EditProductForm({
   const router = useRouter();
   const [product, setProduct] = React.useState<ApiProduct>({
     ...initialProduct,
+    variants: initialProduct.variants.map(v => variantToAPIVariant(v)),
     vendor: initialProduct.vendor?._id,
-    locations: initialProduct.locations?.map((l) => l._id) || [],
     markets: initialProduct.markets?.map((m) => m._id) || [],
   });
   const [loading, setLoading] = React.useState(false);
@@ -91,17 +82,15 @@ export default function EditProductForm({
   useEffect(() => {
     setProduct((p) => ({
       ...p,
-      variants: multiplyArrays(
-        p.variantOptions.map((v) => v.name),
-        ...p.variantOptions.map((v) => v.values)
-      ).map((obj, i) => ({
-        _id: i.toString(),
-        name: Object.values(obj).join(" / "),
-        values: obj,
-        trackQuantity: false,
-        continueSellingWhenOutOfStock: false,
-        inventoryLevels: [],
-      })),
+      variants: multiplyArrays(p.variantOptions.map((v) => v.name), ...p.variantOptions.map((v) => v.values))
+        .map((obj, i) => ({
+          _id: i.toString(),
+          name: Object.values(obj).join(" / "),
+          values: obj,
+          trackQuantity: false,
+          continueSellingWhenOutOfStock: false,
+          inventoryLevels: [],
+        })),
     }));
   }, [product.variantOptions]);
 

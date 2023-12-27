@@ -1,6 +1,6 @@
 import Datatable, { VariantWithTitle } from "@/components/products/inventory/Datatable";
 import { apiUrl } from "@/lib/utils";
-import { Product } from "@/types/product";
+import { Product, Variant } from "@/types/product";
 import Link from "next/link";
 import React from "react";
 import ExportImportButtons from "@/components/products/ExportImportButtons";
@@ -17,7 +17,6 @@ export default async function InventoryPage() {
   const products: Product[] = await res.json()
   const variants: VariantWithTitle[] = products.flatMap(p => p.variants?.map(v => ({ ...v, title: p.title }) ?? [productToVariant(p)]))
 
-  console.log(variants)
 
   return (
     <div className="bg-gray-100 min-h-screen md:px-8 py-8">
@@ -41,6 +40,7 @@ export default async function InventoryPage() {
 }
 
 function productToVariant(p: Product): VariantWithTitle {
+  // @ts-ignore
   return {
     _id: p._id,
     title: p.title,
@@ -51,6 +51,6 @@ function productToVariant(p: Product): VariantWithTitle {
     quantity: p.quantity,
     image: p.media?.length > 0 ? p.media[0].url : undefined,
     status: p.status,
-    inventoryLevels: p.inventoryLevels
+    inventoryLevels: p.inventoryLevels,
   } as VariantWithTitle
 }

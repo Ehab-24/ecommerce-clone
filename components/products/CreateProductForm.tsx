@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react";
 import { ZodError } from "zod";
-import { ApiProductSchema, ApiProduct, InventoryLevel } from "@/types/product";
+import { ApiProductSchema, ApiProduct } from "@/types/product";
 import Card from "@/components/Card";
 import Input from "@/components/Input";
 import Select from "@/components/Select";
@@ -227,7 +227,6 @@ export default function CreateProductForm({ locations }: { locations: Location[]
 const defaultProduct: ApiProduct = {
   title: "",
   chargeTaxes: false,
-  locations: [],
   salesChannels: [],
   markets: [],
   quantity: 0,
@@ -254,8 +253,3 @@ const defaultProduct: ApiProduct = {
   },
   tags: [],
 };
-
-const defaultInventoryLevel: InventoryLevel = {
-  location: "",
-  available: 0,
-}

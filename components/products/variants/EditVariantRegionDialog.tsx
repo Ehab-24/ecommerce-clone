@@ -10,15 +10,15 @@ import {
 } from "@/components/ui/dialog";
 import OutlinedButton from "../../buttons/OutlinedButton";
 import FilledButton from "../../buttons/FilledButton";
-import { Variant } from "@/types/product";
+import { ApiVariant } from "@/types/product";
 import Text from "@/components/Text";
 import Select from "@/components/Select";
 import countries from "@/data/countries";
 
-export default function EditVariantsRegionsDialog({ initialVariants, onSave }: { initialVariants: Variant[], onSave: (variants: Variant[]) => void }) {
+export default function EditVariantsRegionsDialog({ initialVariants, onSave }: { initialVariants: ApiVariant[], onSave: (variants: ApiVariant[]) => void }) {
 
   const [open, setOpen] = React.useState(false);
-  const [variants, setVariants] = React.useState<Variant[]>(initialVariants)
+  const [variants, setVariants] = React.useState<ApiVariant[]>(initialVariants)
   const [country, setCountry] = React.useState<string | undefined>(undefined)
 
   return (
@@ -37,7 +37,7 @@ export default function EditVariantsRegionsDialog({ initialVariants, onSave }: {
             <Select onChange={e => setCountry(e.target.value)} value={country} options={countries} label="Country/Region of origin" />
             <div className="h-8 flex items-stretch">
               <OutlinedButton disabled={country === undefined} onClick={() => {
-                const newVariants: Variant[] = [...variants]
+                const newVariants: ApiVariant[] = [...variants]
                 newVariants.forEach(v => v.countryOfOrigin = country!)
                 setVariants(newVariants)
               }}>
@@ -54,7 +54,7 @@ export default function EditVariantsRegionsDialog({ initialVariants, onSave }: {
                 <Text className="text-gray-800">{v.name}</Text>
                 <div className="w-60">
                   <Select onChange={e => {
-                    const newVariants: Variant[] = [...variants]
+                    const newVariants: ApiVariant[] = [...variants]
                     newVariants.find(v => v.name === e.target.id)!.countryOfOrigin = e.target.value
                     setVariants(newVariants)
                   }} value={country} options={countries} label="Country/Region of origin" />

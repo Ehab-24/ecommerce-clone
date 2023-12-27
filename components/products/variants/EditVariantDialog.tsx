@@ -10,13 +10,13 @@ import {
 import Input from "@/components/Input";
 import OutlinedButton from "../../buttons/OutlinedButton";
 import FilledButton from "../../buttons/FilledButton";
-import { Variant } from "@/types/product";
+import { ApiVariant } from "@/types/product";
 import Text from "../../Text";
 import { AiOutlineSearch } from "react-icons/ai";
 
-export default function EditVariantDialog({ initialVariant, onSave, button }: { initialVariant: Variant, onSave: (initialVariant: Variant) => void; button: React.ReactNode }) {
+export default function EditVariantDialog({ initialVariant, onSave, button }: { initialVariant: ApiVariant, onSave: (initialVariant: ApiVariant) => void; button: React.ReactNode }) {
 
-  const [variant, setVariant] = React.useState<Variant>(initialVariant)
+  const [variant, setVariant] = React.useState<ApiVariant>(initialVariant)
   const [open, setOpen] = React.useState(false);
 
   return (

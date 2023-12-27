@@ -2,7 +2,7 @@ import Card from "@/components/Card";
 import React from "react";
 import EditVariantDialog from "@/components/products/variants/EditVariantDialog";
 import EditVariantsPopover from "@/components/products/popovers/EditVariantsPopover";
-import { ApiProduct, Variant } from "@/types/product";
+import { ApiProduct, ApiVariant } from "@/types/product";
 import SectionTitle from "@/components/SectionTitle";
 import TextButton from "@/components/buttons/TextButton";
 import Text from "@/components/Text";
@@ -12,19 +12,9 @@ import AllLocationsPopover from "./AllLocationsPopover";
 import VariantOptionPopover from "./VariantOptionPopover";
 import DraggableList from "./DraggableList";
 
-export default function VariantsCard({
-  loading,
-  locations,
-  product,
-  setProduct,
-}: {
-  loading: boolean;
-  locations: Location[];
-  product: ApiProduct;
-  setProduct: React.Dispatch<React.SetStateAction<ApiProduct>>;
-}) {
+export default function VariantsCard({ loading, locations, product, setProduct, }: { loading: boolean; locations: Location[]; product: ApiProduct; setProduct: React.Dispatch<React.SetStateAction<ApiProduct>> }) {
 
-  const [selectedVariants, setSelectedVariants] = React.useState<Variant[]>([]);
+  const [selectedVariants, setSelectedVariants] = React.useState<ApiVariant[]>([]);
   const [selectedLocation, setSelectedLocation] = React.useState<Location | null>(null);
 
   function getNextVariant(): string {

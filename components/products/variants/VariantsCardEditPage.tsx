@@ -2,7 +2,7 @@ import Card from "@/components/Card";
 import SectionTitle from "@/components/SectionTitle";
 import Text from "@/components/Text";
 import TextButton from "@/components/buttons/TextButton";
-import { ApiProduct, Product, Variant } from "@/types/product";
+import { ApiProduct, Product, ApiVariant } from "@/types/product";
 import React from "react";
 import EditVariantsPopover from "../popovers/EditVariantsPopover";
 import Checkbox from "@/components/Checkbox";
@@ -29,7 +29,7 @@ export default function VariantsCardEditPage({
   setProduct: React.Dispatch<React.SetStateAction<any>>;
 }) {
 
-  const [selectedVariants, setSelectedVariants] = React.useState<Variant[]>([]);
+  const [selectedVariants, setSelectedVariants] = React.useState<ApiVariant[]>([]);
   const [selectedLocation, setSelectedLocation] = React.useState<Location | null>(null);
 
   function getNextVariant(): string {

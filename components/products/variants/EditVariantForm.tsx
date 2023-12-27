@@ -1,7 +1,7 @@
 'use client'
 
 import React from "react";
-import { Product, ApiVariantSchema } from "@/types/product";
+import { Product, ApiVariantSchema, ApiVariant } from "@/types/product";
 import Card from "@/components/Card";
 import SectionTitle from "@/components/SectionTitle";
 import Input from "@/components/Input";
@@ -24,7 +24,7 @@ export default function EditVariantForm({ initialProduct, vi, locations }: { loc
 
   const [loading, setLoading] = React.useState(false)
   const [newImages, setNewImages] = React.useState<string[]>([])
-  const [variant, setVariant] = React.useState(initialProduct.variants[vi])
+  const [variant, setVariant] = React.useState<ApiVariant>({ ...initialProduct.variants[vi], inventoryLevels: initialProduct.variants[vi].inventoryLevels.map(il => ({ ...il, location: il.location._id })) })
   const router = useRouter()
 
   function capitalize(str: string): string {
@@ -134,7 +134,7 @@ export default function EditVariantForm({ initialProduct, vi, locations }: { loc
 
       <Pricing loading={false} variant={variant} setVariant={setVariant} />
 
-      <Inventory loading={false} variant={variant} locations={locations} setVariant={setVariant} />
+      <Inventory loading={false} variant={variant} locations={locations} setVariant={setVariant} showDatatable={true} />
 
       <Shipping loading={false} variant={variant} setVariant={setVariant} />
 

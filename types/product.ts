@@ -13,9 +13,9 @@ const ApiInventoryLevelSchema = z.object({
   location: z.string(),
   available: z.number(),
   incoming: z.number().optional(),
-  committed: z.number().optional(),
-  unavailable: z.number().optional(),
   onHand: z.number().optional(),
+  unavailable: z.number().optional(),
+  committed: z.number().optional(),
   updatedAt: z.string().optional(),
   createdAt: z.string().optional(),
 })
@@ -108,18 +108,20 @@ const ApiProductSchema = z.object({
 });
 
 type ApiInventoryLevel = z.infer<typeof ApiInventoryLevelSchema>;
-type InventoryLevel = Omit<ApiInventoryLevel, "location"> & { location: Location };
+type InventoryLevel = Omit<ApiInventoryLevel, "location"> & {
+  location: Location, incoming: number, onHand: number, unavailable: number, committed: number
+};
 
-type ApiVariant = z.infer<typeof ApiVariantSchema>;
 type VariantValue = z.infer<typeof ApiVariantSchema>["values"];
 type VariantOption = z.infer<typeof VariantOptionSchema>;
+type ApiVariant = z.infer<typeof ApiVariantSchema>;
 type Variant = Omit<ApiVariant, "inventoryLevels"> & {
   inventoryLevels: InventoryLevel[];
 }
 
 type ApiProduct = z.infer<typeof ApiProductSchema>;
-type Product = Omit<Omit<Omit<Omit<Omit<ApiProduct, "createdAt">, "updatedAt">, "vendor">, "salesChannel">, "markets"> & {
-  _id: string; createdAt: string; updatedAt: string; vendor: Vendor; salesChannels: SalesChannel[]; markets: Market[];
+type Product = Omit<Omit<Omit<Omit<Omit<Omit<ApiProduct, "createdAt">, "updatedAt">, "vendor">, "salesChannel">, "markets">, "variants"> & {
+  _id: string; createdAt: string; updatedAt: string; vendor: Vendor; salesChannels: SalesChannel[]; markets: Market[]; variants: Variant[];
 };
 
-export { type Product, type VariantOption, ApiProductSchema, ApiVariantSchema, type ApiVariant, type ApiInventoryLevel, type InventoryLevel, type VariantValue, type ApiProduct, type Variant };
+export { type Product, type VariantOption, ApiProductSchema, ApiVariantSchema, type ApiVariant, type InventoryLevel, type ApiInventoryLevel, type VariantValue, type ApiProduct, type Variant };

@@ -79,7 +79,8 @@ export default function EditVariantsPopover({ product, variant = "default", loca
 
           <EditVariantsLocationsDialog
             allLocations={locations}
-            onSave={(ls) => setProduct({ ...product, locations: ls.map(l => l._id) })}
+            // TODO
+            onSave={(ls) => { }}
           />
 
         </div>

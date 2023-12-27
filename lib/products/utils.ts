@@ -1,4 +1,4 @@
-import { VariantValue } from "@/types/product";
+import { ApiVariant, Variant, VariantValue } from "@/types/product";
 
 export function multiplyArrays(arrayNames: string[], ...arrays: string[][]): VariantValue[] {
   const combineArrays = (result: string[][], arr: string[]) => {
@@ -29,3 +29,14 @@ export function multiplyArrays(arrayNames: string[], ...arrays: string[][]): Var
   return ans
 }
 
+export function variantToAPIVariant(v: Variant): ApiVariant {
+  return {
+    ...v,
+    inventoryLevels: v.inventoryLevels.map(level => ({
+      ...level,
+      location: level.location._id,
+      createdAt: level.createdAt,
+      updatedAt: level.updatedAt,
+    }))
+  }
+}

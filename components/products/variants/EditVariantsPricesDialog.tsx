@@ -9,14 +9,14 @@ import {
 } from "@/components/ui/dialog";
 import OutlinedButton from "../../buttons/OutlinedButton";
 import FilledButton from "../../buttons/FilledButton";
-import { Variant } from "@/types/product";
+import { ApiVariant } from "@/types/product";
 import Text from "@/components/Text";
 import Input from "@/components/Input";
 
-export default function EditVariantsPricesDialog({ initialVariants, onSave }: { initialVariants: Variant[], onSave: (variants: Variant[]) => void }) {
+export default function EditVariantsPricesDialog({ initialVariants, onSave }: { initialVariants: ApiVariant[], onSave: (variants: ApiVariant[]) => void }) {
 
   const [open, setOpen] = React.useState(false);
-  const [variants, setVariants] = React.useState<Variant[]>(initialVariants)
+  const [variants, setVariants] = React.useState<ApiVariant[]>(initialVariants)
   const [priceForAll, setPriceForAll] = React.useState<number | undefined>(undefined)
 
   return (
@@ -35,7 +35,7 @@ export default function EditVariantsPricesDialog({ initialVariants, onSave }: { 
             <Input id="edit-all-prices" label="Apply a price to all variants" icon={<Text>$</Text>} placeholder="0.00" value={priceForAll} onChange={e => setPriceForAll(Number(e.target.value))} />
             <div className="h-8 flex items-stretch">
               <OutlinedButton disabled={priceForAll === undefined} onClick={() => {
-                const newVariants: Variant[] = [...variants]
+                const newVariants: ApiVariant[] = [...variants]
                 newVariants.forEach(v => v.price = priceForAll!)
                 setVariants(newVariants)
               }}>
@@ -50,7 +50,7 @@ export default function EditVariantsPricesDialog({ initialVariants, onSave }: { 
                 <Text className="text-gray-800">{v.name}</Text>
                 <div className="w-40">
                   <Input id={v.name} value={v.price} icon={<Text>$</Text>} placeholder="0.00" onChange={(e) => {
-                    const newVariants: Variant[] = [...variants]
+                    const newVariants: ApiVariant[] = [...variants]
                     newVariants.find(v => v.name === e.target.id)!.price = Number(e.target.value)
                     setVariants(newVariants)
                   }} />
