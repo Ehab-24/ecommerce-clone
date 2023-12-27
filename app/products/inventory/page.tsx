@@ -51,5 +51,6 @@ function productToVariant(p: Product): VariantWithTitle {
     quantity: p.quantity,
     image: p.media?.length > 0 ? p.media[0].url : undefined,
     status: p.status,
+    inventoryLevels: p.inventoryLevels
   } as VariantWithTitle
 }

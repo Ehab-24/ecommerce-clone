@@ -1,7 +1,7 @@
 import React from "react";
 import Card from "@/components/Card";
 import SectionTitle from "@/components/SectionTitle";
-import { Variant } from "@/types/product";
+import { ApiVariant } from "@/types/product";
 import Checkbox from "@/components/Checkbox";
 import Text from "@/components/Text";
 import Input from "@/components/Input";
@@ -12,8 +12,8 @@ export default function Pricing({
   setVariant
 }: {
   loading: boolean;
-  variant: Variant,
-  setVariant: React.Dispatch<React.SetStateAction<Variant>>;
+  variant: ApiVariant,
+  setVariant: React.Dispatch<React.SetStateAction<ApiVariant>>;
 }) {
   return (
     <Card className="flex p-4 flex-col gap-4 items-stretch">

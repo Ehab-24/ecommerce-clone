@@ -1,7 +1,7 @@
 import React from "react";
 import Card from "@/components/Card";
 import SectionTitle from "@/components/SectionTitle";
-import { Variant } from "@/types/product";
+import { ApiVariant } from "@/types/product";
 import Checkbox from "@/components/Checkbox";
 import TextButton from "@/components/buttons/TextButton";
 import Text from "@/components/Text";
@@ -16,8 +16,8 @@ export default function Shipping({
   setVariant
 }: {
   loading: boolean;
-  variant: Variant,
-  setVariant: React.Dispatch<React.SetStateAction<Variant>>;
+  variant: ApiVariant,
+  setVariant: React.Dispatch<React.SetStateAction<ApiVariant>>;
 }) {
 
   const [editCustomsInfo, setEditCustomsInfo] = React.useState(false)

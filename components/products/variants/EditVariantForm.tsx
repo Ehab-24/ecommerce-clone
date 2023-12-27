@@ -1,7 +1,7 @@
 'use client'
 
 import React from "react";
-import { Product, VariantSchema } from "@/types/product";
+import { Product, ApiVariantSchema } from "@/types/product";
 import Card from "@/components/Card";
 import SectionTitle from "@/components/SectionTitle";
 import Input from "@/components/Input";
@@ -36,7 +36,7 @@ export default function EditVariantForm({ initialProduct, vi, locations }: { loc
 
     try {
 
-      VariantSchema.parse(variant)
+      ApiVariantSchema.parse(variant)
       const requests = [
         axios.put(`/api/products/${initialProduct._id}/variants/${vi}`, variant),
       ]

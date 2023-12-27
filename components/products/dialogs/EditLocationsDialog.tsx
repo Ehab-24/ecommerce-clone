@@ -16,12 +16,8 @@ import Checkbox from "@/components/Checkbox";
 
 export default function EditLocationsDialog({ onSave, locations, initialLocations = [] }: { locations: Location[], initialLocations?: string[], onSave: (selectedLocations: Location[]) => void }) {
 
-
-
   const [open, setOpen] = useState(false)
   const [selectedLocations, setSelectedLocations] = useState<Location[]>(locations.filter(l => initialLocations.includes(l._id)))
-
-  useEffect(() => console.log(selectedLocations.map(l => l._id)), [selectedLocations])
 
   return (
     <Dialog open={open} onOpenChange={o => {

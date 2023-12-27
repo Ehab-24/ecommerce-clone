@@ -1,5 +1,5 @@
 
-import { ApiProduct, InventoryLevel } from "@/types/product";
+import { ApiInventoryLevel, ApiProduct } from "@/types/product";
 import Card from "../Card";
 import SectionTitle from "../SectionTitle";
 import Checkbox from "../Checkbox";
@@ -7,6 +7,7 @@ import Input from "../Input";
 import Text from "../Text";
 import EditLocationsDialog from "./dialogs/EditLocationsDialog";
 import { Location } from "@/types/location";
+import { getLocation } from "@/lib/utils";
 
 export default function Inventory({
   loading,
@@ -19,10 +20,6 @@ export default function Inventory({
   product: ApiProduct;
   setProduct: React.Dispatch<React.SetStateAction<any>>;
 }) {
-
-  function getLocation(id: string): Location {
-    return locations.find(l => l._id === id)!
-  }
 
   return (
     <Card className=" flex-col flex p-4 gap-4">
@@ -45,7 +42,7 @@ export default function Inventory({
         {
           product.inventoryLevels.map((il, i) => (
             <div key={i} className="flex items-center justify-between w-full">
-              <Text className="text-gray-800 whitespace-nowrap">{getLocation(il.location).name}</Text>
+              <Text className="text-gray-800 whitespace-nowrap">{getLocation(il.location, locations).name}</Text>
               <div className="w-full" />
               <Input id={il.location + "quantity"} className="w-min" value={il.available} onChange={e => setProduct({ ...product, inventoryLevels: product.inventoryLevels.map(_il => _il.location === il.location ? { ..._il, available: Number(e.target.value) } : _il) })} />
             </div>
@@ -94,9 +91,7 @@ export default function Inventory({
   );
 }
 
-
-
-const defaultInventoryLevel: InventoryLevel = {
+const defaultInventoryLevel: ApiInventoryLevel = {
   location: "",
   available: 0,
 }

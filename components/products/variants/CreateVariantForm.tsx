@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect } from "react";
-import { Product, Variant, VariantSchema } from "@/types/product";
+import { Product, ApiVariant, ApiVariantSchema } from "@/types/product";
 import Card from "@/components/Card";
 import SectionTitle from "@/components/SectionTitle";
 import Input from "@/components/Input";
@@ -20,15 +20,16 @@ import Inventory from "./form/Inventory";
 import Shipping from "./form/Shipping";
 import Pricing from "./form/Pricing";
 
-export default function CerateVariantForm({ product, locations }: { product: Product, locations: Location[] }) {
+export default function CreateVariantForm({ product, locations }: { product: Product, locations: Location[] }) {
 
-  const defaultVariant: Variant = {
+  const defaultVariant: ApiVariant = {
     _id: product.variants.length.toString(),
     name: "",
     values: product.variantOptions.reduce((acc, vo) => ({ ...acc, [vo.name]: "" }), {}),
     price: product.price,
     continueSellingWhenOutOfStock: product.continueSellingWhenOutOfStock,
     trackQuantity: product.trackQuantity,
+    inventoryLevels: product.inventoryLevels
   }
 
   const router = useRouter()
@@ -49,7 +50,7 @@ export default function CerateVariantForm({ product, locations }: { product: Pro
 
     try {
 
-      VariantSchema.parse(variant)
+      ApiVariantSchema.parse(variant)
       const requests = [
         axios.post(`/api/products/${product._id}/variants`, variant),
         axios.post(`/api/products/${product._id}/variants/images`, { images: newImages })

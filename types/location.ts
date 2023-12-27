@@ -1,6 +1,5 @@
 import { z } from "zod"
 
-
 const ApiLocationSchema = z.object({
   name: z.string().min(1, "Location name is required"),
   country: z.string().min(1, "Country is required"),
